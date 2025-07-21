@@ -9,175 +9,238 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.1/xlsx.full.min.js"></script>
   <link rel="stylesheet" href="admin-style.css">
 </head>
- <!-- Navbar -->
- <nav class="navbar">
+<body>
+
+<!-- Navbar -->
+<nav class="navbar">
   <a href="index.html" class="voltar-inicio">
-    <i class="fas fa-home"></i> <!-- Ícone de casa -->
+    <i class="fas fa-home"></i>
   </a>
   <span class="navbar-text">Área Administrativa</span>
 </nav>
-<br>
-<br>
-<br>
-  <div class="admin-container"> 
-    
-    <h1>Painel de Administração</h1>
-    
-    <h2>Pedidos por Ramo</h2>
-    <table id="pedidosTabela">
-      <thead>
-        <tr>
-          <th>Ramo</th>
-          <th>Produto</th>
-          <th>Tamanho</th>
-          <th>Quantidade</th>
-          <th>Observações</th>
-          <th>Ações</th> <!-- Adicionando uma coluna de ações -->
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-    
-    <h2>Pedidos Detalhados</h2>
-    <table id="pedidosDetalhadosTabela">
-      <thead>
-        <tr>
-          <th>Nome</th>
-          <th>Email</th>
-          <th>Produto</th>
-          <th>Tamanho</th>
-          <th>Quantidade</th>
-          <th>Observações</th>
-          <th>Ações</th> <!-- Adicionando uma coluna de ações -->
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
 
-    <h2>Pedidos Agrupados por Ramo</h2>
-    <div id="groupedOrdersContainer"></div>
+<br><br><br>
 
-    <div class="buttons-container">
-      <button onclick="exportarParaExcel('pedidosTabela', 'pedidos_ramos')">Exportar Pedidos por Ramo</button>
-      <button onclick="exportarParaExcel('pedidosDetalhadosTabela', 'pedidos_detalhados')">Exportar Pedidos Detalhados</button>
-      <button onclick="limparDados()">Limpar Dados</button>
-    </div>
+<div class="admin-container"> 
+  <h1>Painel de Administração</h1>
+  
+  <h2>Pedidos por Ramo</h2>
+  <table id="pedidosTabela">
+    <thead>
+      <tr>
+        <th>Ramo</th>
+        <th>Produto</th>
+        <th>Tamanho</th>
+        <th>Quantidade</th>
+        <th>Observações</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+  
+  <h2>Pedidos Detalhados</h2>
+  <table id="pedidosDetalhadosTabela">
+    <thead>
+      <tr>
+        <th>Nome</th>
+        <th>Email</th>
+        <th>Produto</th>
+        <th>Tamanho</th>
+        <th>Quantidade</th>
+        <th>Observações</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
 
+  <h2>Pedidos Agrupados por Ramo</h2>
+  <div id="groupedOrdersContainer"></div>
+
+  <div class="buttons-container">
+    <button onclick="exportarParaExcel('pedidosTabela', 'pedidos_ramos')">Exportar Pedidos por Ramo</button>
+    <button onclick="exportarParaExcel('pedidosDetalhadosTabela', 'pedidos_detalhados')">Exportar Pedidos Detalhados</button>
+    <button onclick="exportarPedidosPorRamoParaExcel()">Exportar Pedidos por Ramo (Detalhados)</button>
+    <button onclick="limparDados()">Limpar Dados</button>
   </div>
-  <section>
-    <h2>Definir Períodos de Encomenda</h2>
-    <div class="formulario-submissao">
+</div>
+
+<section>
+  <h2>Definir Períodos de Encomenda</h2>
+  <div class="formulario-submissao">
     <form id="datesForm">
       <label for="start-date-input">Data de Início:</label>
       <input type="date" id="start-date-input" required>
-  
       <label for="end-date-input">Data de Fim:</label>
       <input type="date" id="end-date-input" required>
-  
       <button type="submit">Salvar Datas</button>
     </form>
   </div>
-  </section>
-
-  <script>
-    function exportarParaExcel(tableId, fileName) {
-      var wb = XLSX.utils.table_to_book(document.getElementById(tableId), {sheet: fileName});
-      XLSX.writeFile(wb, fileName + ".xlsx");
-    }
-
-    function updateOrdersTable() {
-      const pedidosTabela = document.getElementById('pedidosTabela').getElementsByTagName('tbody')[0];
-      const pedidosDetalhadosTabela = document.getElementById('pedidosDetalhadosTabela').getElementsByTagName('tbody')[0];
-      pedidosTabela.innerHTML = '';
-      pedidosDetalhadosTabela.innerHTML = '';
-      let pedidos = JSON.parse(localStorage.getItem("pedidos")) || [];
-      console.log('Pedidos carregados:', pedidos);
-
-      // Agrupamento para a primeira tabela
-      const agrupados = {};
-      pedidos.forEach(pedido => {
-        const key = `${pedido.ramo}|${pedido.produto}|${pedido.tamanho}`;
-        if (!agrupados[key]) {
-          agrupados[key] = {
-            ramo: pedido.ramo,
-            produto: pedido.produto,
-            tamanho: pedido.tamanho,
-            quantidade: 0,
-            observacoes: []
-          };
-        }
-        agrupados[key].quantidade += Number(pedido.quantidade) || 0;
-        if (pedido.especialidade) agrupados[key].observacoes.push(pedido.especialidade);
-      });
-
-      Object.values(agrupados).forEach(pedido => {
-        const row = pedidosTabela.insertRow();
-        row.insertCell(0).textContent = pedido.ramo;
-        row.insertCell(1).textContent = pedido.produto;
-        row.insertCell(2).textContent = pedido.tamanho;
-        row.insertCell(3).textContent = pedido.quantidade;
-        row.insertCell(4).textContent = pedido.observacoes.join(", ");
-        const actionsCell = row.insertCell(5);
-        actionsCell.innerHTML = `
-          <button onclick="eliminarPedido('${pedido.ramo}', '${pedido.produto}', '${pedido.tamanho}')">Eliminar</button>
-        `;
-      });
-
-      // Tabela detalhada
-      pedidos.forEach(pedido => {
-        let rowDetalhada = pedidosDetalhadosTabela.insertRow();
-        rowDetalhada.insertCell(0).textContent = pedido.nome;
-        rowDetalhada.insertCell(1).textContent = pedido.email;
-        rowDetalhada.insertCell(2).textContent = pedido.produto;
-        rowDetalhada.insertCell(3).textContent = pedido.tamanho;
-        rowDetalhada.insertCell(4).textContent = pedido.quantidade;
-        rowDetalhada.insertCell(5).textContent = pedido.especialidade || '';
-        const actionsCell = rowDetalhada.insertCell(6);
-        actionsCell.innerHTML = `
-          <button onclick="eliminarPedido('${pedido.nome}', '${pedido.produto}', '${pedido.tamanho}')">Eliminar</button>
-        `;
-      });
-    }
-
-    function eliminarPedido(ramo, produto, tamanho) {
-      let pedidos = JSON.parse(localStorage.getItem("pedidos")) || [];
-      pedidos = pedidos.filter(pedido => !(pedido.ramo === ramo && pedido.produto === produto && pedido.tamanho === tamanho));
-      localStorage.setItem("pedidos", JSON.stringify(pedidos));
-      updateOrdersTable(); // Atualiza a tabela após eliminar o pedido
-    }
-
-    function limparDados() {
-      if (confirm("Tem certeza de que deseja eliminar todos os pedidos? Essa ação não pode ser desfeita.")) {
-        localStorage.removeItem("pedidos");
-        updateOrdersTable();
-      }
-    }
-
-    function carregarPedidos() {
-      updateOrdersTable();
-    }
-    window.onload = carregarPedidos;
-    
-  </script>
-    
+</section>
 
 <script>
-  // Ao submeter o formulário, salva as datas no localStorage
-  document.getElementById('datesForm').addEventListener('submit', function(event) {
-    event.preventDefault();
+function exportarParaExcel(tableId, fileName) {
+  const wb = XLSX.utils.table_to_book(document.getElementById(tableId), {sheet: fileName});
+  XLSX.writeFile(wb, fileName + ".xlsx");
+}
 
-    // Pega os valores das datas do formulário
-    const startDate = document.getElementById('start-date-input').value;
-    const endDate = document.getElementById('end-date-input').value;
+function exportarPedidosPorRamoParaExcel() {
+  const pedidos = JSON.parse(localStorage.getItem("pedidos")) || [];
 
-    // Salva as datas no localStorage
-    localStorage.setItem('dataInicio', startDate);
-    localStorage.setItem('dataFim', endDate);
+  if (pedidos.length === 0) {
+    alert("Não há dados para exportar.");
+    return;
+  }
 
-    // Exibe uma mensagem de confirmação
-    alert('Datas salvas com sucesso!');
+  const ramos = {};
+  pedidos.forEach(pedido => {
+    const ramo = pedido.ramo || "Sem Ramo";
+    if (!ramos[ramo]) ramos[ramo] = [];
+    ramos[ramo].push(pedido);
   });
+
+  const wb = XLSX.utils.book_new();
+
+  for (const ramo in ramos) {
+    const dados = ramos[ramo].map(p => ({
+      Nome: p.nome,
+      Produto: p.produto,
+      Tamanho: p.tamanho,
+      Quantidade: p.quantidade,
+      Observações: p.especialidade || ''
+    }));
+    const ws = XLSX.utils.json_to_sheet(dados);
+    XLSX.utils.book_append_sheet(wb, ws, ramo);
+  }
+
+  XLSX.writeFile(wb, "pedidos_por_ramo_detalhados.xlsx");
+}
+
+function updateOrdersTable() {
+  const pedidosTabela = document.getElementById('pedidosTabela').getElementsByTagName('tbody')[0];
+  const pedidosDetalhadosTabela = document.getElementById('pedidosDetalhadosTabela').getElementsByTagName('tbody')[0];
+  pedidosTabela.innerHTML = '';
+  pedidosDetalhadosTabela.innerHTML = '';
+  const pedidos = JSON.parse(localStorage.getItem("pedidos")) || [];
+
+  const agrupados = {};
+  pedidos.forEach(pedido => {
+    const key = `${pedido.ramo}|${pedido.produto}|${pedido.tamanho}`;
+    if (!agrupados[key]) {
+      agrupados[key] = {
+        ramo: pedido.ramo,
+        produto: pedido.produto,
+        tamanho: pedido.tamanho,
+        quantidade: 0,
+        observacoes: []
+      };
+    }
+    agrupados[key].quantidade += Number(pedido.quantidade) || 0;
+    if (pedido.especialidade) agrupados[key].observacoes.push(pedido.especialidade);
+  });
+
+  Object.values(agrupados).forEach(pedido => {
+    const row = pedidosTabela.insertRow();
+    row.insertCell(0).textContent = pedido.ramo;
+    row.insertCell(1).textContent = pedido.produto;
+    row.insertCell(2).textContent = pedido.tamanho;
+    row.insertCell(3).textContent = pedido.quantidade;
+    row.insertCell(4).textContent = pedido.observacoes.join(", ");
+    const actionsCell = row.insertCell(5);
+    actionsCell.innerHTML = `
+      <button onclick="eliminarPedido('${pedido.ramo}', '${pedido.produto}', '${pedido.tamanho}')">Eliminar</button>
+    `;
+  });
+
+  pedidos.forEach(pedido => {
+    const row = pedidosDetalhadosTabela.insertRow();
+    row.insertCell(0).textContent = pedido.nome;
+    row.insertCell(1).textContent = pedido.email;
+    row.insertCell(2).textContent = pedido.produto;
+    row.insertCell(3).textContent = pedido.tamanho;
+    row.insertCell(4).textContent = pedido.quantidade;
+    row.insertCell(5).textContent = pedido.especialidade || '';
+    const actionsCell = row.insertCell(6);
+    actionsCell.innerHTML = `
+      <button onclick="eliminarPedido('${pedido.ramo}', '${pedido.produto}', '${pedido.tamanho}')">Eliminar</button>
+    `;
+  });
+
+  gerarTabelaGeral(pedidos);
+}
+
+function gerarTabelaGeral(pedidos) {
+  const container = document.getElementById('groupedOrdersContainer');
+  container.innerHTML = '';
+
+  const porRamo = {};
+
+  pedidos.forEach(pedido => {
+    const ramo = pedido.ramo || 'Desconhecido';
+    if (!porRamo[ramo]) porRamo[ramo] = [];
+    porRamo[ramo].push(pedido);
+  });
+
+  for (const ramo in porRamo) {
+    const titulo = document.createElement('h3');
+    titulo.textContent = ramo;
+    container.appendChild(titulo);
+
+    const tabela = document.createElement('table');
+    tabela.classList.add('tabela-geral');
+    tabela.innerHTML = `
+      <thead>
+        <tr>
+          <th>Nome</th>
+          <th>Produto</th>
+          <th>Tamanho</th>
+          <th>Quantidade</th>
+          <th>Observações</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${porRamo[ramo].map(item => `
+          <tr>
+            <td>${item.nome}</td>
+            <td>${item.produto}</td>
+            <td>${item.tamanho}</td>
+            <td>${item.quantidade}</td>
+            <td>${item.especialidade || ''}</td>
+          </tr>
+        `).join('')}
+      </tbody>
+    `;
+    container.appendChild(tabela);
+  }
+}
+
+function eliminarPedido(ramo, produto, tamanho) {
+  let pedidos = JSON.parse(localStorage.getItem("pedidos")) || [];
+  pedidos = pedidos.filter(pedido => !(pedido.ramo === ramo && pedido.produto === produto && pedido.tamanho === tamanho));
+  localStorage.setItem("pedidos", JSON.stringify(pedidos));
+  updateOrdersTable();
+}
+
+function limparDados() {
+  if (confirm("Tem certeza de que deseja eliminar todos os pedidos? Essa ação não pode ser desfeita.")) {
+    localStorage.removeItem("pedidos");
+    updateOrdersTable();
+  }
+}
+
+document.getElementById('datesForm').addEventListener('submit', function(event) {
+  event.preventDefault();
+  const startDate = document.getElementById('start-date-input').value;
+  const endDate = document.getElementById('end-date-input').value;
+  localStorage.setItem('dataInicio', startDate);
+  localStorage.setItem('dataFim', endDate);
+  alert('Datas salvas com sucesso!');
+});
+
+window.onload = updateOrdersTable;
 </script>
+
 <br>
 <footer class="footer">
   <div class="footer-content">
