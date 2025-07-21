@@ -815,3 +815,27 @@ body.tamanhos-page th {
 body.tamanhos-page header h1 {
   color: white;
 }
+/* Header com imagem de fundo e texto central */
+.main-header {
+  position: relative;
+  background-image: url('images/banner.jpg'); /* usa o mesmo fundo da página principal */
+  background-size: cover;
+  background-position: center;
+  height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.main-header .header-overlay {
+  background: rgba(0, 0, 0, 0.4);
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.main-header h1 {
+  color: white;
+  font-size: 2.5rem;
+  font-weight: bold;
+  text-align: center;
+}

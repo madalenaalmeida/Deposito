@@ -31,10 +31,12 @@
         </div>
     
         <!-- Header com imagem de fundo e texto centralizado -->
-        <header>
-          <h1>Guia de Tamanhos</h1>
-        </header>
-
+        <header class="main-header">
+            <div class="header-overlay">
+              <h1>Guia de Tamanhos</h1>
+            </div>
+          </header>
+          
 <div class="tabela-container">
   <h2>Camisas</h2>
   <img src="images/camisas.png" alt="Camisas">
@@ -196,7 +198,19 @@
       </tbody>
     </table>
   </div>
+  <script>
+    const menuBtn = document.getElementById('menu-btn');
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('overlay');
   
+    menuBtn.addEventListener('click', () => {
+      sidebar.classList.toggle('active');
+    });
+  
+    overlay.addEventListener('click', () => {
+      sidebar.classList.remove('active');
+    });
+  </script>
 
 </body>
 </html>
