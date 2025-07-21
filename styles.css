@@ -765,63 +765,50 @@ html, body {
   justify-content: center;
   text-align: center;
 }
-/* Removido margin do body */
+/* Estilos específicos para a página de tamanhos */
 body.tamanhos-page {
   font-family: Arial, sans-serif;
   background: #f7f7f7;
-  margin: 0;
 }
 
-/* Título dentro da imagem */
-.tamanhos-hero {
-  position: relative;
+body.tamanhos-page header {
+  color: white;
   text-align: center;
-  color: white;
 }
 
-.tamanhos-hero img {
-  width: 100%;
-  height: auto;
-  display: block;
+body.tamanhos-page h1, 
+body.tamanhos-page h2 {
+  color: #333;
 }
 
-.tamanhos-hero h1 {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  color: white;
-  font-size: 3em;
-  text-shadow: 2px 2px 5px rgba(0,0,0,0.6);
-}
-
-/* Tabelas */
-.tabela-container {
-  margin: 40px 20px;
+body.tamanhos-page .tabela-container {
+  margin: 20px auto;
+  max-width: 95%;
   background: white;
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 0 5px rgba(0,0,0,0.1);
 }
 
-.tabela-container img {
+body.tamanhos-page img {
   max-width: 300px;
   display: block;
   margin-bottom: 10px;
 }
 
-table {
+body.tamanhos-page table {
   border-collapse: collapse;
   width: 100%;
   margin-top: 10px;
 }
 
-th, td {
+body.tamanhos-page th,
+body.tamanhos-page td {
   border: 1px solid #ccc;
   padding: 8px;
   text-align: center;
 }
 
-th {
+body.tamanhos-page th {
   background-color: #eaeaea;
 }
