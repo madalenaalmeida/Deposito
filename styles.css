@@ -761,8 +761,6 @@ html, body {
 }
 .branch-tamanhos {
   background-color: #109f9a; /* ou qualquer outra cor */
-  display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
