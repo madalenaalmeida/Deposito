@@ -759,21 +759,6 @@ html, body {
   color: #003366;
   margin-bottom: 1rem;
 }
-.cartao-guia {
-  text-align: center;
-  border: 2px solid #ccc;
-  padding: 20px;
-  border-radius: 15px;
-  max-width: 10px;
-  margin: auto;
-  transition: 0.3s;
-}
-
-.cartao-guia:hover {
-  box-shadow: 0 0 10px rgba(0,0,0,0.2);
-}
-
-.cartao-guia img {
-  width: 80px;
-  margin-bottom: 10px;
+.branch-tamanhos {
+  background-color: #9e97cd; /* ou qualquer outra cor */
 }
