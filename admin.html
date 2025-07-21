@@ -56,8 +56,7 @@
   </table>
 
   <h2>Pedidos Agrupados por Ramo</h2>
-  <div id="groupedOrdersContainer">
-  </div>
+  <div id="groupedOrdersContainer"></div>
 
   <div class="buttons-container">
     <button onclick="exportarParaExcel('pedidosTabela', 'pedidos_ramos')">Exportar Pedidos por Ramo</button>
@@ -135,32 +134,22 @@ function updateOrdersTable() {
     `;
   });
 
-  gerarTabelaGeral(pedidos);
+  gerarTabelaGeral(pedidos); // Tabela por ramo com nomes
 }
 
 function gerarTabelaGeral(pedidos) {
   const container = document.getElementById('groupedOrdersContainer');
   container.innerHTML = '';
 
-  const agrupados = {};
+  const porRamo = {};
 
   pedidos.forEach(pedido => {
     const ramo = pedido.ramo || 'Desconhecido';
-    const key = `${pedido.produto}|${pedido.tamanho}`;
-
-    if (!agrupados[ramo]) agrupados[ramo] = {};
-    if (!agrupados[ramo][key]) {
-      agrupados[ramo][key] = {
-        produto: pedido.produto,
-        tamanho: pedido.tamanho,
-        quantidade: 0
-      };
-    }
-
-    agrupados[ramo][key].quantidade += Number(pedido.quantidade) || 0;
+    if (!porRamo[ramo]) porRamo[ramo] = [];
+    porRamo[ramo].push(pedido);
   });
 
-  for (const ramo in agrupados) {
+  for (const ramo in porRamo) {
     const titulo = document.createElement('h3');
     titulo.textContent = ramo;
     container.appendChild(titulo);
@@ -170,17 +159,21 @@ function gerarTabelaGeral(pedidos) {
     tabela.innerHTML = `
       <thead>
         <tr>
+          <th>Nome</th>
           <th>Produto</th>
           <th>Tamanho</th>
-          <th>Quantidade Total</th>
+          <th>Quantidade</th>
+          <th>Observações</th>
         </tr>
       </thead>
       <tbody>
-        ${Object.values(agrupados[ramo]).map(item => `
+        ${porRamo[ramo].map(item => `
           <tr>
+            <td>${item.nome}</td>
             <td>${item.produto}</td>
             <td>${item.tamanho}</td>
             <td>${item.quantidade}</td>
+            <td>${item.especialidade || ''}</td>
           </tr>
         `).join('')}
       </tbody>
@@ -223,4 +216,3 @@ window.onload = updateOrdersTable;
 </footer>
 </body>
 </html>
-
