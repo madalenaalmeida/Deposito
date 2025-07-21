@@ -764,7 +764,7 @@ html, body {
   border: 2px solid #ccc;
   padding: 20px;
   border-radius: 15px;
-  max-width: 300px;
+  max-width: 10px;
   margin: auto;
   transition: 0.3s;
 }
