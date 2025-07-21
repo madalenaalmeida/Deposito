@@ -765,45 +765,63 @@ html, body {
   justify-content: center;
   text-align: center;
 }
-/* Estilos para a página de Guias de Tamanhos */
+/* Removido margin do body */
 body.tamanhos-page {
   font-family: Arial, sans-serif;
-  margin: 20px;
   background: #f7f7f7;
+  margin: 0;
 }
 
-body.tamanhos-page h1,
-body.tamanhos-page h2 {
-  color: #333;
+/* Título dentro da imagem */
+.tamanhos-hero {
+  position: relative;
+  text-align: center;
+  color: white;
 }
 
-body.tamanhos-page .tabela-container {
-  margin-bottom: 50px;
+.tamanhos-hero img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.tamanhos-hero h1 {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 3em;
+  text-shadow: 2px 2px 5px rgba(0,0,0,0.6);
+}
+
+/* Tabelas */
+.tabela-container {
+  margin: 40px 20px;
   background: white;
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 0 5px rgba(0,0,0,0.1);
 }
 
-body.tamanhos-page img {
+.tabela-container img {
   max-width: 300px;
   display: block;
   margin-bottom: 10px;
 }
 
-body.tamanhos-page table {
+table {
   border-collapse: collapse;
   width: 100%;
   margin-top: 10px;
 }
 
-body.tamanhos-page th,
-body.tamanhos-page td {
+th, td {
   border: 1px solid #ccc;
   padding: 8px;
   text-align: center;
 }
 
-body.tamanhos-page th {
+th {
   background-color: #eaeaea;
 }
