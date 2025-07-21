@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Início</title>
+  <!-- Google Fonts: Poppins -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <!-- Font Awesome CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <!-- Navbar com botão para abrir o menu lateral -->
+    <nav>
+      <div class="menu-btn" id="menu-btn"><i class="fas fa-bars"></i></div>
+    </nav>
+
+    <!-- Menu lateral (Sidebar) -->
+    <div class="sidebar" id="sidebar">
+      <div class="overlay" id="overlay"></div>
+      <ul>
+        <li><a href="index.html">Início</a></li>
+        <li><a href="ramo-avezinha.html">Ramo Avezinha</a></li>
+        <li><a href="ramo-aventura.html">Ramo Aventura</a></li>
+        <li><a href="ramo-caravela.html">Ramo Caravela</a></li>
+        <li><a href="ramo-moinho.html">Ramo Moinho</a></li>
+        <li><a href="dirigentes.html">Dirigentes</a></li>
+        <li><a href="faq.html">Questões Frequentes</a></li>
+        <li><a href="login.html">Área Administrativa</a></li>
+      </ul>
+    </div>
+
+    <!-- Header com imagem de fundo e texto centralizado -->
+    <header>
+      <h1>Bem-vindo ao Depósito - Escolhe o teu ramo para começar!</h1>
+    </header>
+
+    <main>
+      <!-- Seção com caixas dos ramos -->
+      <section class="branches">
+        <div class="branches-container">
+          <a href="ramo-avezinha.html" class="branch-box branch-avezinha">
+            <i class="fas fa-dove"></i>
+            <p>Ramo Avezinha</p>
+          </a>
+          <a href="ramo-aventura.html" class="branch-box branch-aventura">
+            <i class="fas fa-compass"></i>
+            <p>Ramo Aventura</p>
+          </a>
+          <a href="ramo-caravela.html" class="branch-box branch-caravela">
+            <i class="fas fa-ship"></i>
+            <p>Ramo Caravela</p>
+          </a>
+          <a href="ramo-moinho.html" class="branch-box branch-moinho">
+            <i class="fas fa-wind"></i>
+            <p>Ramo Moinho</p>
+          </a>
+          <a href="dirigentes.html" class="branch-box branch-dirigentes">
+            <i class="fas fa-clover"></i>
+            <p>Dirigentes</p>
+          </a>
+        </div>
+      </section>
+      <!-- Seção de datas de encomenda -->
+<section class="order-dates">
+  <h2>Períodos de Encomenda</h2>
+  <div class="dates-container">
+    <div class="date-box">
+      <h3>Data de Início</h3>
+      <p id="start-date">Data não definida</p>
+    </div>
+    <div class="date-box">
+      <h3>Data de Fim</h3>
+      <p id="end-date">Data não definida</p>
+    </div>
+  </div>
+  <p>As encomendas podem ser feitas durante este período.</p>
+</section>
+
+      
+    </main>
+   
+
+    <!-- Script para alternar o menu lateral -->
+    <script>
+      const menuBtn = document.getElementById('menu-btn');
+      const sidebar = document.getElementById('sidebar');
+      
+      menuBtn.addEventListener('click', function() {
+        sidebar.classList.toggle('active');
+      });
+      
+
+    </script>
+    
+<script>
+  window.onload = function() {
+    // Recupera as datas do localStorage
+    const dataInicio = localStorage.getItem("dataInicio");
+    const dataFim = localStorage.getItem("dataFim");
+
+    // Exibe as datas nas áreas correspondentes
+    if (dataInicio) {
+      document.getElementById("start-date").textContent = new Date(dataInicio).toLocaleDateString('pt-PT');
+    } else {
+      document.getElementById("start-date").textContent = "Data não definida";
+    }
+
+    if (dataFim) {
+      document.getElementById("end-date").textContent = new Date(dataFim).toLocaleDateString('pt-PT');
+    } else {
+      document.getElementById("end-date").textContent = "Data não definida";
+    }
+  };
+</script>
+
+
+    <footer class="footer">
+      <div class="footer-content">
+        <p>&copy; 2025 Guias de Viseu - Depósito. Todos os direitos reservados.</p>
+        <div class="social-icons">
+          <a href="https://www.facebook.com" target="_blank"><i class="fab fa-facebook-f"></i></a>
+          <a href="https://www.instagram.com/guias.sjose" target="_blank"><i class="fab fa-instagram"></i></a>
+
+          <a href="mailto:exemplo@email.com"><i class="fas fa-envelope"></i></a>
+        </div>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>

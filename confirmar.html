@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Confirmar Pedido</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Menu lateral -->
+  <div class="sidebar">
+    <ul>
+      <li><a href="index.html">Início</a></li>
+      <li><a href="ramo-avezinha.html">Ramo Avezinha</a></li>
+      <li><a href="ramo-aventura.html">Ramo Aventura</a></li>
+      <li><a href="ramo-caravela.html">Ramo Caravela</a></li>
+      <li><a href="ramo-moinho.html">Ramo Moinho</a></li>
+      <li><a href="dirigentes.html">Dirigentes</a></li>
+    </ul>
+  </div>
+  
+  <header>
+    <h1>Confirmar Pedido</h1>
+  </header>
+
+  <main>
+    <!-- Modal de seleção de produto -->
+    <div id="modal" class="modal">
+      <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <h2>Selecionar Produto</h2>
+        <form id="order-form">
+          <label for="produto">Produto:</label>
+          <input type="text" id="produto" disabled>
+          
+          <label for="tamanho">Tamanho:</label>
+          <select id="tamanho">
+            <option value="P">Pequeno</option>
+            <option value="M">Médio</option>
+            <option value="G">Grande</option>
+          </select>
+          
+          <label for="quantidade">Quantidade:</label>
+          <input type="number" id="quantidade" min="1" value="1">
+          
+          <label for="nome-cliente">Nome:</label>
+          <input type="text" id="nome-cliente" required>
+          
+          <label for="email-cliente">Email:</label>
+          <input type="email" id="email-cliente" required>
+          
+          <button type="button" onclick="confirmarPedido()">Confirmar Pedido</button>
+        </form>
+      </div>
+    </div>
+
+    <section class="order-details">
+      <h2>Detalhes do Carrinho</h2>
+      <div id="cart-details"></div>
+      <button class="adicionar" data-produto="Ramo Avezinha - Camisola">Adicionar Camisola Avezinha</button>
+      <button class="adicionar" data-produto="Ramo Aventura - Camisola">Adicionar Camisola Aventura</button>
+      <button class="adicionar" data-produto="Ramo Caravela - Camisola">Adicionar Camisola Caravela</button>
+      <button class="adicionar" data-produto="Ramo Moinho - Camisola">Adicionar Camisola Moinho</button>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

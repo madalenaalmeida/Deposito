@@ -1,0 +1,366 @@
+
+/* Global */
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: #fafafa;
+  margin: 0;
+  padding: 0;
+}
+
+/* Navbar */
+nav {
+  background:  #003366;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  padding: 5px 10px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+/* Navbar padrão */
+nav {
+  padding: 15px;
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+/* Cores específicas para cada ramo */
+.ramo-avezinha nav {
+  background-color: #FFD700; /* Amarelo */
+}
+
+.ramo-aventura nav {
+  background-color: #008000; /* Verde */
+}
+
+.ramo-caravela nav {
+  background-color: #FF8C00; /* Laranja */
+}
+
+.ramo-moinho nav {
+  background-color: #0000FF; /* Azul */
+}
+
+.ramo-dirigentes nav {
+  background-color: #FF0000; /* Vermelho */
+}
+
+.menu-btn {
+  cursor: pointer;
+  color: #fff;
+  font-size: 24px;
+  padding: 5px;
+}
+
+/* Sidebar (menu lateral) */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: -250px; /* Escondida inicialmente */
+  width: 250px;
+  height: 100%;
+  background-color: #333;
+  transition: left 0.3s ease;
+  z-index: 999;
+  padding-top: 60px; /* Espaço para a navbar */
+}
+
+.sidebar.active {
+  left: 0;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar ul li {
+  border-bottom: 1px solid #444;
+}
+
+.sidebar ul li a {
+  display: block;
+  padding: 15px 20px;
+  color: #fff;
+  text-decoration: none;
+  transition: background-color 0.3s;
+}
+
+.sidebar ul li a:hover {
+  background-color: #444;
+}
+
+/* Header com imagem de fundo, overlay e título */
+header {
+  position: relative;
+  background: url('images/companhia.png') center/cover no-repeat; /* Altere para a imagem desejada */
+  height: 600px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 50px; /* Compensa a navbar fixa */
+  text-align: center;
+}
+
+header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.4); /* Overlay escuro para realçar o texto */
+}
+
+header h1 {
+  position: relative;
+  margin: 0;
+  font-size: 2.5rem;
+  color: #fff;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+}
+/* Estilo geral do header */
+header {
+  width: 100%;
+  height: 350px; /* Ajusta conforme necessário */
+  background-size: cover;
+  background-position: center;
+}
+
+/* Imagens específicas por ramo */
+.ramo-avezinha header {
+  background-image: url('images/IMG_6034.JPG');
+}
+
+.ramo-aventura header {
+  background-image: url('images/IMG_6052.JPG');
+}
+
+.ramo-caravela header {
+  background-image: url('images/IMG_6073.JPG');
+}
+
+.ramo-moinho header {
+  background-image: url('images/IMG_6039.JPG');
+}
+
+.ramo-dirigentes header {
+  background-image: url('images/IMG_5737.JPG');
+}
+
+
+/* Main content */
+main {
+  padding: 20px;
+}
+
+.admin-container {
+  max-width: 1200px;
+  margin: 20px auto;
+  background: #fff;
+  padding: 20px;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+}
+h1, h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+th, td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+th {
+  background-color: #f2f2f2;
+}
+.branch-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 30px;
+}
+.branch-table caption {
+  font-size: 1.2em;
+  font-weight: bold;
+  padding: 5px;
+  color: #000;
+}
+.branch-table th, .branch-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+.branch-table th {
+  background-color: #f2f2f2;
+}
+button {
+  padding: 10px 15px;
+  margin: 10px 5px;
+  border: none;
+  background-color: #007BFF;
+  color: #fff;
+  cursor: pointer;
+  border-radius: 4px;
+}
+button:hover {
+  background-color: #0056b3;
+}
+.buttons-container {
+  text-align: center;
+  margin-top: 20px;
+}
+/* Container para os botões e formulários de submissão */
+.formulario-submissao {
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+margin-top: 2rem;
+padding: 1rem;
+background-color: #f8f8f8;
+border-radius: 1rem;
+box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+width: 100%;
+max-width: 500px;
+margin-left: auto;
+margin-right: auto;
+}
+
+/* Estilo dos botões */
+.formulario-submissao button {
+background-color: #003366;
+color: white;
+padding: 0.8rem 1.5rem;
+border: none;
+border-radius: 0.5rem;
+font-size: 1rem;
+margin-top: 1rem;
+cursor: pointer;
+transition: background-color 0.3s;
+}
+
+.formulario-submissao button:hover {
+background-color: #00509e;
+}
+
+/* Formulário (inputs e selects) */
+.formulario-submissao input, .formulario-submissao select {
+width: 100%;
+padding: 0.8rem;
+margin-bottom: 1.2rem;
+border: 1px solid #e0e0e0;
+border-radius: 0.5rem;
+font-size: 1rem;
+box-sizing: border-box;
+}
+
+/* Rótulos para inputs */
+.formulario-submissao label {
+margin-bottom: 0.5rem;
+font-size: 1rem;
+color: #003366;
+text-align: left;
+width: 100%;
+font-weight: 500;
+}
+.footer {
+margin-top: auto; /* Empurra o rodapé para o fundo */
+background-color: #003366;
+color: white;
+padding: 20px 0;
+text-align: center;
+font-family: 'Poppins', sans-serif;
+}
+
+.footer-content {
+max-width: 1000px;
+margin: 0 auto;
+padding: 0 20px;
+}
+
+.footer p {
+margin-bottom: 10px;
+font-size: 14px;
+}
+
+.social-icons a {
+color: white;
+margin: 0 10px;
+font-size: 18px;
+transition: color 0.3s ease;
+}
+
+.social-icons a:hover {
+color: #ffcc00; /* Destaque ao passar o rato */
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+.dates-container {
+flex-direction: column;
+align-items: center;
+}
+
+.date-box {
+width: 80%;
+margin-bottom: 15px;
+}
+}
+.voltar-inicio {
+  display: inline-block;
+  font-size: 1.2rem;
+  color: #003366;
+  text-decoration: none;
+  margin-bottom: 1rem;
+  font-weight: bold;
+  transition: color 0.3s;
+}
+
+.voltar-inicio:hover {
+  color: #00509e;
+}
+/* Estilos da Navbar */
+.navbar {
+  background-color: #003366; /* Cor de fundo da navbar */
+  color: white;
+  padding: 15px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.navbar .voltar-inicio {
+  position: absolute;
+  left: 20px; /* Alinhar o ícone à esquerda */
+  color: white;
+  text-decoration: none;
+  font-size: 1.5rem;
+  transition: color 0.3s;
+}
+
+.navbar .voltar-inicio:hover {
+  color: #00509e;
+}
+
+.navbar .navbar-text {
+  font-size: 1.8rem;
+  font-weight: bold;
+  text-align: center;
+}
+
+/* Para ajustar a posição do ícone e o texto */
+.navbar a {
+  display: flex;
+  align-items: center;
+}
+
+.navbar i {
+  margin-right: 8px; /* Espaço entre o ícone e o texto */
+}

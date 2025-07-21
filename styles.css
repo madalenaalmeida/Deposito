@@ -1,0 +1,761 @@
+/* Global */
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #fafafa;
+    margin: 0;
+    padding: 0;
+  }
+  
+  /* Navbar */
+  nav {
+    background:  #003366;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    padding: 5px 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  }
+  /* Navbar padrão */
+nav {
+    padding: 15px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+  }
+  
+  /* Cores específicas para cada ramo */
+  .ramo-avezinha nav {
+    background-color: #FFD700; /* Amarelo */
+  }
+  
+  .ramo-aventura nav {
+    background-color: #008000; /* Verde */
+  }
+  
+  .ramo-caravela nav {
+    background-color: #FF8C00; /* Laranja */
+  }
+  
+  .ramo-moinho nav {
+    background-color: #104599; /* Azul */
+  }
+  
+  .dirigentes nav {
+    background-color: #921111; /* Vermelho */
+  }
+  
+  .menu-btn {
+    cursor: pointer;
+    color: #fff;
+    font-size: 24px;
+    padding: 5px;
+  }
+  
+  /* Sidebar (menu lateral) */
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: -250px; /* Escondida inicialmente */
+    width: 250px;
+    height: 100%;
+    background-color: #333;
+    transition: left 0.3s ease;
+    z-index: 999;
+    padding-top: 60px; /* Espaço para a navbar */
+  }
+  
+  .sidebar.active {
+    left: 0;
+  }
+  
+  .sidebar ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .sidebar ul li {
+    border-bottom: 1px solid #444;
+  }
+  
+  .sidebar ul li a {
+    display: block;
+    padding: 15px 20px;
+    color: #fff;
+    text-decoration: none;
+    transition: background-color 0.3s;
+  }
+  
+  .sidebar ul li a:hover {
+    background-color: #444;
+  }
+  
+  /* Header com imagem de fundo, overlay e título */
+  header {
+    position: relative;
+    background: url('images/companhia.png') center/cover no-repeat; /* Altere para a imagem desejada */
+    height: 600px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 50px; /* Compensa a navbar fixa */
+    text-align: center;
+  }
+  
+  header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.4); /* Overlay escuro para realçar o texto */
+  }
+  
+  header h1 {
+    position: relative;
+    margin: 0;
+    font-size: 2.5rem;
+    color: #fff;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+  }
+  /* Estilo geral do header */
+header {
+    width: 100%;
+    height: 350px; /* Ajusta conforme necessário */
+    background-size: cover;
+    background-position: center;
+  }
+  
+  /* Imagens específicas por ramo */
+  .ramo-avezinha header {
+    background-image: url('images/IMG_6034.JPG');
+  }
+  
+  .ramo-aventura header {
+    background-image: url('images/IMG_6052.JPG');
+  }
+  
+  .ramo-caravela header {
+    background-image: url('images/IMG_6073.JPG');
+  }
+  
+  .ramo-moinho header {
+    background-image: url('images/IMG_6039.JPG');
+  }
+  
+  .ramo-dirigentes header {
+    background-image: url('images/IMG_5737.JPG');
+  }
+  
+  
+  /* Main content */
+  main {
+    padding: 20px;
+  }
+  
+  /* Container das caixas dos ramos */
+  .branches-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    margin: 40px 0;
+  }
+  
+  .branch-box {
+    width: 200px;
+    height: 200px;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    transition: transform 0.3s;
+    text-decoration: none;
+    padding: 10px;
+    color: #fff;
+  }
+  
+  .branch-box:hover {
+    transform: scale(1.05);
+    cursor: pointer;
+  }
+  
+  /* Ícones */
+  .branch-box i {
+    font-size: 50px;
+    margin-bottom: 10px;
+  }
+  
+  /* Cores específicas para cada ramo */
+  .branch-avezinha {
+    background-color: #FFEB3B; /* Amarelo */
+  }
+  
+  .branch-aventura {
+    background-color: #8BC34A; /* Verde */
+  }
+  
+  .branch-caravela {
+    background-color: #FF9800; /* Laranja */
+  }
+  
+  .branch-moinho {
+    background-color: #2196F3; /* Azul */
+  }
+  
+  .branch-dirigentes {
+    background-color: #F44336; /* Vermelho */
+  }
+  
+  /* Seção de produtos */
+  .produtos {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 20px;
+  }
+  
+  .produto {
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    overflow: hidden;
+    width: 250px;
+    text-align: center;
+    background-color: #fff;
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  
+  .produto:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  }
+  
+  .produto img {
+    width: 100%;
+    height: 62%;
+    border-bottom: 1px solid #ccc;
+  }
+  
+  .produto h2 {
+    margin: 10px 0;
+    font-size: 1.2rem;
+    color: #333;
+  }
+  
+  .adicionar {
+    background-color: #333;
+    color: #fff;
+    border: none;
+    padding: 10px;
+    width: 100%;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+  }
+  
+  .adicionar:hover {
+    background-color: #555;
+    transform: scale(1.02);
+  }
+  
+  /* Botão fixo do carrinho - somente o ícone, sem fundo */
+  .cart-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: none;
+    color: #333;
+    border: none;
+    padding: 0;
+    font-size: 32px;
+    cursor: pointer;
+    z-index: 1100;
+  }
+  
+  
+  
+  /* Contador no carrinho */
+  #cart-count {
+    background-color: #fff700;
+    border-radius: 50%;
+    padding: 2px 6px;
+    font-size: 14px;
+    vertical-align: top;
+  }
+  
+  /* Modal para seleção de tamanho/quantidade e modal do carrinho */
+  .modal {
+    display: none; /* Oculto inicialmente */
+    position: fixed;
+    z-index: 1001;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+    animation: fadeIn 0.3s;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  .modal-content {
+    background-color: #fff;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 90%;
+    max-width: 400px;
+    border-radius: 10px;
+    position: relative;
+    animation: slideIn 0.3s;
+  }
+  
+  @keyframes slideIn {
+    from { transform: translateY(-20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+  
+  .modal-content h2 {
+    margin-top: 0;
+    font-size: 1.5rem;
+  }
+  
+  .modal-content .close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
+  .modal-content .close:hover,
+  .modal-content .close:focus {
+    color: black;
+    text-decoration: none;
+  }
+  
+  .modal-content form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .modal-content form label {
+    margin-top: 10px;
+    text-align: left;
+  }
+  
+  .modal-content form select,
+  .modal-content form input {
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .modal-content form button {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #007bff;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+  }
+  
+  .modal-content form button:hover {
+    background-color: #0056b3;
+  }
+  
+  /* Estilos para os botões no modal do carrinho */
+  /* Botão de remover: vermelho */
+  .cart-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 10px 0;
+  }
+  .cart-item button {
+    background-color: red;
+    color: #fff;
+    border: none;
+    padding: 5px 5px;
+    margin-top: 5px;
+    cursor: pointer;
+    border-radius: 5px;
+    /* Removido o efeito de hover para manter a cor sempre vermelha */
+  }
+  /* Botão de confirmar: verde */
+  #confirm-cart {
+    background-color: green;
+    color: #fff;
+    border: none;
+    padding: 10px;
+    width: 100%;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+  }
+  
+  #confirm-cart:hover {
+    background-color: darkgreen;
+  }
+  
+  /* Estilos específicos para páginas de ramos */
+  /* Exemplo: para o Ramo Avezinha, altera a cor da navbar */
+  .ramo-avezinha nav {
+    background-color: #FFEB3B; /* Amarelo para Avezinha */
+  }
+  
+
+/* Estilos para a página de login */
+
+  .login-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Garantir que a página ocupe toda a altura da tela */
+    background-color: #f2f2f2;
+  }
+  
+  .login-container {
+    background-color: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+  }
+  
+  h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  
+  label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+  
+  input[type="text"],
+  input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+  }
+  
+  button {
+    width: 100%;
+    padding: 12px;
+    background-color: red; /* Cor vermelha para o tema de "Dirigentes" */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: darkred;
+  }
+  .faq-container {
+
+    padding: 40px 30px;
+    max-width: 800px;
+    margin: 0 auto;
+    border-radius: 15px;
+  }
+  
+  main {
+    padding: 60px 20px;
+    background-color: #f4f6f9; /* corzinha clara para destacar o bloco branco */
+    min-height: 100vh;
+  }
+  
+  h1 {
+    text-align: center;
+    color: #003366;
+    margin-bottom: 40px;
+  }
+  
+  .faq-item {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    margin-bottom: 20px;
+  }
+  
+  .faq-item h3 {
+    margin-bottom: 10px;
+    color: #0055a5;
+    font-size: 1.2em;
+    text-align: center;
+  }
+  
+  .faq-item p {
+    margin: 0;
+    line-height: 1.6;
+    text-align: center;
+  }
+  
+  .back-link {
+    display: block;
+    text-align: center;
+    margin-top: 30px;
+    text-decoration: none;
+    font-weight: bold;
+    color: #003366;
+  }
+  /* Asegura que o corpo da página ocupe toda a altura da tela */
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+
+
+.footer {
+  margin-top: auto; /* Empurra o rodapé para o fundo */
+  background-color: #003366;
+  color: white;
+  padding: 20px 0;
+  text-align: center;
+  font-family: 'Poppins', sans-serif;
+}
+
+.footer-content {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.footer p {
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+.social-icons a {
+  color: white;
+  margin: 0 10px;
+  font-size: 18px;
+  transition: color 0.3s ease;
+}
+
+.social-icons a:hover {
+  color: #ffcc00; /* Destaque ao passar o rato */
+}
+  
+.recados-container {
+  max-width: 1200px;
+  margin: 80px auto;
+  padding: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.recado-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s;
+}
+
+.recado-card:hover {
+  transform: scale(1.02);
+}
+
+.recado-image {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+}
+
+.recado-content {
+  padding: 15px;
+  flex: 1;
+}
+
+.recado-title {
+  font-size: 1em;
+  font-weight: bold;
+  color: #003366;
+  margin-bottom: 10px;
+}
+
+.recado-texto {
+  font-size: 0.9em;
+  color: #333;
+  line-height: 1.4;
+  max-height: 60px;
+  overflow: hidden;
+}
+
+.ler-mais {
+  margin-top: auto;
+  text-align: right;
+  font-weight: bold;
+  color: #0055a5;
+  text-decoration: none;
+  padding: 10px 15px;
+  display: block;
+}
+
+/* Estilo para a seção de datas de encomenda */
+.order-dates {
+  background-color: #e4ebf4; /* Azul claro para contraste */
+  padding: 40px 20px;
+  margin-top: 30px; /* Distância entre os ramos e as datas */
+  text-align: center;
+  z-index: 1;
+  position: relative;
+  border-radius: 10px;
+  max-width: 70%; /* Limita a largura da caixinha */
+  margin-left: auto;
+  margin-right: auto;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Sombra para dar destaque */
+}
+
+.order-dates h2 {
+  font-size: 2rem;
+  color: #001e95; /* Cor laranja vibrante */
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+
+.dates-container {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  margin-bottom: 20px;
+}
+
+.date-box {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  width: 200px; /* Definir uma largura fixa para uniformizar */
+  transition: transform 0.3s ease-in-out; /* Adiciona um efeito de hover */
+}
+
+.date-box:hover {
+  transform: translateY(-5px); /* Eleva a caixa ao passar o mouse */
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); /* Efeito de sombra maior */
+}
+
+.date-box h3 {
+  font-size: 1.4rem;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.date-box p {
+  font-size: 1.2rem;
+  color: #555;
+}
+
+.order-dates p {
+  font-size: 1.1rem;
+  color: #666;
+  margin-top: 15px;
+  font-weight: 500;
+}
+
+.order-dates .date-box:nth-child(1) {
+  border-left: 5px solid #ffcc00; /* Amarelo para a data de início */
+}
+
+.order-dates .date-box:nth-child(2) {
+  border-left: 5px solid #28a745; /* Verde para a data de fim */
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .dates-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .date-box {
+    width: 80%;
+    margin-bottom: 15px;
+  }
+}
+
+.tabela-wrapper {
+  background-color: white;
+  border-radius: 1rem;
+  padding: 2rem;
+  margin: 2rem auto;
+  max-width: 1000px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.tabela-pedidos {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.95rem;
+}
+
+.tabela-pedidos thead {
+  background-color: #003366;
+  color: white;
+}
+
+.tabela-pedidos th,
+.tabela-pedidos td {
+  padding: 1rem;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+}
+
+.tabela-pedidos th:first-child,
+.tabela-pedidos td:first-child {
+  border-top-left-radius: 0.5rem;
+}
+
+.tabela-pedidos th:last-child,
+.tabela-pedidos td:last-child {
+  border-top-right-radius: 0.5rem;
+}
+
+.tabela-pedidos tbody tr:hover {
+  background-color: #f0f4f8;
+}
+
+/* Estilo para o container dos agrupados por ramo */
+#groupedOrdersContainer > div {
+  background-color: white;
+  border-radius: 1rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+}
+
+/* Título de cada grupo */
+#groupedOrdersContainer h3 {
+  color: #003366;
+  margin-bottom: 1rem;
+}

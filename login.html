@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Administrador</title>
+  <!-- Google Fonts: Poppins -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <!-- CSS Global -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="login-page">
+  <div class="login-container">
+    <h1>Login - Administrador</h1>
+    <form id="login-form" action="admin-dashboard.html" method="POST">
+      <label for="username">Nome de Usuário:</label>
+      <input type="text" id="username" name="username" required>
+
+      <label for="password">Senha:</label>
+      <input type="password" id="password" name="password" required>
+
+      <button type="submit">Entrar</button>
+    </form>
+  </div>
+
+  <!-- Scripts -->
+  <script>
+    // Simples validação de login (para fins de exemplo)
+    document.getElementById('login-form').addEventListener('submit', function(event) {
+      event.preventDefault();
+
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+
+      // Simulando autenticação (substitua com autenticação real no back-end)
+      if (username === 'admin' && password === 'guiasdeviseu') {
+        window.location.href = 'admin.html';  // Redireciona para a página do administrador
+      } else {
+        alert('Nome de usuário ou senha incorretos!');
+      }
+    });
+  </script>
+</body>
+</html>

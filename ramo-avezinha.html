@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ramo Avezinha</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* Exemplo básico de estilos para o modal (ajuste conforme seu CSS) */
+    .modal {
+      display: none; /* Escondido por padrão */
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.4);
+    }
+    .modal-content {
+      background-color: #fefefe;
+      margin: 10% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 80%;
+      max-width: 400px;
+    }
+    .close {
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body class="ramo-avezinha">
+  <!-- Navbar -->
+  <nav>
+    <div class="menu-btn" id="menu-btn"><i class="fas fa-bars"></i></div>
+  </nav>
+  
+  <!-- Sidebar -->
+  <div class="sidebar" id="sidebar">
+    <ul>
+      <li><a href="index.html">Início</a></li>
+      <li><a href="ramo-avezinha.html" class="active">Ramo Avezinha</a></li>
+      <li><a href="ramo-aventura.html">Ramo Aventura</a></li>
+      <li><a href="ramo-caravela.html">Ramo Caravela</a></li>
+      <li><a href="ramo-moinho.html">Ramo Moinho</a></li>
+      <li><a href="dirigentes.html">Dirigentes</a></li>
+      <li><a href="faq.html">Questões Frequentes</a></li>
+        <li><a href="login.html">Área Administrativa</a></li>
+    </ul>
+  </div>
+  
+  <!-- Header -->
+  <header>
+    <h1>Ramo Avezinha</h1>
+  </header>
+  
+  <!-- Seção de Produtos -->
+  <main>
+    <section class="produtos">
+      <!-- Exemplo de produto com tamanho e quantidade -->
+      <div class="produto">
+        <img src="images/tshirtaves.png" alt="T-Shirt Avezinhas">
+        <h2>T-Shirt Avezinhas</h2>
+        <p class="preco">8€</p>
+        <button class="adicionar" 
+                data-produto="T-Shirt Avezinhas" 
+                data-preco="8" 
+                data-options="tamanho,quantidade">
+          Adicionar ao Carrinho
+        </button>
+      </div>
+      <div class="produto">
+        <img src="images/tshirt trevo.png" alt="T-Shirt Trevo">
+        <h2>T-Shirt Trevo</h2>
+        <p class="preco">8€</p>
+        <button class="adicionar" 
+                data-produto="T-Shirt Trevo" 
+                data-preco="8"
+                data-options="tamanho,quantidade"
+                >Adicionar ao Carrinho</button>
+      </div>
+      <div class="produto">
+        <img src="images/guiasdeportugal.png" alt="T-Shirt Guias de Portugal">
+        <h2>T-Shirt Guias de Portugal</h2>
+        <p class="preco">7,5€</p>
+        <button class="adicionar" 
+                data-produto="T-Shirt Guias de Portugal" 
+                data-preco="7,5"
+                data-options="tamanho,quantidade">
+                Adicionar ao Carrinho</button>
+      </div>
+      <div class="produto">
+        <img src="images/serguia.png" alt="T-Shirt Ser Guia">
+        <h2>T-Shirt Ser Guia</h2>
+        <p class="preco">6€</p>
+        <button class="adicionar" 
+                data-produto="T-Shirt Ser Guia" 
+                data-preco="6" 
+                data-options="tamanho,quantidade">
+                Adicionar ao Carrinho</button>
+      </div>
+      <div class="produto">
+        <img src="images/sweat.png" alt="Sweat">
+        <h2>Sweat</h2>
+        <p class="preco">12€</p>
+        <button class="adicionar" 
+                data-produto="Sweat"
+                data-preco="12"
+                data-options="tamanho,quantidade">
+                Adicionar ao Carrinho</button>
+      </div>
+      <div class="produto">
+        <img src="images/CAMISOLALA.png" alt="Camisola de Lã">
+        <h2>Camisola de Lã</h2>
+        <p class="preco">23,5€</p>
+        <button class="adicionar"
+                data-produto="Camisola de Lã"
+                  data-preco="23,5" 
+                  data-options="tamanho,quantidade">
+                  Adicionar ao Carrinho</button>
+      </div>
+      <div class="produto">
+        <img src="images/casacopolar.png" alt="Casaco Polar">
+        <h2>Casaco Polar</h2>
+        <p class="preco">19,9€</p>
+        <button class="adicionar" 
+                data-produto="Casaco Polar"
+                data-preco="19,9" 
+                data-options="tamanho,quantidade">
+                Adicionar ao Carrinho</button>
+      </div>
+      <div class="produto">
+        <img src="images/camisa.png" alt="Camisa">
+        <h2>Camisa</h2>
+        <p class="preco">20€</p>
+        <button class="adicionar" 
+                data-produto="Camisa" 
+                data-preco="20"
+                data-options="tamanho,quantidade">
+                Adicionar ao Carrinho</button>
+      </div>
+      <div class="produto">
+        <img src="images/saia.png" alt="Saia">
+        <h2>Saia</h2>
+        <p class="preco">20€</p>
+        <button class="adicionar" 
+                data-produto="Saia" 
+                data-preco="20" 
+                data-options="tamanho,quantidade">
+                Adicionar ao Carrinho</button>
+      </div>
+      <div class="produto">
+        <img src="images/panama.png" alt="Panama">
+        <h2>Panamá</h2>
+        <p class="preco">9€</p>
+        <button class="adicionar" 
+                data-produto="Panama" 
+                data-preco="9" 
+                data-options="tamanho,quantidade">
+                  Adicionar ao Carrinho</button>
+      </div>
+      <div class="produto">
+        <img src="images/imprimiavel.png" alt="Casaco Impermeavel">
+        <h2>Casaco Impermeável</h2>
+        <p class="preco">19,5€</p>
+        <button class="adicionar" 
+                data-produto="Casaco Impermeavel" 
+                data-preco="19,5" 
+                data-options="tamanho,quantidade">
+                Adicionar ao Carrinho</button>
+      </div>
+      <div class="produto">
+        <img src="images/anilhaint.png" alt="Anilha Entrelacada">
+        <h2>Anilha Entrelaçada</h2>
+        <p class="preco">1€</p>
+        <button class="adicionar" 
+                data-produto="Anilha Entrelaçada" 
+                data-preco="1" 
+                data-options="quantidade">
+                  Adicionar ao Carrinho</button>
+      </div>
+      <div class="produto">
+        <img src="images/anilhatrevo.png" alt="Anilha do Trevo">
+        <h2>Anilha do Trevo</h2>
+        <p class="preco">1€</p>
+        <button class="adicionar" 
+                data-produto="Anilha do Trevo" 
+                data-preco="1" 
+                data-options="quantidade">
+                  Adicionar ao Carrinho</button>
+      </div>
+      <div class="produto">
+        <img src="images/anilhalinho.png" alt="Anilhas de Linho">
+        <h2>Anilhas de Linho</h2>
+        <p class="preco">2€ (Uni)</p>
+        <button class="adicionar"
+                data-produto="Anilhas de Linho"
+                  data-preco="2" 
+                  ata-options="quantidade">
+                  Adicionar ao Carrinho</button>
+      </div>
+      <div class="produto">
+        <img src="images/cinto.png" alt="Cinto">
+        <h2>Cinto</h2>
+        <p class="preco">6,5€</p>
+        <button class="adicionar" 
+        data-produto="Cinto" 
+        data-preco="6,5"
+        data-options="tamanho,quantidade">
+        Adicionar ao Carrinho</button>
+      </div>
+      <div class="produto">
+        <img src="images/pena.png" alt="Pena">
+        <h2>Pena</h2>
+        <p class="preco">2,3€</p>
+        <button class="adicionar" 
+                data-produto="Pena" 
+                data-preco="2,3" 
+                data-options="quantidade">
+                  Adicionar ao Carrinho</button>
+      </div>
+      <div class="produto">
+        <img src="images/fitaagp.png" alt="Fita AGP">
+        <h2>Fita AGP </h2>
+        <p class="preco">1,1€</p>
+        <button class="adicionar" 
+                data-produto="Fita AGP" 
+                data-preco="1,1" 
+                data-options="quantidade">
+                Adicionar ao Carrinho</button>
+      </div>
+      <div class="produto">
+        <img src="images/emblemaregiao.png" alt="Emblema Regiao">
+        <h2>Emblema Região </h2>
+        <p class="preco">1,5€</p>
+        <button class="adicionar" 
+                  data-produto="Emblema Regiao"
+                  data-preco="1,5"
+                    data-options="quantidade">
+                    Adicionar ao Carrinho</button>
+      </div>
+      <div class="produto">
+        <img src="images/fitacom.png" alt="Fita Companhia">
+        <h2>Fita Companhia </h2>
+        <p class="preco">1,1€</p>
+        <button class="adicionar" 
+                data-produto="Fita Companhia" 
+                data-preco="1,1" 
+                data-options="quantidade">
+                Adicionar ao Carrinho</button>
+      </div>
+      <div class="produto">
+        <img src="images/estrelas.png" alt="Estrelas Servico">
+        <h2>Estrelas de Serviço </h2>
+        <p class="preco">1,5€(Uni)</p>
+        <button class="adicionar" 
+                data-produto="Estrelas Servico" 
+                data-preco="1,5" 
+                data-options="quantidade,especialidade">
+                Adicionar ao Carrinho</button>
+      </div>
+      <div class="produto">
+        <img src="images/asas.png" alt="Asas">
+        <h2>Asas </h2>
+        <p class="preco">2€(Uni)</p>
+        <button class="adicionar" 
+                data-produto="Asas"
+                data-preco="2" 
+                data-options="quantidade,especialidade">
+                Adicionar ao Carrinho</button>
+      </div>
+      <div class="produto">
+        <img src="images/especialidades.png" alt="Especialidades">
+        <h2>Especialidades </h2>
+        <p class="preco">2€(Uni)</p>
+        <button class="adicionar" 
+                data-produto="Especialidades" 
+                data-preco="2" 
+                data-options="quantidade,especialidade">
+                Adicionar ao Carrinho</button>
+      </div>
+      <div class="produto">
+        <img src="images/noites.png" alt="Noites">
+        <h2>Noites de Campos </h2>
+        <p class="preco">1,5€(Uni)</p>
+        <button class="adicionar" 
+                data-produto="Noites" 
+                data-preco="1,5"
+                data-options="quantidade,especialidade">
+                Adicionar ao Carrinho</button>
+      </div>
+      <div class="produto">
+        <img src="images/cordoes.png" alt="Cordoes">
+        <h2>Cordões de Apito </h2>
+        <p class="preco">2,5€(Uni)</p>
+        <button class="adicionar" 
+                data-produto="Cordoes" 
+                data-preco="2,5"
+                data-options="quantidade,especialidade">
+                Adicionar ao Carrinho</button>
+      </div>
+      <!-- Adicione os demais produtos conforme necessário -->
+    </section>
+  </main>
+  
+  <!-- Botão Fixo do Carrinho -->
+  <button id="cart-btn" class="cart-btn">
+    <i class="fas fa-shopping-cart"></i>
+    <span id="cart-count">0</span>
+  </button>
+  
+  <!-- Modal para Seleção de Opções -->
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <span class="close" id="modal-close">&times;</span>
+      <h2>Selecione as opções</h2>
+      <form id="modal-form">
+        <!-- Campo de Tamanho (oculto por padrão) -->
+        <label for="tamanho" id="tamanho-label" style="display: none;">Tamanho:</label>
+        <select id="tamanho" name="tamanho" style="display: none;">
+          <option value="XS">XS(34)</option>
+          <option value="S">S(36)</option>
+          <option value="M">M(38)</option>
+          <option value="L">L(40)</option>
+          <option value="XL">XL(42)</option>
+          <option value="XXL">XXL(44)</option>
+        </select>
+        
+        <!-- Campo de Quantidade (oculto por padrão) -->
+        <label for="quantidade" id="quantidade-label" style="display: none;">Quantidade:</label>
+        <input type="number" id="quantidade" name="quantidade" min="1" value="1" style="display: none;">
+        
+        <!-- Campo de Especialidade (oculto por padrão) -->
+        <label for="especialidade" id="especialidade-label" style="display: none;">Especifique:</label>
+        <input type="text" id="especialidade" name="especialidade" placeholder="Especifique o produto!" style="display: none;">
+        
+        <button type="submit">Adicionar ao Carrinho</button>
+      </form>
+    </div>
+  </div>
+  
+  <!-- Modal do Carrinho -->
+  <div id="cart-modal" class="modal">
+    <div class="modal-content">
+      <span class="close" id="cart-modal-close">&times;</span>
+      <h2>Carrinho</h2>
+      <div id="cart-items"></div>
+      <button id="confirm-cart">Confirmar</button>
+    </div>
+  </div>
+  
+  <!-- Modal de Checkout -->
+  <div id="checkout-modal" class="modal">
+    <div class="modal-content">
+      <span class="close" id="checkout-close">&times;</span>
+      <h2>Finalize seu Pedido</h2>
+      <div id="checkout-summary"></div>
+      <form id="checkout-form">
+        <label for="nome-cliente">Nome:</label>
+        <input type="text" id="nome-cliente" name="nome-cliente" required>
+        
+        <label for="email-cliente">Email:</label>
+        <input type="email" id="email-cliente" name="email-cliente" required>
+        
+        <button type="submit">Confirmar Pedido</button>
+      </form>
+    </div>
+  </div>
+  
+  <!-- JavaScript -->
+  <script>
+    // Variáveis globais
+    let currentProduct = null;
+    let currentPrice = null;
+    let cart = [];
+    
+    // Elementos do DOM
+    const modal = document.getElementById('modal');
+    const modalClose = document.getElementById('modal-close');
+    const modalForm = document.getElementById('modal-form');
+    const cartCountSpan = document.getElementById('cart-count');
+    const cartBtn = document.getElementById('cart-btn');
+    const cartModal = document.getElementById('cart-modal');
+    const cartModalClose = document.getElementById('cart-modal-close');
+    const cartItemsDiv = document.getElementById('cart-items');
+    const confirmCartBtn = document.getElementById('confirm-cart');
+    const checkoutModal = document.getElementById('checkout-modal');
+    const checkoutClose = document.getElementById('checkout-close');
+    const checkoutForm = document.getElementById('checkout-form');
+    const checkoutSummaryDiv = document.getElementById('checkout-summary');
+    
+    // Seleção dos campos do modal
+    const tamanhoField = document.getElementById('tamanho');
+    const tamanhoLabel = document.getElementById('tamanho-label');
+    const quantidadeField = document.getElementById('quantidade');
+    const quantidadeLabel = document.getElementById('quantidade-label');
+    const especialidadeField = document.getElementById('especialidade');
+    const especialidadeLabel = document.getElementById('especialidade-label');
+    
+    // Menu lateral
+    const menuBtn = document.getElementById('menu-btn');
+    const sidebar = document.getElementById('sidebar');
+    menuBtn.addEventListener('click', () => {
+      sidebar.classList.toggle('active');
+    });
+    
+    // Ao clicar em um botão "Adicionar ao Carrinho"
+    const addButtons = document.querySelectorAll('.adicionar');
+    addButtons.forEach(button => {
+      button.addEventListener('click', function() {
+        currentProduct = this.dataset.produto;
+        currentPrice = this.dataset.preco;
+        // Lê as opções definidas no atributo data-options
+        const options = this.dataset.options
+          ? this.dataset.options.split(',').map(opt => opt.trim().toLowerCase())
+          : [];
+        // Seleciona o botão "X" de fechar o modal
+const modalClose = document.getElementById('modal-close');
+
+// Adiciona o event listener para fechar o modal quando o "X" for clicado
+modalClose.addEventListener('click', () => {
+  modal.style.display = 'none';
+});
+
+        // Configurar campo Tamanho
+        if (options.includes('tamanho')) {
+          tamanhoField.style.display = 'inline-block';
+          tamanhoLabel.style.display = 'block';
+          tamanhoField.value = 'S';
+        } else {
+          tamanhoField.style.display = 'none';
+          tamanhoLabel.style.display = 'none';
+          tamanhoField.value = '';
+        }
+        
+        // Configurar campo Quantidade
+        if (options.includes('quantidade')) {
+          quantidadeField.style.display = 'inline-block';
+          quantidadeLabel.style.display = 'block';
+          quantidadeField.value = 1;
+        } else {
+          quantidadeField.style.display = 'none';
+          quantidadeLabel.style.display = 'none';
+          quantidadeField.value = '';
+        }
+        
+        // Configurar campo Especialidade
+        if (options.includes('especialidade')) {
+          especialidadeField.style.display = 'inline-block';
+          especialidadeLabel.style.display = 'block';
+          especialidadeField.value = '';
+        } else {
+          especialidadeField.style.display = 'none';
+          especialidadeLabel.style.display = 'none';
+          especialidadeField.value = '';
+        }
+        
+        modal.style.display = 'block';
+      });
+    });
+    
+    // Fechar modal de seleção
+    modalClose.addEventListener('click', () => {
+      modal.style.display = 'none';
+    });
+    
+    // Processar formulário do modal para adicionar ao carrinho
+    modalForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+      
+      const tamanho = (tamanhoField.style.display !== 'none') ? tamanhoField.value : "";
+      const quantidade = (quantidadeField.style.display !== 'none') ? quantidadeField.value : "";
+      const especialidade = (especialidadeField.style.display !== 'none') ? especialidadeField.value : "";
+      
+      cart.push({ 
+        branch: 'Avezinhas', 
+        product: currentProduct, 
+        price: currentPrice,
+        size: tamanho, 
+        quantity: quantidade,
+        especialidade: especialidade
+      });
+      
+      updateCartCount();
+      alert(`Adicionado: ${currentProduct} ${quantidade ? '- Quantidade: ' + quantidade : ''}${tamanho ? ', Tamanho: ' + tamanho : ''}${especialidade ? ', Especialidade: ' + especialidade : ''}`);
+      modal.style.display = 'none';
+    });
+    
+    // Atualizar a contagem do carrinho
+    function updateCartCount() {
+      cartCountSpan.textContent = cart.length;
+    }
+    
+    // Abrir modal do carrinho
+    cartBtn.addEventListener('click', () => {
+      displayCartItems();
+      cartModal.style.display = 'block';
+    });
+    
+    // Fechar modal do carrinho
+    cartModalClose.addEventListener('click', () => {
+      cartModal.style.display = 'none';
+    });
+    
+    // Fechar modais ao clicar fora
+    window.addEventListener('click', (event) => {
+      if (event.target === modal) modal.style.display = 'none';
+      if (event.target === cartModal) cartModal.style.display = 'none';
+      if (event.target === checkoutModal) checkoutModal.style.display = 'none';
+    });
+    
+    // Exibir itens do carrinho no modal
+    function displayCartItems() {
+      cartItemsDiv.innerHTML = '';
+      if (cart.length === 0) {
+        cartItemsDiv.innerHTML = '<p>Carrinho vazio.</p>';
+      } else {
+        cart.forEach((item, index) => {
+          const itemDiv = document.createElement('div');
+          itemDiv.classList.add('cart-item');
+          let text = `${item.product}`;
+          if (item.quantity) { text += ` - Quantidade: ${item.quantity}`; }
+          if (item.size) { text += ` - Tamanho: ${item.size}`; }
+          if (item.especialidade) { text += ` - Especialidade: ${item.especialidade}`; }
+          text += ` - Preço: R$ ${item.price}`;
+          itemDiv.innerHTML = `<p>${text}</p>`;
+          
+          // Botão para remover item
+          const removeBtn = document.createElement('button');
+          removeBtn.textContent = 'Remover';
+          removeBtn.addEventListener('click', () => {
+            cart.splice(index, 1);
+            updateCartCount();
+            displayCartItems();
+          });
+          itemDiv.appendChild(removeBtn);
+          cartItemsDiv.appendChild(itemDiv);
+        });
+      }
+    }
+    
+    // Ao clicar em "Confirmar" no carrinho, abre o modal de checkout
+    confirmCartBtn.addEventListener('click', () => {
+      if (cart.length === 0) {
+        alert('Carrinho vazio!');
+      } else {
+        displayCheckoutSummary();
+        cartModal.style.display = 'none';
+        checkoutModal.style.display = 'block';
+      }
+    });
+    
+    // Montar resumo do pedido no modal de checkout
+    function displayCheckoutSummary() {
+      checkoutSummaryDiv.innerHTML = '';
+      if (cart.length === 0) {
+        checkoutSummaryDiv.innerHTML = '<p>Carrinho vazio.</p>';
+      } else {
+        cart.forEach(item => {
+          let text = `${item.product}`;
+          if (item.quantity) { text += ` - Quantidade: ${item.quantity}`; }
+          if (item.size) { text += ` - Tamanho: ${item.size}`; }
+          if (item.especialidade) { text += ` - Especialidade: ${item.especialidade}`; }
+          text += ` - Preço: R$ ${item.price}`;
+          checkoutSummaryDiv.innerHTML += `<p>${text}</p>`;
+        });
+      }
+    }
+    
+    // Processar formulário de checkout
+    checkoutForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+      
+      const nome = document.getElementById('nome-cliente').value;
+      const email = document.getElementById('email-cliente').value;
+      
+      const pedidos = cart.map(item => ({
+        ramo: item.branch,
+        produto: item.product,
+        tamanho: item.size,
+        quantidade: item.quantity,
+        preco: item.price,
+        especialidade: item.especialidade,
+        nome: nome,
+        email: email
+      }));
+      
+      const existingPedidos = JSON.parse(localStorage.getItem('pedidos')) || [];
+      const updatedPedidos = existingPedidos.concat(pedidos);
+      localStorage.setItem('pedidos', JSON.stringify(updatedPedidos));
+      
+      cart = [];
+      updateCartCount();
+      checkoutModal.style.display = 'none';
+      alert('Pedido confirmado com sucesso!');
+    });
+  </script>
+
+<footer class="footer">
+  <div class="footer-content">
+    <p>&copy; 2025 Guias de Viseu - Depósito. Todos os direitos reservados.</p>
+  </div>
+</footer>
+</body>
+</html>

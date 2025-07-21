@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FAQ - Perguntas Frequentes</title>
+  <!-- Google Fonts: Poppins -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <!-- Font Awesome CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+  
+</head>
+<body>
+  <!-- Navbar com botão para abrir o menu lateral -->
+  <nav>
+    <div class="menu-btn" id="menu-btn"><i class="fas fa-bars"></i></div>
+  </nav>
+
+  <!-- Menu lateral (Sidebar) -->
+  <div class="sidebar" id="sidebar">
+    <div class="overlay" id="overlay"></div>
+    <ul>
+      <li><a href="index.html">Início</a></li>
+      <li><a href="ramo-avezinha.html">Ramo Avezinha</a></li>
+      <li><a href="ramo-aventura.html">Ramo Aventura</a></li>
+      <li><a href="ramo-caravela.html">Ramo Caravela</a></li>
+      <li><a href="ramo-moinho.html">Ramo Moinho</a></li>
+      <li><a href="dirigentes.html">Dirigentes</a></li>
+      <li><a href="faq.html">Questões Frequentes</a></li>
+      <li><a href="login.html">Área Administrativa</a></li>
+    </ul>
+  </div>
+
+  <!-- Conteúdo principal -->
+     <!-- Header com imagem de fundo e texto centralizado -->
+  <header>
+    <h1>Perguntas Frequentes</h1>
+  </header>
+  <div class="faq-container">
+    <div class="faq-item">
+      <h3>🛍️ Como faço um pedido?</h3>
+      <p>Escolhe o teu ramo, seleciona os produtos desejados, indica o tamanho e quantidade, e preenche o teu nome e email.</p>
+    </div>
+
+    <div class="faq-item">
+      <h3>📬 Como sei que o meu pedido foi recebido?</h3>
+      <p>Vais receber uma mensagem de confirmação após submeteres o formulário. A chefe responsavél será notificada automaticamente.</p>
+    </div>
+
+    <div class="faq-item">
+      <h3>📦 Quando recebo os materiais?</h3>
+      <p>Assim os materiais cheguem do depósitos serão entregues durante as atividades.</p>
+    </div>
+
+    <div class="faq-item">
+      <h3>👕 Posso pedir para vários ramos?</h3>
+      <p>Sim! Deves aceder às páginas dos respetivos ramos e fazer os pedidos individualmente.</p>
+    </div>
+
+    <div class="faq-item">
+      <h3>✏️ O que faço se me enganar num pedido?</h3>
+      <p> Envia mensagem a tua dirigente para que o pedido errado seja cancelado e de seguida podes fazer um novo pedido. </p>
+    </div>
+
+    <a href="index.html" class="back-link">← Voltar à página inicial</a>
+  </main>
+
+  <!-- Script para alternar o menu lateral -->
+  <script>
+    const menuBtn = document.getElementById('menu-btn');
+    const sidebar = document.getElementById('sidebar');
+
+    menuBtn.addEventListener('click', function() {
+      sidebar.classList.toggle('active');
+    });
+  </script>
+</body>
+</html>
