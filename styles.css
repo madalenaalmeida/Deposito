@@ -812,3 +812,6 @@ body.tamanhos-page td {
 body.tamanhos-page th {
   background-color: #eaeaea;
 }
+body.tamanhos-page header h1 {
+  color: white;
+}
