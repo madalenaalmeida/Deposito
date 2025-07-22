@@ -570,7 +570,7 @@ modalClose.addEventListener('click', () => {
           if (item.quantity) { text += ` - Quantidade: ${item.quantity}`; }
           if (item.size) { text += ` - Tamanho: ${item.size}`; }
           if (item.especialidade) { text += ` - Especialidade: ${item.especialidade}`; }
-          text += ` - Preço: R$ ${item.price}`;
+          text += ` - Preço: € ${item.price}`;
           itemDiv.innerHTML = `<p>${text}</p>`;
           
           // Botão para remover item
@@ -609,7 +609,7 @@ modalClose.addEventListener('click', () => {
           if (item.quantity) { text += ` - Quantidade: ${item.quantity}`; }
           if (item.size) { text += ` - Tamanho: ${item.size}`; }
           if (item.especialidade) { text += ` - Especialidade: ${item.especialidade}`; }
-          text += ` - Preço: R$ ${item.price}`;
+          text += ` - Preço: € ${item.price}`;
           checkoutSummaryDiv.innerHTML += `<p>${text}</p>`;
         });
       }
