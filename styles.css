@@ -838,3 +838,21 @@ body.tamanhos-page header h1 {
   font-weight: bold;
   text-align: center;
 }
+.faq-icon {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  font-size: 28px;
+  color: #444;
+  background: white;
+  border-radius: 50%;
+  padding: 10px;
+  box-shadow: 0 0 8px rgba(0,0,0,0.2);
+  z-index: 999;
+  transition: transform 0.2s ease;
+}
+
+.faq-icon:hover {
+  transform: scale(1.1);
+  color: #000;
+}
