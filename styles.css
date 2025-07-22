@@ -838,3 +838,41 @@ body.tamanhos-page header h1 {
   font-weight: bold;
   text-align: center;
 }
+.dark-toggle {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  background: #fff;
+  color: #333;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  z-index: 9999;
+  border: none;
+  box-shadow: 0 0 5px rgba(0,0,0,0.2);
+  font-size: 14px;
+}
+
+body.dark-mode {
+  background-color: #121212;
+  color: #f1f1f1;
+}
+
+body.dark-mode header,
+body.dark-mode .tabela-container {
+  background-color: #1e1e1e;
+  color: white;
+  box-shadow: none;
+}
+
+body.dark-mode table {
+  background-color: #2c2c2c;
+}
+
+body.dark-mode th {
+  background-color: #3a3a3a;
+}
+
+body.dark-mode td {
+  background-color: #2c2c2c;
+}
