@@ -49,7 +49,7 @@ addButtons.forEach(button => {
     if (options.includes('tamanho')) {
       tamanhoField.style.display = 'inline-block';
       tamanhoLabel.style.display = 'block';
-      tamanhoField.value = 'P'; // Valor padrão
+      tamanhoField.value = 'P';
     } else {
       tamanhoField.style.display = 'none';
       tamanhoLabel.style.display = 'none';
@@ -60,7 +60,7 @@ addButtons.forEach(button => {
     if (options.includes('quantidade')) {
       quantidadeField.style.display = 'inline-block';
       quantidadeLabel.style.display = 'block';
-      quantidadeField.value = 1; // Valor padrão
+      quantidadeField.value = 1;
     } else {
       quantidadeField.style.display = 'none';
       quantidadeLabel.style.display = 'none';
@@ -91,12 +91,10 @@ modalClose.addEventListener('click', () => {
 modalForm.addEventListener('submit', (event) => {
   event.preventDefault();
   
-  // Coleta os valores dos campos somente se estiverem visíveis
   const tamanho = (tamanhoField.style.display !== 'none') ? tamanhoField.value : "";
   const quantidade = (quantidadeField.style.display !== 'none') ? quantidadeField.value : "";
   const especialidade = (especialidadeField.style.display !== 'none') ? especialidadeField.value : "";
   
-  // Adiciona o item ao carrinho com os dados coletados
   cart.push({ 
     branch: 'Avezinhas', 
     product: currentProduct, 
@@ -107,7 +105,7 @@ modalForm.addEventListener('submit', (event) => {
   });
   
   updateCartCount();
-  alert(`Adicionado: ${currentProduct} - ${quantidade ? quantidade + ' unidade(s)' : ''}${tamanho ? ', Tamanho: ' + tamanho : ''}${especialidade ? ', Especialidade: ' + especialidade : ''}`);
+  alert(`Adicionado: ${currentProduct} - ${quantidade ? quantidade + ' unidade(s)' : ''}${tamanho ? ', Tamanho: ' + tamanho : ''}${especialidade ? ', Especialidade: ' + especialidade : ''} - Preço: € ${currentPrice}`);
   
   modal.style.display = 'none';
 });
@@ -146,7 +144,6 @@ function displayCartItems() {
       itemDiv.classList.add('cart-item');
       let text = `${item.product} - ${item.quantity ? 'Quantidade: ' + item.quantity : ''}${item.size ? ' - Tamanho: ' + item.size : ''}${item.especialidade ? ' - Especialidade: ' + item.especialidade : ''} - Preço: € ${item.price}`;
       itemDiv.innerHTML = `<p>${text}</p>`;
-      // Botão para remover item do carrinho
       const removeBtn = document.createElement('button');
       removeBtn.textContent = 'Remover';
       removeBtn.addEventListener('click', () => {
@@ -160,7 +157,7 @@ function displayCartItems() {
   }
 }
 
-// Ao clicar em "Confirmar" no carrinho, abre o modal de checkout
+// Confirmar carrinho
 confirmCartBtn.addEventListener('click', () => {
   if (cart.length === 0) {
     alert('Carrinho vazio!');
@@ -171,7 +168,7 @@ confirmCartBtn.addEventListener('click', () => {
   }
 });
 
-// Montar resumo do pedido no modal de checkout
+// Montar resumo do checkout
 function displayCheckoutSummary() {
   checkoutSummaryDiv.innerHTML = '';
   if (cart.length === 0) {
@@ -184,14 +181,13 @@ function displayCheckoutSummary() {
   }
 }
 
-// Processar formulário de checkout
+// Submeter pedido
 checkoutForm.addEventListener('submit', (event) => {
   event.preventDefault();
   
   const nome = document.getElementById('nome-cliente').value;
   const email = document.getElementById('email-cliente').value;
   
-  // Criar array de pedidos
   const pedidos = cart.map(item => ({
     ramo: item.branch,
     produto: item.product,
@@ -203,36 +199,29 @@ checkoutForm.addEventListener('submit', (event) => {
     email: email
   }));
   
-  // Salvar pedidos no localStorage
   const existingPedidos = JSON.parse(localStorage.getItem('pedidos')) || [];
   const updatedPedidos = existingPedidos.concat(pedidos);
   localStorage.setItem('pedidos', JSON.stringify(updatedPedidos));
   
-  // Limpar carrinho e fechar modal
   cart = [];
   updateCartCount();
   checkoutModal.style.display = 'none';
   alert('Pedido confirmado com sucesso!');
 });
-// Função para salvar as datas de encomenda
+
+// Salvar datas
 function salvarDatas() {
   const dataInicio = document.getElementById('data-inicio').value;
   const dataFim = document.getElementById('data-fim').value;
 
-  // Verificar se as datas estão válidas
   if (!dataInicio || !dataFim) {
     alert("Por favor, preencha ambas as datas.");
     return;
   }
 
-  // Salvar as datas no localStorage (ou em outro banco de dados)
   localStorage.setItem("dataInicio", dataInicio);
   localStorage.setItem("dataFim", dataFim);
 
-  // Avisar o administrador que as datas foram salvas
   alert("Datas salvas com sucesso!");
-
-  // Atualizar a interface ou realizar outras ações necessárias
   atualizarDatasNaTela();
 }
-
