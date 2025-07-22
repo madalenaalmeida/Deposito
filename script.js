@@ -144,7 +144,7 @@ function displayCartItems() {
     cart.forEach((item, index) => {
       const itemDiv = document.createElement('div');
       itemDiv.classList.add('cart-item');
-      let text = `${item.product} - ${item.quantity ? 'Quantidade: ' + item.quantity : ''}${item.size ? ' - Tamanho: ' + item.size : ''}${item.especialidade ? ' - Especialidade: ' + item.especialidade : ''} - Preço: R$ ${item.price}`;
+      let text = `${item.product} - ${item.quantity ? 'Quantidade: ' + item.quantity : ''}${item.size ? ' - Tamanho: ' + item.size : ''}${item.especialidade ? ' - Especialidade: ' + item.especialidade : ''} - Preço: € ${item.price}`;
       itemDiv.innerHTML = `<p>${text}</p>`;
       // Botão para remover item do carrinho
       const removeBtn = document.createElement('button');
@@ -178,7 +178,7 @@ function displayCheckoutSummary() {
     checkoutSummaryDiv.innerHTML = '<p>Carrinho vazio.</p>';
   } else {
     cart.forEach(item => {
-      let text = `${item.product} - ${item.quantity ? 'Quantidade: ' + item.quantity : ''}${item.size ? ' - Tamanho: ' + item.size : ''}${item.especialidade ? ' - Especialidade: ' + item.especialidade : ''} - Preço: R$ ${item.price}`;
+      let text = `${item.product} - ${item.quantity ? 'Quantidade: ' + item.quantity : ''}${item.size ? ' - Tamanho: ' + item.size : ''}${item.especialidade ? ' - Especialidade: ' + item.especialidade : ''} - Preço: € ${item.price}`;
       checkoutSummaryDiv.innerHTML += `<p>${text}</p>`;
     });
   }
