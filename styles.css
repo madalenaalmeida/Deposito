@@ -818,7 +818,7 @@ body.tamanhos-page header h1 {
 /* Header com imagem de fundo e texto central */
 .main-header {
   position: relative;
-  background-image: url('images/banner.jpg'); /* usa o mesmo fundo da página principal */
+  background-image: url('images/companhia.png'); /* usa o mesmo fundo da página principal */
   background-size: cover;
   background-position: center;
   height: 300px;
