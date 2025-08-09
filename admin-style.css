@@ -364,3 +364,57 @@ margin-bottom: 15px;
 .navbar i {
   margin-right: 8px; /* Espaço entre o ícone e o texto */
 }
+
+/* Ajustes para a página admin */
+.admin-content {
+  max-width: 1200px;
+  margin: 20px auto;
+  padding: 15px;
+}
+
+#admin-detalhados, 
+#admin-por-ramo, 
+#admin-por-ramo-detalhes {
+  margin-bottom: 40px;
+}
+
+.table-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 10px 0;
+}
+
+.table-actions button {
+  background-color: #003366;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-size: 0.95rem;
+}
+
+.table-actions button:hover {
+  background-color: #00509e;
+}
+
+table {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+table th {
+  background-color: #003366;
+  color: white;
+  text-align: center;
+}
+
+table td {
+  background-color: #fff;
+}
+
+.ramo-title {
+  font-size: 1.4rem;
+  font-weight: bold;
+  margin-top: 20px;
+  margin-bottom: 8px;
+  color: #003366;
+}
