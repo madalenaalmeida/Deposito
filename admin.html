@@ -4,15 +4,17 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Painel de Administração</title>
-  <!-- Mantém o teu CSS ORIGINAL (não alterei nada) -->
-  <link rel="stylesheet" href="admin.css">
-  <!-- (Opcional) XLSX para exportação .xlsx; se não quiseres, podes remover e ficas com CSV -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <!-- Carrega o CSS global e o admin.css (sem alterações) -->
   <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="admin-style.css">
+  <link rel="stylesheet" href="admin.css">
+  <!-- (Opcional) XLSX para exportar .xlsx -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-  <!-- Cabeçalho/toolbar do teu admin (mantém o estilo do teu admin.css) -->
+
+  <!-- Navbar: cópia do padrão usado nas páginas dos ramos (ajusta links se necessário) -->
   <nav class="navbar">
     <a href="index.html" class="logo">
       <img src="images/guiasdeportugal.png" alt="Guias de Viseu">
@@ -28,7 +30,7 @@
   </nav>
 
   <main class="admin-content">
-    <!-- Filtros (data) -->
+    <!-- Filtros -->
     <section id="admin-filtros" class="controls">
       <label>De <input type="date" id="filtro-inicio"></label>
       <label>Até <input type="date" id="filtro-fim"></label>
@@ -37,9 +39,13 @@
       <span id="admin-resumo"></span>
     </section>
 
-    <!-- Tabelas geradas dinamicamente: mantêm-se dentro de <main> para herdar o teu CSS -->
+    <!-- Tabelas -->
     <section id="admin-detalhados">
       <h2>Pedidos detalhados (todos)</h2>
+      <div class="table-actions" style="display:flex;gap:8px;flex-wrap:wrap;margin:6px 0;">
+        <button type="button" id="exp-detalhados-csv" style="display:inline-block;width:auto;">Exportar CSV</button>
+        <button type="button" id="exp-detalhados-xlsx" style="display:inline-block;width:auto;">Exportar Excel</button>
+      </div>
       <table id="admin-detalhados-table">
         <thead>
           <tr>
@@ -52,6 +58,10 @@
 
     <section id="admin-por-ramo">
       <h2>Pedidos por ramo (agregado)</h2>
+      <div class="table-actions" style="display:flex;gap:8px;flex-wrap:wrap;margin:6px 0;">
+        <button type="button" id="exp-porramo-csv" style="display:inline-block;width:auto;">Exportar CSV</button>
+        <button type="button" id="exp-porramo-xlsx" style="display:inline-block;width:auto;">Exportar Excel</button>
+      </div>
       <table id="admin-por-ramo-table">
         <thead>
           <tr>
@@ -64,13 +74,23 @@
 
     <section id="admin-por-ramo-detalhes">
       <h2>Por ramo — detalhes</h2>
-      <!-- Aqui serão inseridas as tabelas de cada ramo -->
+      <!-- ações e tabelas vão sendo geradas por JS para cada ramo -->
     </section>
   </main>
 
-  <!-- ===================== LÓGICA DO ADMIN (EMBUTIDA) ===================== -->
+  <!-- Toggle simples do menu mobile (não traz lógica do carrinho) -->
   <script>
-  // ===== Helpers =====
+    const menuBtn = document.getElementById('menu-btn');
+    const nav = document.querySelector('.navbar');
+    if (menuBtn && nav) {
+      menuBtn.addEventListener('click', () => {
+        nav.classList.toggle('active');
+      });
+    }
+  </script>
+
+  <!-- Lógica Admin -->
+  <script>
   const parseMaybeNumber = (v) => {
     if (typeof v === 'number') return v;
     if (v == null) return 0;
@@ -78,8 +98,6 @@
     return isNaN(n) ? 0 : n;
   };
   const money = (n) => (Math.round(n*100)/100).toFixed(2).replace('.', ',') + '€';
-
-  // Normaliza chaves PT/EN vindas do localStorage.pedidos
   const norm = (p) => ({
     nome: p.nome || p.name || '',
     email: p.email || '',
@@ -91,14 +109,10 @@
     total: parseMaybeNumber(p.preco != null ? p.preco : p.price) * parseMaybeNumber(p.quantidade != null ? p.quantidade : p.quantity),
     data: p.data || p.timestamp || ''
   });
-
   const getPedidos = () => {
-    try {
-      const arr = JSON.parse(localStorage.getItem('pedidos')) || [];
-      return Array.isArray(arr) ? arr.map(norm) : [];
-    } catch(e) { return []; }
+    try { const arr = JSON.parse(localStorage.getItem('pedidos')) || []; return Array.isArray(arr)?arr.map(norm):[]; }
+    catch(e){ return []; }
   };
-
   const filtrarPorData = (arr, ini, fim) => {
     if (!ini && !fim) return arr;
     const i = ini ? new Date(ini) : null;
@@ -111,7 +125,6 @@
       return true;
     });
   };
-
   const agrupar = (arr, keyFn) => {
     const map = new Map();
     for (const p of arr) {
@@ -123,8 +136,46 @@
     }
     return Array.from(map.entries()).map(([key, v]) => ({ key, ...v }));
   };
+  function toCSV(table){
+    const rows = Array.from(table.querySelectorAll('tr')).map(tr =>
+      Array.from(tr.querySelectorAll('th,td')).map(td => {
+        let txt = (td.innerText||'').replace(/\r?\n|\r/g, ' ').trim();
+        if (/[",;\n]/.test(txt)) txt = '"' + txt.replace(/"/g, '""') + '"';
+        return txt;
+      }).join(';')
+    );
+    return rows.join('\n');
+  }
+  function downloadBlob(content, filename, mime){
+    const blob = new Blob([content], {type: mime});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(()=>{ URL.revokeObjectURL(url); a.remove(); }, 0);
+  }
+  function exportCSV(table, title){
+    const name = (title||'tabela').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'') + '_' + new Date().toISOString().slice(0,10) + '.csv';
+    downloadBlob(toCSV(table), name, 'text/csv;charset=utf-8;');
+  }
+  function exportXLSX(table, title){
+    if (typeof XLSX === 'undefined' || !XLSX?.utils?.table_to_book) {
+      alert('Para exportar em Excel (.xlsx), mantém a biblioteca XLSX incluída no <head>.');
+      return;
+    }
+    const wb = XLSX.utils.table_to_book(table, {sheet: (title||'TABELA').slice(0,31)});
+    const name = (title||'tabela').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'') + '_' + new Date().toISOString().slice(0,10) + '.xlsx';
+    XLSX.writeFile(wb, name);
+  }
 
-  // ===== Render Principal =====
+  function bindExports(sectionId, tableId, titleText){
+    const tbl = document.getElementById(tableId);
+    document.getElementById(sectionId).querySelector('#exp-'+sectionId.split('admin-')[1]+'-csv')?.addEventListener('click', ()=> exportCSV(tbl, titleText));
+    document.getElementById(sectionId).querySelector('#exp-'+sectionId.split('admin-')[1]+'-xlsx')?.addEventListener('click', ()=> exportXLSX(tbl, titleText));
+  }
+
   function render(){
     const ini = document.getElementById('filtro-inicio')?.value || '';
     const fim = document.getElementById('filtro-fim')?.value || '';
@@ -136,7 +187,7 @@
     const resumo = document.getElementById('admin-resumo');
     if (resumo) resumo.innerHTML = `<b>${pedidos.length}</b> registos | Qtde: <b>${totalQtd}</b> | Valor: <b>${money(totalVal)}</b>`;
 
-    // 1) Detalhados (todos)
+    // 1) Detalhados
     const tbDetalhe = document.querySelector('#admin-detalhados-table tbody');
     tbDetalhe.innerHTML = '';
     pedidos.forEach(p => {
@@ -174,7 +225,6 @@
 
     // 3) Uma tabela por ramo (detalhada)
     const secRamos = document.getElementById('admin-por-ramo-detalhes');
-    // limpa tabelas antigas (mas mantém o <h2> da secção)
     Array.from(secRamos.querySelectorAll('table, .ramo-title')).forEach(n => n.remove());
     const rams = Array.from(new Set(pedidos.map(p => p.ramo))).filter(Boolean);
     rams.forEach(ramo => {
@@ -182,12 +232,23 @@
       h.className = 'ramo-title';
       h.textContent = ramo;
       secRamos.appendChild(h);
+
+      // Barra de ações por ramo (inline styles para não depender de CSS)
+      const bar = document.createElement('div');
+      bar.className = 'table-actions';
+      bar.style.cssText = 'display:flex;gap:8px;flex-wrap:wrap;margin:6px 0;';
+      const b1 = document.createElement('button'); b1.type='button'; b1.textContent='Exportar CSV'; b1.style.cssText='display:inline-block;width:auto;';
+      const b2 = document.createElement('button'); b2.type='button'; b2.textContent='Exportar Excel'; b2.style.cssText='display:inline-block;width:auto;';
+      bar.appendChild(b1); bar.appendChild(b2);
+      secRamos.appendChild(bar);
+
       const tbl = document.createElement('table');
       tbl.innerHTML = `<thead><tr>
         <th>Nome</th><th>Email</th><th>Produto</th><th>Tamanho</th><th>Qtd</th><th>Preço unit.</th><th>Total</th><th>Data</th>
       </tr></thead><tbody></tbody>`;
       const tb = tbl.querySelector('tbody');
-      pedidos.filter(p=>p.ramo===ramo).forEach(p => {
+      const lista = pedidos.filter(p=>p.ramo===ramo);
+      lista.forEach(p => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
           <td>${p.nome}</td>
@@ -202,7 +263,15 @@
         tb.appendChild(tr);
       });
       secRamos.appendChild(tbl);
+
+      // bind export para cada tabela por ramo
+      b1.addEventListener('click', ()=> exportCSV(tbl, 'Pedidos '+ramo));
+      b2.addEventListener('click', ()=> exportXLSX(tbl, 'Pedidos '+ramo));
     });
+
+    // ligar botões de export das duas primeiras tabelas
+    bindExports('admin-detalhados','admin-detalhados-table','Pedidos detalhados');
+    bindExports('admin-por-ramo','admin-por-ramo-table','Pedidos por ramo (agregado)');
   }
 
   document.getElementById('aplicar-filtro').addEventListener('click', render);
@@ -211,101 +280,9 @@
     document.getElementById('filtro-fim').value = '';
     render();
   });
-
   window.addEventListener('storage', render);
   window.addEventListener('load', render);
   </script>
 
-  <!-- ===================== EXPORTAÇÃO (CSV / XLSX) — EMBUTIDO ===================== -->
-  <script>
-  (function(){
-    function slugify(s){
-      return (s||'tabela')
-        .toString()
-        .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g,'-')
-        .replace(/(^-|-$)/g,'');
-    }
-    function toCSV(table){
-      const rows = Array.from(table.querySelectorAll('tr')).map(tr =>
-        Array.from(tr.querySelectorAll('th,td')).map(td => {
-          let txt = (td.innerText||'').replace(/\r?\n|\r/g, ' ').trim();
-          if (/[",;\n]/.test(txt)) txt = '"' + txt.replace(/"/g, '""') + '"';
-          return txt;
-        }).join(';')
-      );
-      return rows.join('\n');
-    }
-    function downloadBlob(content, filename, mime){
-      const blob = new Blob([content], {type: mime});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      setTimeout(()=>{
-        URL.revokeObjectURL(url);
-        a.remove();
-      }, 0);
-    }
-    function exportCSV(table){
-      const title = table.closest('section')?.querySelector('h2')?.innerText || table.getAttribute('id') || 'tabela';
-      const name = slugify(title) + '_' + new Date().toISOString().slice(0,10) + '.csv';
-      downloadBlob(toCSV(table), name, 'text/csv;charset=utf-8;');
-    }
-    function exportXLSX(table){
-      if (typeof XLSX === 'undefined' || !XLSX?.utils?.table_to_book) {
-        alert('Para exportar em Excel (.xlsx), a biblioteca XLSX já está incluída no <head>. Se removeres essa linha, usa o CSV.');
-        return;
-      }
-      const title = table.closest('section')?.querySelector('h2')?.innerText || table.getAttribute('id') || 'tabela';
-      const wb = XLSX.utils.table_to_book(table, {sheet: title.slice(0,31)});
-      const name = slugify(title) + '_' + new Date().toISOString().slice(0,10) + '.xlsx';
-      XLSX.writeFile(wb, name);
-    }
-    function addButtons(table){
-      if (table.dataset.exportBound === '1') return;
-      table.dataset.exportBound = '1';
-      const wrap = document.createElement('div');
-      wrap.style.margin = '6px 0';
-      const btnCSV = document.createElement('button');
-      btnCSV.type = 'button';
-      btnCSV.textContent = 'Exportar CSV';
-      btnCSV.addEventListener('click', ()=>exportCSV(table));
-      const btnXLSX = document.createElement('button');
-      btnXLSX.type = 'button';
-      btnXLSX.textContent = 'Exportar Excel';
-      btnXLSX.style.marginLeft = '6px';
-      btnXLSX.addEventListener('click', ()=>exportXLSX(table));
-      wrap.appendChild(btnCSV);
-      wrap.appendChild(btnXLSX);
-      table.parentNode.insertBefore(wrap, table);
-    }
-    function init(){
-      const main = document.querySelector('main') || document.body;
-      const tables = main.querySelectorAll('table');
-      tables.forEach(addButtons);
-    }
-    window.addEventListener('load', init);
-    const mo = new MutationObserver(() => {
-      const main = document.querySelector('main') || document.body;
-      const tables = main.querySelectorAll('table');
-      tables.forEach(addButtons);
-    });
-    mo.observe(document.documentElement, {childList:true, subtree:true});
-  })();
-  </script>
-  <script>
-    // Toggle simples do menu (compatível com a tua navbar)
-    const menuBtn = document.getElementById('menu-btn');
-    const nav = document.querySelector('.navbar');
-    if (menuBtn && nav) {
-      menuBtn.addEventListener('click', () => {
-        nav.classList.toggle('active');
-      });
-    }
-  </script>
 </body>
 </html>
