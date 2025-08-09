@@ -4,33 +4,47 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Painel de Administração</title>
-  <!-- Carrega o CSS global e o admin.css (sem alterações) -->
+
+  <!-- estilos -->
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="admin-style.css">
+  <!-- ícones (opcional para a seta de voltar) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <!-- XLSX (opcional para exportar Excel .xlsx) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
 <body>
 
-  <div class="container">
-   <!-- Navbar igual às restantes páginas -->
-<div class="navbar">
-  <a href="index.html" class="voltar-inicio">
-    <i class="fas fa-arrow-left"></i>
-  </a>
-  <span class="navbar-text">Painel de Administração</span>
-</div>
- 
+  <!-- Navbar igual ao site -->
+  <nav class="navbar">
+    <a href="index.html" class="voltar-inicio"><i class="fas fa-arrow-left"></i></a>
+    <span class="navbar-text">Painel de Administração</span>
+  </nav>
+
+  <!-- CONTEÚDO -->
+  <main class="admin-content">
+
+    <!-- Filtros -->
+    <section id="admin-filtros" class="controls">
+      <label>De <input type="date" id="filtro-inicio"></label>
+      <label>Até <input type="date" id="filtro-fim"></label>
+      <button id="aplicar-filtro" type="button">Aplicar filtro</button>
+      <button id="limpar-filtro" type="button">Limpar</button>
+      <span id="admin-resumo"></span>
+    </section>
 
     <!-- Tabelas -->
     <section id="admin-detalhados">
       <h2>Pedidos detalhados (todos)</h2>
-      <div class="table-actions" style="display:flex;gap:8px;flex-wrap:wrap;margin:6px 0;">
-        <button type="button" id="exp-detalhados-csv" style="display:inline-block;width:auto;">Exportar CSV</button>
-        <button type="button" id="exp-detalhados-xlsx" style="display:inline-block;width:auto;">Exportar Excel</button>
+      <div class="table-actions">
+        <button type="button" id="exp-detalhados-csv">Exportar CSV</button>
+        <button type="button" id="exp-detalhados-xlsx">Exportar Excel</button>
       </div>
       <table id="admin-detalhados-table">
         <thead>
           <tr>
-            <th>Nome</th><th>Email</th><th>Ramo</th><th>Produto</th><th>Tamanho</th><th>Qtd</th><th>Preço unit.</th><th>Total</th><th>Data</th>
+            <th>Nome</th><th>Email</th><th>Ramo</th><th>Produto</th>
+            <th>Tamanho</th><th>Qtd</th><th>Preço unit.</th><th>Total</th><th>Data</th>
           </tr>
         </thead>
         <tbody></tbody>
@@ -39,9 +53,9 @@
 
     <section id="admin-por-ramo">
       <h2>Pedidos por ramo (agregado)</h2>
-      <div class="table-actions" style="display:flex;gap:8px;flex-wrap:wrap;margin:6px 0;">
-        <button type="button" id="exp-porramo-csv" style="display:inline-block;width:auto;">Exportar CSV</button>
-        <button type="button" id="exp-porramo-xlsx" style="display:inline-block;width:auto;">Exportar Excel</button>
+      <div class="table-actions">
+        <button type="button" id="exp-porramo-csv">Exportar CSV</button>
+        <button type="button" id="exp-porramo-xlsx">Exportar Excel</button>
       </div>
       <table id="admin-por-ramo-table">
         <thead>
@@ -55,28 +69,10 @@
 
     <section id="admin-por-ramo-detalhes">
       <h2>Por ramo — detalhes</h2>
-      <!-- ações e tabelas vão sendo geradas por JS para cada ramo -->
+      <!-- tabelas por ramo são geradas via JS -->
     </section>
+
   </main>
-  <main class="admin-content">
-    <!-- Filtros -->
-    <section id="admin-filtros" class="controls">
-      <label>De <input type="date" id="filtro-inicio"></label>
-      <label>Até <input type="date" id="filtro-fim"></label>
-      <button id="aplicar-filtro" type="button">Aplicar filtro</button>
-      <button id="limpar-filtro" type="button">Limpar</button>
-      <span id="admin-resumo"></span>
-    </section>
-  <!-- Toggle simples do menu mobile (não traz lógica do carrinho) -->
-  <script>
-    const menuBtn = document.getElementById('menu-btn');
-    const nav = document.querySelector('.navbar');
-    if (menuBtn && nav) {
-      menuBtn.addEventListener('click', () => {
-        nav.classList.toggle('active');
-      });
-    }
-  </script>
 
   <!-- Lógica Admin -->
   <script>
@@ -158,7 +154,6 @@
     const name = (title||'tabela').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'') + '_' + new Date().toISOString().slice(0,10) + '.xlsx';
     XLSX.writeFile(wb, name);
   }
-
   function bindExports(sectionId, tableId, titleText){
     const tbl = document.getElementById(tableId);
     document.getElementById(sectionId).querySelector('#exp-'+sectionId.split('admin-')[1]+'-csv')?.addEventListener('click', ()=> exportCSV(tbl, titleText));
@@ -170,64 +165,51 @@
     const fim = document.getElementById('filtro-fim')?.value || '';
     const pedidos = filtrarPorData(getPedidos(), ini, fim);
 
-    // Resumo
+    // resumo
     const totalQtd = pedidos.reduce((s,p)=>s+(p.quantidade||0),0);
     const totalVal = pedidos.reduce((s,p)=>s+(p.total||0),0);
     const resumo = document.getElementById('admin-resumo');
     if (resumo) resumo.innerHTML = `<b>${pedidos.length}</b> registos | Qtde: <b>${totalQtd}</b> | Valor: <b>${money(totalVal)}</b>`;
 
-    // 1) Detalhados
-    const tbDetalhe = document.querySelector('#admin-detalhados-table tbody');
-    tbDetalhe.innerHTML = '';
+    // detalhados
+    const tb1 = document.querySelector('#admin-detalhados-table tbody');
+    tb1.innerHTML = '';
     pedidos.forEach(p => {
       const tr = document.createElement('tr');
       tr.innerHTML = `
-        <td>${p.nome}</td>
-        <td>${p.email}</td>
-        <td>${p.ramo}</td>
-        <td>${p.produto}</td>
-        <td>${p.tamanho}</td>
-        <td>${p.quantidade||0}</td>
-        <td>${money(p.precoUnit)}</td>
-        <td>${money(p.total)}</td>
-        <td>${p.data||''}</td>
-      `;
-      tbDetalhe.appendChild(tr);
+        <td>${p.nome}</td><td>${p.email}</td><td>${p.ramo}</td>
+        <td>${p.produto}</td><td>${p.tamanho}</td><td>${p.quantidade||0}</td>
+        <td>${money(p.precoUnit)}</td><td>${money(p.total)}</td><td>${p.data||''}</td>`;
+      tb1.appendChild(tr);
     });
 
-    // 2) Por ramo (agregado)
+    // por ramo (agregado)
     const grupos = agrupar(pedidos, p => [p.ramo, p.produto, p.tamanho].join(' | '));
-    const tbRamo = document.querySelector('#admin-por-ramo-table tbody');
-    tbRamo.innerHTML = '';
+    const tb2 = document.querySelector('#admin-por-ramo-table tbody');
+    tb2.innerHTML = '';
     grupos.forEach(g => {
       const [ramo, produto, tamanho] = g.key.split(' | ');
       const tr = document.createElement('tr');
       tr.innerHTML = `
-        <td>${ramo}</td>
-        <td>${produto}</td>
-        <td>${tamanho}</td>
-        <td>${g.quantidade}</td>
-        <td>${money(g.total)}</td>
-      `;
-      tbRamo.appendChild(tr);
+        <td>${ramo}</td><td>${produto}</td><td>${tamanho}</td>
+        <td>${g.quantidade}</td><td>${money(g.total)}</td>`;
+      tb2.appendChild(tr);
     });
 
-    // 3) Uma tabela por ramo (detalhada)
+    // por ramo — tabelas
     const secRamos = document.getElementById('admin-por-ramo-detalhes');
     Array.from(secRamos.querySelectorAll('table, .ramo-title')).forEach(n => n.remove());
-    const rams = Array.from(new Set(pedidos.map(p => p.ramo))).filter(Boolean);
-    rams.forEach(ramo => {
+    const ramos = Array.from(new Set(pedidos.map(p => p.ramo))).filter(Boolean);
+    ramos.forEach(ramo => {
       const h = document.createElement('div');
       h.className = 'ramo-title';
       h.textContent = ramo;
       secRamos.appendChild(h);
 
-      // Barra de ações por ramo (inline styles para não depender de CSS)
       const bar = document.createElement('div');
       bar.className = 'table-actions';
-      bar.style.cssText = 'display:flex;gap:8px;flex-wrap:wrap;margin:6px 0;';
-      const b1 = document.createElement('button'); b1.type='button'; b1.textContent='Exportar CSV'; b1.style.cssText='display:inline-block;width:auto;';
-      const b2 = document.createElement('button'); b2.type='button'; b2.textContent='Exportar Excel'; b2.style.cssText='display:inline-block;width:auto;';
+      const b1 = document.createElement('button'); b1.type='button'; b1.textContent='Exportar CSV';
+      const b2 = document.createElement('button'); b2.type='button'; b2.textContent='Exportar Excel';
       bar.appendChild(b1); bar.appendChild(b2);
       secRamos.appendChild(bar);
 
@@ -236,29 +218,20 @@
         <th>Nome</th><th>Email</th><th>Produto</th><th>Tamanho</th><th>Qtd</th><th>Preço unit.</th><th>Total</th><th>Data</th>
       </tr></thead><tbody></tbody>`;
       const tb = tbl.querySelector('tbody');
-      const lista = pedidos.filter(p=>p.ramo===ramo);
-      lista.forEach(p => {
+      pedidos.filter(p=>p.ramo===ramo).forEach(p => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
-          <td>${p.nome}</td>
-          <td>${p.email}</td>
-          <td>${p.produto}</td>
-          <td>${p.tamanho}</td>
-          <td>${p.quantidade||0}</td>
-          <td>${money(p.precoUnit)}</td>
-          <td>${money(p.total)}</td>
-          <td>${p.data||''}</td>
-        `;
+          <td>${p.nome}</td><td>${p.email}</td><td>${p.produto}</td>
+          <td>${p.tamanho}</td><td>${p.quantidade||0}</td>
+          <td>${money(p.precoUnit)}</td><td>${money(p.total)}</td><td>${p.data||''}</td>`;
         tb.appendChild(tr);
       });
       secRamos.appendChild(tbl);
 
-      // bind export para cada tabela por ramo
       b1.addEventListener('click', ()=> exportCSV(tbl, 'Pedidos '+ramo));
       b2.addEventListener('click', ()=> exportXLSX(tbl, 'Pedidos '+ramo));
     });
 
-    // ligar botões de export das duas primeiras tabelas
     bindExports('admin-detalhados','admin-detalhados-table','Pedidos detalhados');
     bindExports('admin-por-ramo','admin-por-ramo-table','Pedidos por ramo (agregado)');
   }
