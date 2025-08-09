@@ -1,51 +1,36 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Painel de Administração</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-  <script src="admin-style.css"></script>
-  <style>
-    body{font-family:Poppins,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif;margin:0;background:#f7f8fb;color:#111;}
-    header{position:sticky;top:0;background:#0b5cff;color:#fff;padding:16px 20px;z-index:10;box-shadow:0 2px 10px rgba(0,0,0,.08)}
-    h1{font-size:20px;margin:0}
-    main{padding:20px;max-width:1200px;margin:0 auto}
-    section{background:#fff;border-radius:14px;box-shadow:0 6px 24px rgba(0,0,0,.06);padding:16px 16px;margin:16px 0}
-    section>h2{font-size:18px;margin:0 0 12px}
-    .grid{display:grid;grid-template-columns:1fr;gap:16px}
-    @media (min-width: 1024px){.grid{grid-template-columns:1fr 1fr}}
-    table{width:100%;border-collapse:separate;border-spacing:0 6px}
-    thead th{font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:#555;text-align:left;padding:10px 12px}
-    tbody td{background:#fafbff;padding:10px 12px;border-top:1px solid #eef1ff;border-bottom:1px solid #eef1ff}
-    tbody tr{transition:.15s}
-    tbody tr:hover td{background:#f2f5ff}
-    .pill{display:inline-block;padding:2px 8px;border-radius:999px;background:#eef1ff}
-    .totais{display:flex;gap:16px;flex-wrap:wrap;margin-top:8px;color:#333}
-    .muted{color:#666;font-size:12px}
-    .controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:8px}
-    input[type="date"]{padding:8px;border:1px solid #dfe4ff;border-radius:10px}
-    button{padding:8px 12px;border:0;border-radius:10px;background:#0b5cff;color:#fff;font-weight:600;cursor:pointer}
-    button.secondary{background:#eef1ff;color:#0b5cff}
-    .ramo-title{margin:12px 0 6px;font-size:16px}
-  </style>
+  <!-- Mantém o teu CSS ORIGINAL (não alterei nada) -->
+  <link rel="stylesheet" href="admin.css">
+  <!-- (Opcional) XLSX para exportação .xlsx; se não quiseres, podes remover e ficas com CSV -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
 <body>
-  <header><h1>Admin — Pedidos</h1></header>
-  <main>
-    <section>
-      <div class="controls">
-        <label>De <input type="date" id="filtro-inicio"></label>
-        <label>Até <input type="date" id="filtro-fim"></label>
-        <button id="aplicar-filtro" class="secondary">Aplicar filtro</button>
-        <button id="limpar-filtro" class="secondary">Limpar</button>
-      </div>
-      <div class="totais" id="resumo"></div>
+  <!-- Cabeçalho/toolbar do teu admin (mantém o estilo do teu admin.css) -->
+  <header class="navbar">
+    <div class="navbar-inner">
+      <h1>Admin — Depósito</h1>
+    </div>
+  </header>
+
+  <main class="admin-content">
+    <!-- Filtros (data) -->
+    <section id="admin-filtros" class="controls">
+      <label>De <input type="date" id="filtro-inicio"></label>
+      <label>Até <input type="date" id="filtro-fim"></label>
+      <button id="aplicar-filtro" type="button">Aplicar filtro</button>
+      <button id="limpar-filtro" type="button">Limpar</button>
+      <span id="admin-resumo"></span>
     </section>
 
-    <section id="sec-detalhados">
+    <!-- Tabelas geradas dinamicamente: mantêm-se dentro de <main> para herdar o teu CSS -->
+    <section id="admin-detalhados">
       <h2>Pedidos detalhados (todos)</h2>
-      <table id="tabela-detalhada">
+      <table id="admin-detalhados-table">
         <thead>
           <tr>
             <th>Nome</th><th>Email</th><th>Ramo</th><th>Produto</th><th>Tamanho</th><th>Qtd</th><th>Preço unit.</th><th>Total</th><th>Data</th>
@@ -55,171 +40,252 @@
       </table>
     </section>
 
-    <section id="sec-por-ramo">
+    <section id="admin-por-ramo">
       <h2>Pedidos por ramo (agregado)</h2>
-      <table id="tabela-por-ramo">
+      <table id="admin-por-ramo-table">
         <thead>
           <tr>
-            <th>Ramo</th><th>Produto</th><th>Tamanho</th><th>Quantidade</th><th>Preço</th>
+            <th>Ramo</th><th>Produto</th><th>Tamanho</th><th>Quantidade</th><th>Preço (total)</th>
           </tr>
         </thead>
         <tbody></tbody>
       </table>
-      <p class="muted">“Preço” é o total (quantidade × preço unitário).</p>
     </section>
 
-    <section id="sec-ramo-detalhes">
+    <section id="admin-por-ramo-detalhes">
       <h2>Por ramo — detalhes</h2>
-      <div id="ramos-detalhes"></div>
+      <!-- Aqui serão inseridas as tabelas de cada ramo -->
     </section>
   </main>
 
+  <!-- ===================== LÓGICA DO ADMIN (EMBUTIDA) ===================== -->
   <script>
-    function parseMaybeNumber(v){ if(typeof v === 'number') return v; if(!v) return 0; v = String(v).replace(',', '.'); const n = Number(v); return isNaN(n)?0:n; }
-    function formatMoney(n){ return (Math.round(n*100)/100).toFixed(2).replace('.', ',') + '€'; }
+  // ===== Helpers =====
+  const parseMaybeNumber = (v) => {
+    if (typeof v === 'number') return v;
+    if (v == null) return 0;
+    const n = Number(String(v).replace(',', '.'));
+    return isNaN(n) ? 0 : n;
+  };
+  const money = (n) => (Math.round(n*100)/100).toFixed(2).replace('.', ',') + '€';
 
-    function getPedidosRaw(){
-      try{
-        const arr = JSON.parse(localStorage.getItem('pedidos')) || [];
-        return Array.isArray(arr)? arr : [];
-      }catch(e){ return []; }
+  // Normaliza chaves PT/EN vindas do localStorage.pedidos
+  const norm = (p) => ({
+    nome: p.nome || p.name || '',
+    email: p.email || '',
+    ramo: p.ramo || p.branch || '',
+    produto: p.produto || p.product || '',
+    tamanho: p.tamanho || p.size || '',
+    quantidade: parseMaybeNumber(p.quantidade != null ? p.quantidade : p.quantity),
+    precoUnit: parseMaybeNumber(p.preco != null ? p.preco : p.price),
+    total: parseMaybeNumber(p.preco != null ? p.preco : p.price) * parseMaybeNumber(p.quantidade != null ? p.quantidade : p.quantity),
+    data: p.data || p.timestamp || ''
+  });
+
+  const getPedidos = () => {
+    try {
+      const arr = JSON.parse(localStorage.getItem('pedidos')) || [];
+      return Array.isArray(arr) ? arr.map(norm) : [];
+    } catch(e) { return []; }
+  };
+
+  const filtrarPorData = (arr, ini, fim) => {
+    if (!ini && !fim) return arr;
+    const i = ini ? new Date(ini) : null;
+    const f = fim ? new Date(fim) : null;
+    return arr.filter(p => {
+      if (!p.data) return true;
+      const d = new Date(p.data);
+      if (i && d < i) return false;
+      if (f && d > f) return false;
+      return true;
+    });
+  };
+
+  const agrupar = (arr, keyFn) => {
+    const map = new Map();
+    for (const p of arr) {
+      const k = keyFn(p);
+      const rec = map.get(k) || { quantidade: 0, total: 0, sample: p };
+      rec.quantidade += p.quantidade || 0;
+      rec.total += p.total || 0;
+      map.set(k, rec);
     }
+    return Array.from(map.entries()).map(([key, v]) => ({ key, ...v }));
+  };
 
-    function normalizePedido(p){
-      // Aceita tanto keys EN (branch,product,price,size,quantity) como PT (ramo,produto,preco,tamanho,quantidade)
-      return {
-        nome: p.nome || p.name || '',
-        email: p.email || '',
-        ramo: p.ramo || p.branch || '',
-        produto: p.produto || p.product || '',
-        tamanho: p.tamanho || p.size || '',
-        quantidade: parseMaybeNumber(p.quantidade != null ? p.quantidade : p.quantity),
-        precoUnit: parseMaybeNumber(p.preco != null ? p.preco : p.price),
-        total: parseMaybeNumber(p.preco != null ? p.preco : p.price) * parseMaybeNumber(p.quantidade != null ? p.quantidade : p.quantity),
-        data: p.data || p.timestamp || ''
-      };
-    }
+  // ===== Render Principal =====
+  function render(){
+    const ini = document.getElementById('filtro-inicio')?.value || '';
+    const fim = document.getElementById('filtro-fim')?.value || '';
+    const pedidos = filtrarPorData(getPedidos(), ini, fim);
 
-    function filtrarPorData(pedidos, inicio, fim){
-      if(!inicio && !fim) return pedidos;
-      const i = inicio ? new Date(inicio) : null;
-      const f = fim ? new Date(fim) : null;
-      return pedidos.filter(p => {
-        if(!p.data) return true;
-        const d = new Date(p.data);
-        if(i && d < i) return false;
-        if(f && d > f) return false;
-        return true;
-      });
-    }
+    // Resumo
+    const totalQtd = pedidos.reduce((s,p)=>s+(p.quantidade||0),0);
+    const totalVal = pedidos.reduce((s,p)=>s+(p.total||0),0);
+    const resumo = document.getElementById('admin-resumo');
+    if (resumo) resumo.innerHTML = `<b>${pedidos.length}</b> registos | Qtde: <b>${totalQtd}</b> | Valor: <b>${money(totalVal)}</b>`;
 
-    function agrupar(pedidos, chaveFn){
-      const map = new Map();
-      for(const p of pedidos){
-        const k = chaveFn(p);
-        const rec = map.get(k) || { quantidade: 0, total: 0, sample: p };
-        rec.quantidade += p.quantidade || 0;
-        rec.total += p.total || 0;
-        map.set(k, rec);
-      }
-      return Array.from(map.entries()).map(([k,v]) => ({ key:k, ...v }));
-    }
-
-    function render(){
-      const inicio = document.getElementById('filtro-inicio').value;
-      const fim    = document.getElementById('filtro-fim').value;
-      const brutos = getPedidosRaw().map(normalizePedido);
-      const pedidos = filtrarPorData(brutos, inicio, fim);
-
-      // Resumo
-      const totalQtd = pedidos.reduce((s,p)=>s+(p.quantidade||0),0);
-      const totalVal = pedidos.reduce((s,p)=>s+(p.total||0),0);
-      document.getElementById('resumo').innerHTML = \`
-        <span><b>\${pedidos.length}</b> registos</span>
-        <span>|</span>
-        <span>Quantidade total: <b>\${totalQtd}</b></span>
-        <span>|</span>
-        <span>Valor total: <b>\${formatMoney(totalVal)}</b></span>
-      \`;
-
-      // 1) Detalhados
-      const tb1 = document.querySelector('#tabela-detalhada tbody');
-      tb1.innerHTML = '';
-      for(const p of pedidos){
-        const tr = document.createElement('tr');
-        tr.innerHTML = \`
-          <td>\${p.nome}</td>
-          <td>\${p.email}</td>
-          <td><span class="pill">\${p.ramo}</span></td>
-          <td>\${p.produto}</td>
-          <td>\${p.tamanho}</td>
-          <td>\${p.quantidade||0}</td>
-          <td>\${formatMoney(p.precoUnit)}</td>
-          <td>\${formatMoney(p.total)}</td>
-          <td>\${p.data || ''}</td>
-        \`;
-        tb1.appendChild(tr);
-      }
-
-      // 2) Por ramo (agregado): ramo | produto | tamanho | quantidade | preço (total)
-      const grupos = agrupar(pedidos, p => [p.ramo, p.produto, p.tamanho].join(' | '));
-      const tb2 = document.querySelector('#tabela-por-ramo tbody');
-      tb2.innerHTML = '';
-      for(const g of grupos){
-        const [ramo, produto, tamanho] = g.key.split(' | ');
-        const tr = document.createElement('tr');
-        tr.innerHTML = \`
-          <td><span class="pill">\${ramo}</span></td>
-          <td>\${produto}</td>
-          <td>\${tamanho}</td>
-          <td>\${g.quantidade}</td>
-          <td>\${formatMoney(g.total)}</td>
-        \`;
-        tb2.appendChild(tr);
-      }
-
-      // 3) Por ramo — tabelas detalhadas
-      const porRamo = agrupar(pedidos, p => p.ramo).map(g => ({ ramo: g.key, pedidos: pedidos.filter(p => p.ramo===g.key) }));
-      const cont = document.getElementById('ramos-detalhes');
-      cont.innerHTML = '';
-      for(const sec of porRamo){
-        const h = document.createElement('div');
-        h.className = 'ramo-title';
-        h.innerHTML = '<b>'+sec.ramo+'</b>';
-        cont.appendChild(h);
-        const tbl = document.createElement('table');
-        tbl.innerHTML = \`
-          <thead><tr>
-            <th>Nome</th><th>Email</th><th>Produto</th><th>Tamanho</th><th>Qtd</th><th>Preço unit.</th><th>Total</th><th>Data</th>
-          </tr></thead><tbody></tbody>\`;
-        const tb = tbl.querySelector('tbody');
-        for(const p of sec.pedidos){
-          const tr = document.createElement('tr');
-          tr.innerHTML = \`
-            <td>\${p.nome}</td>
-            <td>\${p.email}</td>
-            <td>\${p.produto}</td>
-            <td>\${p.tamanho}</td>
-            <td>\${p.quantidade||0}</td>
-            <td>\${formatMoney(p.precoUnit)}</td>
-            <td>\${formatMoney(p.total)}</td>
-            <td>\${p.data || ''}</td>
-          \`;
-          tb.appendChild(tr);
-        }
-        cont.appendChild(tbl);
-      }
-    }
-
-    document.getElementById('aplicar-filtro').addEventListener('click', render);
-    document.getElementById('limpar-filtro').addEventListener('click', () => {
-      document.getElementById('filtro-inicio').value = '';
-      document.getElementById('filtro-fim').value = '';
-      render();
+    // 1) Detalhados (todos)
+    const tbDetalhe = document.querySelector('#admin-detalhados-table tbody');
+    tbDetalhe.innerHTML = '';
+    pedidos.forEach(p => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${p.nome}</td>
+        <td>${p.email}</td>
+        <td>${p.ramo}</td>
+        <td>${p.produto}</td>
+        <td>${p.tamanho}</td>
+        <td>${p.quantidade||0}</td>
+        <td>${money(p.precoUnit)}</td>
+        <td>${money(p.total)}</td>
+        <td>${p.data||''}</td>
+      `;
+      tbDetalhe.appendChild(tr);
     });
 
-    window.addEventListener('storage', render);
-    window.addEventListener('load', render);
+    // 2) Por ramo (agregado)
+    const grupos = agrupar(pedidos, p => [p.ramo, p.produto, p.tamanho].join(' | '));
+    const tbRamo = document.querySelector('#admin-por-ramo-table tbody');
+    tbRamo.innerHTML = '';
+    grupos.forEach(g => {
+      const [ramo, produto, tamanho] = g.key.split(' | ');
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${ramo}</td>
+        <td>${produto}</td>
+        <td>${tamanho}</td>
+        <td>${g.quantidade}</td>
+        <td>${money(g.total)}</td>
+      `;
+      tbRamo.appendChild(tr);
+    });
+
+    // 3) Uma tabela por ramo (detalhada)
+    const secRamos = document.getElementById('admin-por-ramo-detalhes');
+    // limpa tabelas antigas (mas mantém o <h2> da secção)
+    Array.from(secRamos.querySelectorAll('table, .ramo-title')).forEach(n => n.remove());
+    const rams = Array.from(new Set(pedidos.map(p => p.ramo))).filter(Boolean);
+    rams.forEach(ramo => {
+      const h = document.createElement('div');
+      h.className = 'ramo-title';
+      h.textContent = ramo;
+      secRamos.appendChild(h);
+      const tbl = document.createElement('table');
+      tbl.innerHTML = `<thead><tr>
+        <th>Nome</th><th>Email</th><th>Produto</th><th>Tamanho</th><th>Qtd</th><th>Preço unit.</th><th>Total</th><th>Data</th>
+      </tr></thead><tbody></tbody>`;
+      const tb = tbl.querySelector('tbody');
+      pedidos.filter(p=>p.ramo===ramo).forEach(p => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${p.nome}</td>
+          <td>${p.email}</td>
+          <td>${p.produto}</td>
+          <td>${p.tamanho}</td>
+          <td>${p.quantidade||0}</td>
+          <td>${money(p.precoUnit)}</td>
+          <td>${money(p.total)}</td>
+          <td>${p.data||''}</td>
+        `;
+        tb.appendChild(tr);
+      });
+      secRamos.appendChild(tbl);
+    });
+  }
+
+  document.getElementById('aplicar-filtro').addEventListener('click', render);
+  document.getElementById('limpar-filtro').addEventListener('click', () => {
+    document.getElementById('filtro-inicio').value = '';
+    document.getElementById('filtro-fim').value = '';
+    render();
+  });
+
+  window.addEventListener('storage', render);
+  window.addEventListener('load', render);
+  </script>
+
+  <!-- ===================== EXPORTAÇÃO (CSV / XLSX) — EMBUTIDO ===================== -->
+  <script>
+  (function(){
+    function slugify(s){
+      return (s||'tabela')
+        .toString()
+        .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g,'-')
+        .replace(/(^-|-$)/g,'');
+    }
+    function toCSV(table){
+      const rows = Array.from(table.querySelectorAll('tr')).map(tr =>
+        Array.from(tr.querySelectorAll('th,td')).map(td => {
+          let txt = (td.innerText||'').replace(/\r?\n|\r/g, ' ').trim();
+          if (/[",;\n]/.test(txt)) txt = '"' + txt.replace(/"/g, '""') + '"';
+          return txt;
+        }).join(';')
+      );
+      return rows.join('\n');
+    }
+    function downloadBlob(content, filename, mime){
+      const blob = new Blob([content], {type: mime});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(()=>{
+        URL.revokeObjectURL(url);
+        a.remove();
+      }, 0);
+    }
+    function exportCSV(table){
+      const title = table.closest('section')?.querySelector('h2')?.innerText || table.getAttribute('id') || 'tabela';
+      const name = slugify(title) + '_' + new Date().toISOString().slice(0,10) + '.csv';
+      downloadBlob(toCSV(table), name, 'text/csv;charset=utf-8;');
+    }
+    function exportXLSX(table){
+      if (typeof XLSX === 'undefined' || !XLSX?.utils?.table_to_book) {
+        alert('Para exportar em Excel (.xlsx), a biblioteca XLSX já está incluída no <head>. Se removeres essa linha, usa o CSV.');
+        return;
+      }
+      const title = table.closest('section')?.querySelector('h2')?.innerText || table.getAttribute('id') || 'tabela';
+      const wb = XLSX.utils.table_to_book(table, {sheet: title.slice(0,31)});
+      const name = slugify(title) + '_' + new Date().toISOString().slice(0,10) + '.xlsx';
+      XLSX.writeFile(wb, name);
+    }
+    function addButtons(table){
+      if (table.dataset.exportBound === '1') return;
+      table.dataset.exportBound = '1';
+      const wrap = document.createElement('div');
+      wrap.style.margin = '6px 0';
+      const btnCSV = document.createElement('button');
+      btnCSV.type = 'button';
+      btnCSV.textContent = 'Exportar CSV';
+      btnCSV.addEventListener('click', ()=>exportCSV(table));
+      const btnXLSX = document.createElement('button');
+      btnXLSX.type = 'button';
+      btnXLSX.textContent = 'Exportar Excel';
+      btnXLSX.style.marginLeft = '6px';
+      btnXLSX.addEventListener('click', ()=>exportXLSX(table));
+      wrap.appendChild(btnCSV);
+      wrap.appendChild(btnXLSX);
+      table.parentNode.insertBefore(wrap, table);
+    }
+    function init(){
+      const main = document.querySelector('main') || document.body;
+      const tables = main.querySelectorAll('table');
+      tables.forEach(addButtons);
+    }
+    window.addEventListener('load', init);
+    const mo = new MutationObserver(() => {
+      const main = document.querySelector('main') || document.body;
+      const tables = main.querySelectorAll('table');
+      tables.forEach(addButtons);
+    });
+    mo.observe(document.documentElement, {childList:true, subtree:true});
+  })();
   </script>
 </body>
 </html>
