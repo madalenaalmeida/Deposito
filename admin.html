@@ -77,19 +77,15 @@
       <!-- ações e tabelas vão sendo geradas por JS para cada ramo -->
     </section>
   </main>
-  <div class="date-filter">
-    <div>
-      <label for="start-date">De</label>
-      <input type="date" id="start-date">
-    </div>
-    <div>
-      <label for="end-date">Até</label>
-      <input type="date" id="end-date">
-    </div>
-    <button class="apply-btn" onclick="aplicarFiltro()">Aplicar filtro</button>
-    <button class="clear-btn" onclick="limparFiltro()">Limpar</button>
-  </div>
-  
+  <main class="admin-content">
+    <!-- Filtros -->
+    <section id="admin-filtros" class="controls">
+      <label>De <input type="date" id="filtro-inicio"></label>
+      <label>Até <input type="date" id="filtro-fim"></label>
+      <button id="aplicar-filtro" type="button">Aplicar filtro</button>
+      <button id="limpar-filtro" type="button">Limpar</button>
+      <span id="admin-resumo"></span>
+    </section>
   <!-- Toggle simples do menu mobile (não traz lógica do carrinho) -->
   <script>
     const menuBtn = document.getElementById('menu-btn');
