@@ -4,73 +4,80 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Painel de Administração</title>
+
+  <!-- CSS -->
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="admin-style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-  <!-- Biblioteca para Excel -->
+  <!-- Bibliotecas para exportação -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-  <!-- Biblioteca para PDF -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 </head>
 <body>
 
-<div class="navbar">
-  <a href="index.html" class="voltar-inicio">
-    <i class="fas fa-arrow-left"></i>
-  </a>
-  <span class="navbar-text">Painel de Administração</span>
-</div>
+  <!-- Navbar -->
+  <div class="navbar">
+    <a href="index.html" class="voltar-inicio">
+      <i class="fas fa-arrow-left"></i>
+    </a>
+    <span class="navbar-text">Painel de Administração</span>
+  </div>
 
-<div class="container">
+  <div class="container">
+    <!-- Pedidos detalhados -->
+    <section id="admin-detalhados">
+      <h2>Pedidos detalhados (todos)</h2>
+      <div class="table-actions">
+        <button class="btn-pdf"   type="button" id="exp-detalhados-pdf">Exportar PDF</button>
+        <button class="btn-excel" type="button" id="exp-detalhados-xlsx">Exportar Excel</button>
+      </div>
+      <table id="admin-detalhados-table">
+        <thead>
+          <tr>
+            <th>Nome</th><th>Email</th><th>Ramo</th><th>Produto</th>
+            <th>Tamanho</th><th>Qtd</th><th>Preço unit.</th><th>Total</th><th>Data</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
 
-  <!-- Tabelas -->
-  <section id="admin-detalhados">
-    <h2>Pedidos detalhados (todos)</h2>
-    <div class="table-actions" style="display:flex;gap:8px;flex-wrap:wrap;margin:6px 0;">
-      <button class="btn-pdf" type="button" id="exp-detalhados-pdf">Exportar PDF</button>
-      <button class="btn-excel" type="button" id="exp-detalhados-xlsx">Exportar Excel</button>
-    </div>
-    <table id="admin-detalhados-table">
-      <thead>
-        <tr>
-          <th>Nome</th><th>Email</th><th>Ramo</th><th>Produto</th><th>Tamanho</th><th>Qtd</th><th>Preço unit.</th><th>Total</th><th>Data</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </section>
+    <!-- Pedidos por ramo (agregado) -->
+    <section id="admin-por-ramo">
+      <h2>Pedidos por ramo (agregado)</h2>
+      <div class="table-actions">
+        <button class="btn-pdf"   type="button" id="exp-porramo-pdf">Exportar PDF</button>
+        <button class="btn-excel" type="button" id="exp-porramo-xlsx">Exportar Excel</button>
+      </div>
+      <table id="admin-por-ramo-table">
+        <thead>
+          <tr>
+            <th>Ramo</th><th>Produto</th><th>Tamanho</th><th>Quantidade</th><th>Preço (total)</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
 
-  <section id="admin-por-ramo">
-    <h2>Pedidos por ramo (agregado)</h2>
-    <div class="table-actions" style="display:flex;gap:8px;flex-wrap:wrap;margin:6px 0;">
-      <button class="btn-pdf" type="button" id="exp-porramo-pdf">Exportar PDF</button>
-      <button class="btn-excel" type="button" id="exp-porramo-xlsx">Exportar Excel</button>
-    </div>
-    <table id="admin-por-ramo-table">
-      <thead>
-        <tr>
-          <th>Ramo</th><th>Produto</th><th>Tamanho</th><th>Quantidade</th><th>Preço (total)</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </section>
+    <!-- Por ramo — detalhes (gerado via JS) -->
+    <section id="admin-por-ramo-detalhes">
+      <h2>Por ramo — detalhes</h2>
+    </section>
 
-  <section id="admin-por-ramo-detalhes">
-    <h2>Por ramo — detalhes</h2>
-  </section>
+    <!-- Filtros NO FIM -->
+    <section id="admin-filtros" class="controls">
+      <label>De <input type="date" id="filtro-inicio"></label>
+      <label>Até <input type="date" id="filtro-fim"></label>
+      <button id="aplicar-filtro" type="button" class="btn-excel">Aplicar filtro</button>
+      <button id="limpar-filtro"  type="button" class="btn-pdf">Limpar</button>
+      <span id="admin-resumo"></span>
+    </section>
+  </div>
 
-  <!-- Filtros no fim -->
-  <section id="admin-filtros" class="controls" style="margin-top: 30px;">
-    <label>De <input type="date" id="filtro-inicio"></label>
-    <label>Até <input type="date" id="filtro-fim"></label>
-    <button id="aplicar-filtro" type="button">Aplicar filtro</button>
-    <button id="limpar-filtro" type="button">Limpar</button>
-    <span id="admin-resumo"></span>
-  </section>
-</div>
-
-<script>
+  <script>
+  // Utils
   const parseMaybeNumber = (v) => {
     if (typeof v === 'number') return v;
     if (v == null) return 0;
@@ -117,53 +124,73 @@
     return Array.from(map.entries()).map(([key, v]) => ({ key, ...v }));
   };
 
+  // Exportação
   function exportExcel(table, title) {
-    const wb = XLSX.utils.table_to_book(table, {sheet: title});
-    XLSX.writeFile(wb, title.replace(/\s+/g,'_') + '.xlsx');
+    if (typeof XLSX === 'undefined' || !XLSX?.utils?.table_to_book) {
+      alert('Biblioteca Excel não carregada.');
+      return;
+    }
+    const wb = XLSX.utils.table_to_book(table, {sheet: (title || 'TABELA').slice(0,31)});
+    const name = (title||'tabela').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'')
+               + '_' + new Date().toISOString().slice(0,10) + '.xlsx';
+    XLSX.writeFile(wb, name);
   }
-
   function exportPDF(table, title) {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
-    doc.text(title, 14, 10);
-    doc.autoTable({ html: table });
-    doc.save(title.replace(/\s+/g,'_') + '.pdf');
+    const { jsPDF } = window.jspdf || {};
+    if (!jsPDF || !window.jspdf || !docAutoTableAvailable()) {
+      alert('Biblioteca PDF não carregada.');
+      return;
+    }
+    const doc = new jsPDF({orientation:'landscape', unit:'pt', format:'a4'});
+    const head = [Array.from(table.querySelectorAll('thead th')).map(th => th.innerText.trim())];
+    const body = Array.from(table.querySelectorAll('tbody tr')).map(tr =>
+      Array.from(tr.querySelectorAll('td')).map(td => td.innerText.trim())
+    );
+    doc.setFontSize(14);
+    doc.text(title || 'Tabela', 40, 40);
+    doc.autoTable({ head, body, startY: 60, styles: { fontSize: 10, cellPadding: 6 }, headStyles: { fillColor: [0,51,102] }});
+    const name = (title||'tabela').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'')
+               + '_' + new Date().toISOString().slice(0,10) + '.pdf';
+    doc.save(name);
+  }
+  function docAutoTableAvailable(){
+    // pequena verificação para o plugin do autotable
+    return !!(window.jspdf && window.jspdf.jsPDF && (window.jspdf.jsPDF.API || {}).autoTable);
   }
 
   function bindExports(sectionId, tableId, titleText){
     const tbl = document.getElementById(tableId);
-    document.getElementById('exp-'+sectionId.split('admin-')[1]+'-pdf')?.addEventListener('click', ()=> exportPDF(tbl, titleText));
-    document.getElementById('exp-'+sectionId.split('admin-')[1]+'-xlsx')?.addEventListener('click', ()=> exportExcel(tbl, titleText));
+    document.getElementById('exp-'+sectionId.split('admin-')[1]+'-pdf')
+      ?.addEventListener('click', ()=> exportPDF(tbl, titleText));
+    document.getElementById('exp-'+sectionId.split('admin-')[1]+'-xlsx')
+      ?.addEventListener('click', ()=> exportExcel(tbl, titleText));
   }
 
+  // Render
   function render(){
     const ini = document.getElementById('filtro-inicio')?.value || '';
     const fim = document.getElementById('filtro-fim')?.value || '';
     const pedidos = filtrarPorData(getPedidos(), ini, fim);
 
+    // resumo
     const totalQtd = pedidos.reduce((s,p)=>s+(p.quantidade||0),0);
     const totalVal = pedidos.reduce((s,p)=>s+(p.total||0),0);
     const resumo = document.getElementById('admin-resumo');
     if (resumo) resumo.innerHTML = `<b>${pedidos.length}</b> registos | Qtde: <b>${totalQtd}</b> | Valor: <b>${money(totalVal)}</b>`;
 
+    // detalhados
     const tbDetalhe = document.querySelector('#admin-detalhados-table tbody');
     tbDetalhe.innerHTML = '';
     pedidos.forEach(p => {
       const tr = document.createElement('tr');
       tr.innerHTML = `
-        <td>${p.nome}</td>
-        <td>${p.email}</td>
-        <td>${p.ramo}</td>
-        <td>${p.produto}</td>
-        <td>${p.tamanho}</td>
-        <td>${p.quantidade||0}</td>
-        <td>${money(p.precoUnit)}</td>
-        <td>${money(p.total)}</td>
-        <td>${p.data||''}</td>
-      `;
+        <td>${p.nome}</td><td>${p.email}</td><td>${p.ramo}</td>
+        <td>${p.produto}</td><td>${p.tamanho}</td><td>${p.quantidade||0}</td>
+        <td>${money(p.precoUnit)}</td><td>${money(p.total)}</td><td>${p.data||''}</td>`;
       tbDetalhe.appendChild(tr);
     });
 
+    // por ramo (agregado)
     const grupos = agrupar(pedidos, p => [p.ramo, p.produto, p.tamanho].join(' | '));
     const tbRamo = document.querySelector('#admin-por-ramo-table tbody');
     tbRamo.innerHTML = '';
@@ -171,17 +198,14 @@
       const [ramo, produto, tamanho] = g.key.split(' | ');
       const tr = document.createElement('tr');
       tr.innerHTML = `
-        <td>${ramo}</td>
-        <td>${produto}</td>
-        <td>${tamanho}</td>
-        <td>${g.quantidade}</td>
-        <td>${money(g.total)}</td>
-      `;
+        <td>${ramo}</td><td>${produto}</td><td>${tamanho}</td>
+        <td>${g.quantidade}</td><td>${money(g.total)}</td>`;
       tbRamo.appendChild(tr);
     });
 
+    // por ramo — detalhes
     const secRamos = document.getElementById('admin-por-ramo-detalhes');
-    secRamos.innerHTML = '<h2>Por ramo — detalhes</h2>';
+    secRamos.querySelectorAll('table, .ramo-title, .table-actions').forEach(n => n.remove());
     const rams = Array.from(new Set(pedidos.map(p => p.ramo))).filter(Boolean);
     rams.forEach(ramo => {
       const h = document.createElement('div');
@@ -191,7 +215,6 @@
 
       const bar = document.createElement('div');
       bar.className = 'table-actions';
-      bar.style.cssText = 'display:flex;gap:8px;flex-wrap:wrap;margin:6px 0;';
       const bPDF = document.createElement('button'); bPDF.type='button'; bPDF.textContent='Exportar PDF'; bPDF.className='btn-pdf';
       const bXLSX = document.createElement('button'); bXLSX.type='button'; bXLSX.textContent='Exportar Excel'; bXLSX.className='btn-excel';
       bar.appendChild(bPDF); bar.appendChild(bXLSX);
@@ -202,19 +225,12 @@
         <th>Nome</th><th>Email</th><th>Produto</th><th>Tamanho</th><th>Qtd</th><th>Preço unit.</th><th>Total</th><th>Data</th>
       </tr></thead><tbody></tbody>`;
       const tb = tbl.querySelector('tbody');
-      const lista = pedidos.filter(p=>p.ramo===ramo);
-      lista.forEach(p => {
+      pedidos.filter(p=>p.ramo===ramo).forEach(p => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
-          <td>${p.nome}</td>
-          <td>${p.email}</td>
-          <td>${p.produto}</td>
-          <td>${p.tamanho}</td>
-          <td>${p.quantidade||0}</td>
-          <td>${money(p.precoUnit)}</td>
-          <td>${money(p.total)}</td>
-          <td>${p.data||''}</td>
-        `;
+          <td>${p.nome}</td><td>${p.email}</td><td>${p.produto}</td>
+          <td>${p.tamanho}</td><td>${p.quantidade||0}</td>
+          <td>${money(p.precoUnit)}</td><td>${money(p.total)}</td><td>${p.data||''}</td>`;
         tb.appendChild(tr);
       });
       secRamos.appendChild(tbl);
@@ -235,8 +251,7 @@
   });
   window.addEventListener('storage', render);
   window.addEventListener('load', render);
-</script>
-
+  </script>
 
 </body>
 </html>
