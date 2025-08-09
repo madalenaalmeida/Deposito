@@ -40,7 +40,6 @@
       <i class="fas fa-question-circle"></i>
     </a>
     
-    
     <main>
       <!-- Seção com caixas dos ramos -->
       <section class="branches">
@@ -69,63 +68,64 @@
             <i class="fas fa-ruler-combined"></i>
             <p>Guia de Tamanhos</p>
           </a>
-          
-          
         </div>
       </section>
-      <!-- Seção de datas de encomenda -->
-<section class="order-dates">
-  <h2>Períodos de Encomenda</h2>
-  <div class="dates-container">
-    <div class="date-box">
-      <h3>Data de Início</h3>
-      <p id="start-date">Data não definida</p>
-    </div>
-    <div class="date-box">
-      <h3>Data de Fim</h3>
-      <p id="end-date">Data não definida</p>
-    </div>
-  </div>
-  <p>As encomendas podem ser feitas durante este período.</p>
-</section>
 
-      
+      <!-- Seção de datas de encomenda -->
+      <section class="order-dates">
+        <h2>Períodos de Encomenda</h2>
+        <div class="dates-container">
+          <div class="date-box">
+            <h3>Data de Início</h3>
+            <p id="start-date">Data não definida</p>
+          </div>
+          <div class="date-box">
+            <h3>Data de Fim</h3>
+            <p id="end-date">Data não definida</p>
+          </div>
+        </div>
+        <p>As encomendas podem ser feitas durante este período.</p>
+      </section>
     </main>
    
-
     <!-- Script para alternar o menu lateral -->
     <script>
       const menuBtn = document.getElementById('menu-btn');
       const sidebar = document.getElementById('sidebar');
-      
       menuBtn.addEventListener('click', function() {
         sidebar.classList.toggle('active');
       });
-      
-
     </script>
-    
-<script>
-  window.onload = function() {
-    // Recupera as datas do localStorage
-    const dataInicio = localStorage.getItem("dataInicio");
-    const dataFim = localStorage.getItem("dataFim");
 
-    // Exibe as datas nas áreas correspondentes
-    if (dataInicio) {
-      document.getElementById("start-date").textContent = new Date(dataInicio).toLocaleDateString('pt-PT');
-    } else {
-      document.getElementById("start-date").textContent = "Data não definida";
-    }
+    <!-- Script para mostrar datas do localStorage -->
+    <script>
+      function atualizarDatas() {
+        const dataInicio = localStorage.getItem('dataInicio') || '';
+        const dataFim    = localStorage.getItem('dataFim') || '';
 
-    if (dataFim) {
-      document.getElementById("end-date").textContent = new Date(dataFim).toLocaleDateString('pt-PT');
-    } else {
-      document.getElementById("end-date").textContent = "Data não definida";
-    }
-  };
-</script>
+        const startEl = document.getElementById("start-date");
+        const endEl   = document.getElementById("end-date");
 
+        if (dataInicio) {
+          startEl.textContent = new Date(dataInicio).toLocaleDateString('pt-PT');
+        } else {
+          startEl.textContent = "Data não definida";
+        }
+
+        if (dataFim) {
+          endEl.textContent = new Date(dataFim).toLocaleDateString('pt-PT');
+        } else {
+          endEl.textContent = "Data não definida";
+        }
+      }
+
+      window.addEventListener('load', atualizarDatas);
+      window.addEventListener('storage', (e) => {
+        if (e.key === 'dataInicio' || e.key === 'dataFim' || e.key === 'filtroPing') {
+          atualizarDatas();
+        }
+      });
+    </script>
 
     <footer class="footer">
       <div class="footer-content">
@@ -133,7 +133,6 @@
         <div class="social-icons">
           <a href="https://www.facebook.com" target="_blank"><i class="fab fa-facebook-f"></i></a>
           <a href="https://www.instagram.com/guias.sjose" target="_blank"><i class="fab fa-instagram"></i></a>
-
           <a href="mailto:exemplo@email.com"><i class="fas fa-envelope"></i></a>
         </div>
       </div>
