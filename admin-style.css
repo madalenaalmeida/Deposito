@@ -1,177 +1,152 @@
-/* ===============================
-   ESTILO ADMIN - PAINEL DE CONTROLO
-   =============================== */
+/* =========================
+   Estilo geral da página admin
+   ========================= */
 
-/* Corpo */
-body {
-  font-family: 'Poppins', sans-serif;
-  background-color: #fafafa;
-  margin: 0;
-  padding: 0;
-}
-
-/* ---- NAVBAR ---- */
-.navbar {
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-  background: #003366;
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 64px;
-  padding: 0 20px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, .2);
-}
-.navbar .voltar-inicio {
-  position: absolute;
-  left: 20px;
-  color: #fff;
-  text-decoration: none;
-  font-size: 1.4rem;
-}
-.navbar .voltar-inicio:hover {
-  color: #ffcc00;
-}
-.navbar .navbar-text {
-  font-weight: 700;
-}
-
-/* ---- CONTEÚDO PRINCIPAL ---- */
-.admin-content {
-  max-width: 1200px;
-  margin: 20px auto;
-  padding: 0 16px;
-}
-
-/* ---- FILTRO DE DATAS ---- */
-#admin-filtros {
-  background: transparent !important;
-  border: none !important;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 0;
-  margin: 0 0 16px 0;
-}
-#admin-filtros label {
-  font-weight: 600;
-  color: #003366;
-  margin-right: 6px;
-}
-#admin-filtros input[type="date"] {
-  padding: 8px 12px;
-  border: 1px solid #cfd7e6 !important;
-  border-radius: 8px;
-  background: #fff;
-  font-size: 14px;
-}
-#admin-filtros input[type="date"]:focus {
-  outline: none;
-  border-color: #00509e !important;
-  box-shadow: 0 0 0 3px rgba(0, 80, 158, .15);
-}
-#admin-filtros button {
-  display: inline-block !important;
-  width: auto !important;
-  padding: 10px 16px;
-  border-radius: 10px;
-  background: #003366;
-  color: #fff;
-  font-weight: 600;
-  border: 0;
-  cursor: pointer;
-  transition: background-color .2s ease;
-}
-#admin-filtros button:hover {
-  background: #00509e;
-}
-#admin-filtros #limpar-filtro {
-  background: #eef3ff !important;
-  color: #003366 !important;
-  border: 1px solid #dbe3f6 !important;
-}
-#admin-resumo {
-  width: 100%;
-  margin-top: 4px;
-  color: #111;
-  font-size: 14px;
-}
-
-/* ---- BOTÕES TABELA ---- */
-.table-actions {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  margin: 10px 0;
-}
-.table-actions button {
-  background: #003366;
-  padding: 8px 14px;
-  border-radius: 8px;
-  border: none;
-  color: white;
-  cursor: pointer;
-}
-.table-actions button:hover {
-  background: #00509e;
-}
-
-/* ---- TABELAS ---- */
-table {
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
-  overflow: hidden;
-  border-radius: 10px;
-}
-thead th {
-  background: #003366;
-  color: #fff;
-  padding: 10px;
-  text-align: left;
-}
-tbody td {
-  background: #fff;
-  padding: 10px;
-  border-top: 1px solid #eee;
-}
-tbody tr:nth-child(even) td {
-  background: #f7f9ff;
-}
-
-/* ---- RESPONSIVO ---- */
-@media (max-width: 820px) {
-  #admin-filtros {
-    flex-direction: column;
-    align-items: flex-start;
+   body {
+    font-family: Arial, sans-serif;
+    background: #f8fafd;
+    margin: 0;
+    padding: 0;
   }
-  #admin-filtros button {
-    width: 100% !important;
+  
+  .container {
+    padding: 20px;
   }
-}
+  
+  /* Navbar */
+  .navbar {
+    background-color: #003366;
+    color: white;
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    font-size: 1.2rem;
+    font-weight: bold;
+  }
+  
+  .navbar a {
+    color: white;
+    text-decoration: none;
+    margin-right: 10px;
+  }
+  
+  .navbar-text {
+    flex: 1;
+    text-align: center;
+  }
+  
+  /* =========================
+     Secções
+     ========================= */
+  section {
+    background: #fff;
+    border-radius: 10px;
+    padding: 14px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  }
+  
+  h2 {
+    margin-top: 0;
+    color: #003366;
+  }
+  
+  /* =========================
+     Botões
+     ========================= */
+  .table-actions button,
+  #admin-filtros button,
+  .btn {
+    appearance: none;
+    border: 0;
+    border-radius: 10px;
+    padding: 10px 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: filter .15s ease, opacity .15s ease;
+    display: inline-block;
+    width: auto;
+  }
+  
+  /* Excel (verde) */
   .btn-excel {
-    background-color: #28a745;
-    color: white;
-    padding: 6px 12px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
+    background: #22c55e;   /* verde */
+    color: #fff;
   }
-  .btn-excel:hover {
-    background-color: #218838;
-  }
+  .btn-excel:hover { filter: brightness(1.08); }
+  
+  /* PDF (cinza escuro) */
   .btn-pdf {
-    background-color: #d9534f;
-    color: white;
-    padding: 6px 12px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
+    background: #1f2937;   /* cinza-escuro */
+    color: #fff;
   }
-  .btn-pdf:hover {
-    background-color: #c9302c;
+  .btn-pdf:hover { filter: brightness(1.08); }
+  
+  /* Barra de ações das tabelas */
+  .table-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin: 10px 0 14px;
   }
-
+  
+  /* =========================
+     Inputs e filtros
+     ========================= */
+  #admin-filtros {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 24px;
+  }
+  
+  #admin-filtros label {
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  
+  #admin-filtros input[type="date"] {
+    padding: 6px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+  }
+  
+  /* =========================
+     Tabelas
+     ========================= */
+  table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    overflow: hidden;
+    border-radius: 10px;
+  }
+  
+  thead th {
+    background: #003366;
+    color: #fff;
+    padding: 10px;
+    text-align: left;
+  }
+  
+  tbody td {
+    background: #fff;
+    padding: 10px;
+    border-top: 1px solid #eee;
+  }
+  
+  tbody tr:nth-child(even) td {
+    background: #f7f9ff;
+  }
+  
+  /* =========================
+     Resumo
+     ========================= */
+  #admin-resumo {
+    font-weight: normal;
+    margin-top: 10px;
+  }
+  
