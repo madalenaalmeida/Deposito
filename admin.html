@@ -146,7 +146,11 @@
     );
     doc.setFontSize(14);
     doc.text(title || 'Tabela', 40, 40);
-    doc.autoTable({ head, body, startY: 60, styles: { fontSize: 10, cellPadding: 6 }, headStyles: { fillColor: [0,51,102] }});
+    doc.autoTable({
+      head, body, startY: 60,
+      styles: { fontSize: 10, cellPadding: 6 },
+      headStyles: { fillColor: [0,51,102] }
+    });
     const name = (title||'tabela').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'')
                + '_' + new Date().toISOString().slice(0,10) + '.pdf';
     doc.save(name);
@@ -159,26 +163,18 @@
       ?.addEventListener('click', ()=> exportExcel(tbl, titleText));
   }
 
-  // ===== Sincronização do filtro com o index =====
-  function guardarFiltroParaIndex(ini, fim, resumoTxt){
-    // chaves novas
-    localStorage.setItem('depos.filtroDatas', JSON.stringify({ inicio: ini, fim: fim }));
-    localStorage.setItem('depos.filtroResumo', resumoTxt || '');
-    // compat com versões antigas (se o index ainda ler estas)
-    localStorage.setItem('filtroInicio', ini || '');
-    localStorage.setItem('filtroFim', fim || '');
-    localStorage.setItem('filtroResumo', resumoTxt || '');
-    // ping
-    const now = Date.now().toString();
-    localStorage.setItem('depos.filtroPing', now);
-    localStorage.setItem('filtroPing', now);
+  // ===== Sincronização com o INDEX =====
+  function guardarDatasParaIndex(ini, fim) {
+    // chaves que o index.html usa
+    localStorage.setItem('dataInicio', ini || '');
+    localStorage.setItem('dataFim', fim || '');
+    // ping para atualizar em tempo-real no index
+    localStorage.setItem('filtroPing', Date.now().toString());
   }
-  function limparFiltroNoIndex(){
-    ['depos.filtroDatas','depos.filtroResumo','filtroInicio','filtroFim','filtroResumo']
-      .forEach(k => localStorage.removeItem(k));
-    const now = Date.now().toString();
-    localStorage.setItem('depos.filtroPing', now);
-    localStorage.setItem('filtroPing', now);
+  function limparDatasNoIndex() {
+    localStorage.removeItem('dataInicio');
+    localStorage.removeItem('dataFim');
+    localStorage.setItem('filtroPing', Date.now().toString());
   }
 
   // ===== Render =====
@@ -258,14 +254,13 @@
     bindExports('admin-por-ramo','admin-por-ramo-table','Pedidos por ramo (agregado)');
   }
 
-  // Botões filtros (agora também sincronizam com index)
+  // Botões filtros — agora também sincronizam com o index
   document.getElementById('aplicar-filtro').addEventListener('click', () => {
     render();
     const ini = document.getElementById('filtro-inicio').value || '';
     const fim = document.getElementById('filtro-fim').value || '';
-    const resumoTxt = (document.getElementById('admin-resumo')?.innerText || '').trim();
-    guardarFiltroParaIndex(ini, fim, resumoTxt);
-    // Se quiseres navegar para o index automaticamente:
+    guardarDatasParaIndex(ini, fim);
+    // Se quiseres ir logo para o index com as datas visíveis:
     // window.location.href = 'index.html';
   });
 
@@ -273,7 +268,7 @@
     document.getElementById('filtro-inicio').value = '';
     document.getElementById('filtro-fim').value = '';
     render();
-    limparFiltroNoIndex();
+    limparDatasNoIndex();
   });
 
   window.addEventListener('storage', render);
@@ -282,3 +277,4 @@
 
 </body>
 </html>
+
