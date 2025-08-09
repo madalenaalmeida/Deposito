@@ -7,27 +7,30 @@
   <!-- Carrega o CSS global e o admin.css (sem alterações) -->
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="admin-style.css">
-  <style>
-    /* blindagem para a navbar no admin (não toca no resto) */
-    .navbar .nav-links{ list-style:none; margin:0; padding:0; }
-    .navbar .nav-links li{ display:inline-block; }
-    .navbar .nav-links a{ text-decoration:none; }
-  </style>
+  
 <body>
 
-  <nav class="navbar">
-    <a href="index.html" class="logo">
-      <img src="images/guiasdeportugal.png" alt="Guias de Viseu">
-    </a>
-    <ul class="nav-links">
-      <li><a href="ramo-avezinha.html">Avezinhas</a></li>
-      <li><a href="ramo-aventura.html">Aventura</a></li>
-      <li><a href="ramo-caravela.html">Caravela</a></li>
-      <li><a href="ramo-moinho.html">Moinho</a></li>
-      <li><a class="active" href="admin.html">Admin</a></li>
-    </ul>
-    <button id="menu-btn" class="menu-toggle"><i class="fas fa-bars"></i></button>
-  </nav>
+  <div class="container">
+    <!-- Navbar com botão para abrir o menu lateral -->
+    <nav>
+      <div class="menu-btn" id="menu-btn"><i class="fas fa-bars"></i></div>
+    </nav>
+
+    <!-- Menu lateral (Sidebar) -->
+    <div class="sidebar" id="sidebar">
+      <div class="overlay" id="overlay"></div>
+      <ul>
+        <li><a href="index.html">Início</a></li>
+        <li><a href="ramo-avezinha.html">Ramo Avezinha</a></li>
+        <li><a href="ramo-aventura.html">Ramo Aventura</a></li>
+        <li><a href="ramo-caravela.html">Ramo Caravela</a></li>
+        <li><a href="ramo-moinho.html">Ramo Moinho</a></li>
+        <li><a href="dirigentes.html">Dirigentes</a></li>
+        <li><a href="faq.html">Questões Frequentes</a></li>
+        <li><a href="login.html">Área Administrativa</a></li>
+      </ul>
+    </div>
+
   
 
   <main class="admin-content">
