@@ -8,15 +8,24 @@
   <link rel="stylesheet" href="admin.css">
   <!-- (Opcional) XLSX para exportação .xlsx; se não quiseres, podes remover e ficas com CSV -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="admin-style.css">
 </head>
 <body>
   <!-- Cabeçalho/toolbar do teu admin (mantém o estilo do teu admin.css) -->
-  <header class="navbar">
-    <div class="navbar-inner">
-      <h1>Admin — Depósito</h1>
-    </div>
-  </header>
+  <nav class="navbar">
+    <a href="index.html" class="logo">
+      <img src="images/guiasdeportugal.png" alt="Guias de Viseu">
+    </a>
+    <ul class="nav-links">
+      <li><a href="ramo-avezinha.html">Avezinhas</a></li>
+      <li><a href="ramo-aventura.html">Aventura</a></li>
+      <li><a href="ramo-caravela.html">Caravela</a></li>
+      <li><a href="ramo-moinho.html">Moinho</a></li>
+      <li><a class="active" href="admin.html">Admin</a></li>
+    </ul>
+    <button id="menu-btn" class="menu-toggle"><i class="fas fa-bars"></i></button>
+  </nav>
 
   <main class="admin-content">
     <!-- Filtros (data) -->
@@ -287,6 +296,16 @@
     });
     mo.observe(document.documentElement, {childList:true, subtree:true});
   })();
+  </script>
+  <script>
+    // Toggle simples do menu (compatível com a tua navbar)
+    const menuBtn = document.getElementById('menu-btn');
+    const nav = document.querySelector('.navbar');
+    if (menuBtn && nav) {
+      menuBtn.addEventListener('click', () => {
+        nav.classList.toggle('active');
+      });
+    }
   </script>
 </body>
 </html>
