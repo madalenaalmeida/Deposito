@@ -122,6 +122,24 @@
       <tr><td>12</td><td>41</td><td>52</td></tr>
     </tbody>
   </table>
-
+  <style>
+    .image-space {
+      text-align: center;
+      margin: 15px 0;
+    }
+    .image-space img {
+      width: 300px; /* tamanho fixo */
+      height: 200px; /* altura fixa */
+      object-fit: contain; /* mantém proporção da imagem */
+      border-radius: 10px;
+      background: white; /* fundo branco para imagens menores */
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+      transition: transform 0.2s ease;
+    }
+    .image-space img:hover {
+      transform: scale(1.05);
+    }
+    </style>
+    
 </body>
 </html>
