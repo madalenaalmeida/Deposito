@@ -485,5 +485,11 @@ table td {
   /* Responsivo */
   @media (max-width: 820px) {
     #admin-filtros {
-      flex
+      flex-direction: column;
+      align-items: flex-start;
     }
+    #admin-filtros button {
+      width: 100%;
+    }
+  }
+  
