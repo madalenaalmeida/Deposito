@@ -5,11 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Guia de Tamanhos</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
   <style>
     body {
       font-family: 'Poppins', sans-serif;
       margin: 0;
-      padding: 20px;
       background-color: #f9f9f9;
       color: #333;
     }
@@ -20,20 +20,6 @@
     h2 {
       margin-top: 40px;
       color: #0074a1;
-    }
-    .image-space {
-      text-align: center;
-      margin: 15px 0;
-    }
-    .image-space img {
-      max-width: 250px;
-      height: auto;
-      border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-      transition: transform 0.2s ease;
-    }
-    .image-space img:hover {
-      transform: scale(1.05);
     }
     table {
       width: 100%;
@@ -48,98 +34,109 @@
     th {
       background-color: #e0f0fa;
     }
-  </style>
-</head>
-<body>
-  <h1>Guia de Tamanhos</h1>
-
-  <h2>Camisas</h2>
-  <div class="image-space">
-    <img src="images/camisas.png" alt="Camisas">
-  </div>
-  <table>
-    <thead>
-      <tr>
-        <th>Tamanho</th><th>Peito (A)</th><th>Cinta (B)</th><th>Anca (C)</th><th>Ombros (D)</th><th>Costa (E)</th><th>Manga (F)</th><th>Gola (G)</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr><td>8 Criança</td><td>40</td><td>38</td><td>44</td><td>36</td><td>54</td><td>45</td><td>29</td></tr>
-      <tr><td>10 Criança</td><td>42</td><td>40</td><td>46</td><td>37</td><td>55</td><td>46</td><td>30</td></tr>
-      <tr><td>12 Criança</td><td>44</td><td>42</td><td>48</td><td>38</td><td>56</td><td>47</td><td>31</td></tr>
-      <tr><td>14 Criança</td><td>46</td><td>44</td><td>50</td><td>39</td><td>57</td><td>48</td><td>32</td></tr>
-      <tr><td>36 Adulto</td><td>46</td><td>44</td><td>46</td><td>38</td><td>60</td><td>58</td><td>34</td></tr>
-      <tr><td>38 Adulto</td><td>48</td><td>46</td><td>48</td><td>40</td><td>61</td><td>59</td><td>36</td></tr>
-      <tr><td>40 Adulto</td><td>50</td><td>48</td><td>50</td><td>42</td><td>62</td><td>60</td><td>38</td></tr>
-    </tbody>
-  </table>
-
-  <h2>Polars</h2>
-  <div class="image-space">
-    <img src="images/polares.png" alt="Polars">
-  </div>
-  <table>
-    <thead>
-      <tr><th>Tamanho</th><th>Largura (A)</th><th>Altura (B)</th></tr>
-    </thead>
-    <tbody>
-      <tr><td>8 Criança</td><td>52</td><td>37</td></tr>
-      <tr><td>10 Criança</td><td>56</td><td>40</td></tr>
-      <tr><td>12 Criança</td><td>60</td><td>43</td></tr>
-      <tr><td>14 Criança</td><td>62</td><td>45</td></tr>
-      <tr><td>S Adulto</td><td>62</td><td>48</td></tr>
-    </tbody>
-  </table>
-
-  <h2>Saias</h2>
-  <div class="image-space">
-    <img src="images/saias.png" alt="Saias">
-  </div>
-  <table>
-    <thead>
-      <tr><th>Tamanho</th><th>Cintura (A)</th><th>Anca (B)</th></tr>
-    </thead>
-    <tbody>
-      <tr><td>6</td><td>26</td><td>40</td></tr>
-      <tr><td>8</td><td>28</td><td>42</td></tr>
-      <tr><td>10</td><td>30</td><td>44</td></tr>
-      <tr><td>12</td><td>32</td><td>46</td></tr>
-    </tbody>
-  </table>
-
-  <h2>Sweat-shirts Trevo</h2>
-  <div class="image-space">
-    <img src="images/sweats.png" alt="Sweat-shirts Trevo">
-  </div>
-  <table>
-    <thead>
-      <tr><th>Tamanho</th><th>Largura (A)</th><th>Altura (B)</th></tr>
-    </thead>
-    <tbody>
-      <tr><td>6</td><td>35</td><td>45</td></tr>
-      <tr><td>8</td><td>37</td><td>47</td></tr>
-      <tr><td>10</td><td>39</td><td>50</td></tr>
-      <tr><td>12</td><td>41</td><td>52</td></tr>
-    </tbody>
-  </table>
-  <style>
     .image-space {
       text-align: center;
       margin: 15px 0;
     }
     .image-space img {
-      width: 300px; /* tamanho fixo */
-      height: 200px; /* altura fixa */
-      object-fit: contain; /* mantém proporção da imagem */
+      width: 300px;
+      height: 200px;
+      object-fit: contain;
       border-radius: 10px;
-      background: white; /* fundo branco para imagens menores */
+      background: white;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
       transition: transform 0.2s ease;
     }
     .image-space img:hover {
       transform: scale(1.05);
     }
-    </style>
-    
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav>
+    <div class="menu-btn" id="menu-btn"><i class="fas fa-bars"></i></div>
+  </nav>
+
+  <!-- Sidebar -->
+  <div class="sidebar" id="sidebar">
+    <ul>
+      <li><a href="index.html">Início</a></li>
+      <li><a href="ramo-avezinha.html">Ramo Avezinha</a></li>
+      <li><a href="ramo-aventura.html">Ramo Aventura</a></li>
+      <li><a href="ramo-caravela.html">Ramo Caravela</a></li>
+      <li><a href="ramo-moinho.html">Ramo Moinho</a></li>
+      <li><a href="dirigentes.html">Dirigentes</a></li>
+      <li><a href="faq.html">Questões Frequentes</a></li>
+      <li><a href="login.html">Área Administrativa</a></li>
+    </ul>
+  </div>
+
+  <main style="padding: 20px;">
+    <h1>Guia de Tamanhos</h1>
+
+    <h2>Camisas</h2>
+    <div class="image-space">
+      <img src="imagens/camisa.png" alt="Medidas da Camisa">
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Tamanho</th><th>Peito (A)</th><th>Cinta (B)</th><th>Anca (C)</th><th>Ombros (D)</th><th>Costa (E)</th><th>Manga (F)</th><th>Gola (G)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>8 Criança</td><td>40</td><td>38</td><td>44</td><td>36</td><td>54</td><td>45</td><td>29</td></tr>
+        <tr><td>10 Criança</td><td>42</td><td>40</td><td>46</td><td>37</td><td>55</td><td>46</td><td>30</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Polars</h2>
+    <div class="image-space">
+      <img src="imagens/polar.png" alt="Medidas do Polar">
+    </div>
+    <table>
+      <thead>
+        <tr><th>Tamanho</th><th>Largura (A)</th><th>Altura (B)</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>8 Criança</td><td>52</td><td>37</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Saias</h2>
+    <div class="image-space">
+      <img src="imagens/saia.png" alt="Medidas da Saia">
+    </div>
+    <table>
+      <thead>
+        <tr><th>Tamanho</th><th>Cintura (A)</th><th>Anca (B)</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>6</td><td>26</td><td>40</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Sweat-shirts Trevo</h2>
+    <div class="image-space">
+      <img src="imagens/sweatshirt.png" alt="Medidas da Sweat-shirt Trevo">
+    </div>
+    <table>
+      <thead>
+        <tr><th>Tamanho</th><th>Largura (A)</th><th>Altura (B)</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>6</td><td>35</td><td>45</td></tr>
+      </tbody>
+    </table>
+  </main>
+
+  <script>
+    const menuBtn = document.getElementById('menu-btn');
+    const sidebar = document.getElementById('sidebar');
+    menuBtn.addEventListener('click', () => {
+      sidebar.classList.toggle('active');
+    });
+  </script>
 </body>
 </html>
