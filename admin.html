@@ -19,9 +19,7 @@
 
   <!-- Navbar -->
   <div class="navbar">
-    <a href="index.html" class="voltar-inicio">
-      <i class="fas fa-arrow-left"></i>
-    </a>
+    <a href="index.html" class="voltar-inicio"><i class="fas fa-arrow-left"></i></a>
     <span class="navbar-text">Painel de Administração</span>
   </div>
 
@@ -77,7 +75,7 @@
   </div>
 
   <script>
-  // Utils
+  // ===== Utils =====
   const parseMaybeNumber = (v) => {
     if (typeof v === 'number') return v;
     if (v == null) return 0;
@@ -124,7 +122,7 @@
     return Array.from(map.entries()).map(([key, v]) => ({ key, ...v }));
   };
 
-  // Exportação
+  // ===== Exportação =====
   function exportExcel(table, title) {
     if (typeof XLSX === 'undefined' || !XLSX?.utils?.table_to_book) {
       alert('Biblioteca Excel não carregada.');
@@ -137,7 +135,7 @@
   }
   function exportPDF(table, title) {
     const { jsPDF } = window.jspdf || {};
-    if (!jsPDF || !window.jspdf || !docAutoTableAvailable()) {
+    if (!jsPDF || !window.jspdf || !((window.jspdf.jsPDF.API||{}).autoTable)) {
       alert('Biblioteca PDF não carregada.');
       return;
     }
@@ -153,11 +151,6 @@
                + '_' + new Date().toISOString().slice(0,10) + '.pdf';
     doc.save(name);
   }
-  function docAutoTableAvailable(){
-    // pequena verificação para o plugin do autotable
-    return !!(window.jspdf && window.jspdf.jsPDF && (window.jspdf.jsPDF.API || {}).autoTable);
-  }
-
   function bindExports(sectionId, tableId, titleText){
     const tbl = document.getElementById(tableId);
     document.getElementById('exp-'+sectionId.split('admin-')[1]+'-pdf')
@@ -166,7 +159,29 @@
       ?.addEventListener('click', ()=> exportExcel(tbl, titleText));
   }
 
-  // Render
+  // ===== Sincronização do filtro com o index =====
+  function guardarFiltroParaIndex(ini, fim, resumoTxt){
+    // chaves novas
+    localStorage.setItem('depos.filtroDatas', JSON.stringify({ inicio: ini, fim: fim }));
+    localStorage.setItem('depos.filtroResumo', resumoTxt || '');
+    // compat com versões antigas (se o index ainda ler estas)
+    localStorage.setItem('filtroInicio', ini || '');
+    localStorage.setItem('filtroFim', fim || '');
+    localStorage.setItem('filtroResumo', resumoTxt || '');
+    // ping
+    const now = Date.now().toString();
+    localStorage.setItem('depos.filtroPing', now);
+    localStorage.setItem('filtroPing', now);
+  }
+  function limparFiltroNoIndex(){
+    ['depos.filtroDatas','depos.filtroResumo','filtroInicio','filtroFim','filtroResumo']
+      .forEach(k => localStorage.removeItem(k));
+    const now = Date.now().toString();
+    localStorage.setItem('depos.filtroPing', now);
+    localStorage.setItem('filtroPing', now);
+  }
+
+  // ===== Render =====
   function render(){
     const ini = document.getElementById('filtro-inicio')?.value || '';
     const fim = document.getElementById('filtro-fim')?.value || '';
@@ -243,12 +258,24 @@
     bindExports('admin-por-ramo','admin-por-ramo-table','Pedidos por ramo (agregado)');
   }
 
-  document.getElementById('aplicar-filtro').addEventListener('click', render);
+  // Botões filtros (agora também sincronizam com index)
+  document.getElementById('aplicar-filtro').addEventListener('click', () => {
+    render();
+    const ini = document.getElementById('filtro-inicio').value || '';
+    const fim = document.getElementById('filtro-fim').value || '';
+    const resumoTxt = (document.getElementById('admin-resumo')?.innerText || '').trim();
+    guardarFiltroParaIndex(ini, fim, resumoTxt);
+    // Se quiseres navegar para o index automaticamente:
+    // window.location.href = 'index.html';
+  });
+
   document.getElementById('limpar-filtro').addEventListener('click', () => {
     document.getElementById('filtro-inicio').value = '';
     document.getElementById('filtro-fim').value = '';
     render();
+    limparFiltroNoIndex();
   });
+
   window.addEventListener('storage', render);
   window.addEventListener('load', render);
   </script>
