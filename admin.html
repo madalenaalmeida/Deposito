@@ -4,78 +4,73 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Painel de Administração</title>
-
-  <!-- estilos -->
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="admin-style.css">
-  <!-- ícones (opcional para a seta de voltar) -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <!-- XLSX (opcional para exportar Excel .xlsx) -->
+
+  <!-- Biblioteca para Excel -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <!-- Biblioteca para PDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
 
-  <!-- Navbar igual ao site -->
-  <nav class="navbar">
-    <a href="index.html" class="voltar-inicio"><i class="fas fa-arrow-left"></i></a>
-    <span class="navbar-text">Painel de Administração</span>
-  </nav>
+<div class="navbar">
+  <a href="index.html" class="voltar-inicio">
+    <i class="fas fa-arrow-left"></i>
+  </a>
+  <span class="navbar-text">Painel de Administração</span>
+</div>
 
-  <!-- CONTEÚDO -->
-  <main class="admin-content">
+<div class="container">
 
-    <!-- Filtros -->
-    <section id="admin-filtros" class="controls">
-      <label>De <input type="date" id="filtro-inicio"></label>
-      <label>Até <input type="date" id="filtro-fim"></label>
-      <button id="aplicar-filtro" type="button">Aplicar filtro</button>
-      <button id="limpar-filtro" type="button">Limpar</button>
-      <span id="admin-resumo"></span>
-    </section>
+  <!-- Tabelas -->
+  <section id="admin-detalhados">
+    <h2>Pedidos detalhados (todos)</h2>
+    <div class="table-actions" style="display:flex;gap:8px;flex-wrap:wrap;margin:6px 0;">
+      <button class="btn-pdf" type="button" id="exp-detalhados-pdf">Exportar PDF</button>
+      <button class="btn-excel" type="button" id="exp-detalhados-xlsx">Exportar Excel</button>
+    </div>
+    <table id="admin-detalhados-table">
+      <thead>
+        <tr>
+          <th>Nome</th><th>Email</th><th>Ramo</th><th>Produto</th><th>Tamanho</th><th>Qtd</th><th>Preço unit.</th><th>Total</th><th>Data</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </section>
 
-    <!-- Tabelas -->
-    <section id="admin-detalhados">
-      <h2>Pedidos detalhados (todos)</h2>
-      <div class="table-actions">
-        <button type="button" id="exp-detalhados-csv">Exportar CSV</button>
-        <button type="button" id="exp-detalhados-xlsx">Exportar Excel</button>
-      </div>
-      <table id="admin-detalhados-table">
-        <thead>
-          <tr>
-            <th>Nome</th><th>Email</th><th>Ramo</th><th>Produto</th>
-            <th>Tamanho</th><th>Qtd</th><th>Preço unit.</th><th>Total</th><th>Data</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </section>
+  <section id="admin-por-ramo">
+    <h2>Pedidos por ramo (agregado)</h2>
+    <div class="table-actions" style="display:flex;gap:8px;flex-wrap:wrap;margin:6px 0;">
+      <button class="btn-pdf" type="button" id="exp-porramo-pdf">Exportar PDF</button>
+      <button class="btn-excel" type="button" id="exp-porramo-xlsx">Exportar Excel</button>
+    </div>
+    <table id="admin-por-ramo-table">
+      <thead>
+        <tr>
+          <th>Ramo</th><th>Produto</th><th>Tamanho</th><th>Quantidade</th><th>Preço (total)</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </section>
 
-    <section id="admin-por-ramo">
-      <h2>Pedidos por ramo (agregado)</h2>
-      <div class="table-actions">
-        <button type="button" id="exp-porramo-csv">Exportar CSV</button>
-        <button type="button" id="exp-porramo-xlsx">Exportar Excel</button>
-      </div>
-      <table id="admin-por-ramo-table">
-        <thead>
-          <tr>
-            <th>Ramo</th><th>Produto</th><th>Tamanho</th><th>Quantidade</th><th>Preço (total)</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </section>
+  <section id="admin-por-ramo-detalhes">
+    <h2>Por ramo — detalhes</h2>
+  </section>
 
-    <section id="admin-por-ramo-detalhes">
-      <h2>Por ramo — detalhes</h2>
-      <!-- tabelas por ramo são geradas via JS -->
-    </section>
+  <!-- Filtros no fim -->
+  <section id="admin-filtros" class="controls" style="margin-top: 30px;">
+    <label>De <input type="date" id="filtro-inicio"></label>
+    <label>Até <input type="date" id="filtro-fim"></label>
+    <button id="aplicar-filtro" type="button">Aplicar filtro</button>
+    <button id="limpar-filtro" type="button">Limpar</button>
+    <span id="admin-resumo"></span>
+  </section>
+</div>
 
-  </main>
-
-  <!-- Lógica Admin -->
-  <script>
+<script>
   const parseMaybeNumber = (v) => {
     if (typeof v === 'number') return v;
     if (v == null) return 0;
@@ -121,43 +116,24 @@
     }
     return Array.from(map.entries()).map(([key, v]) => ({ key, ...v }));
   };
-  function toCSV(table){
-    const rows = Array.from(table.querySelectorAll('tr')).map(tr =>
-      Array.from(tr.querySelectorAll('th,td')).map(td => {
-        let txt = (td.innerText||'').replace(/\r?\n|\r/g, ' ').trim();
-        if (/[",;\n]/.test(txt)) txt = '"' + txt.replace(/"/g, '""') + '"';
-        return txt;
-      }).join(';')
-    );
-    return rows.join('\n');
+
+  function exportExcel(table, title) {
+    const wb = XLSX.utils.table_to_book(table, {sheet: title});
+    XLSX.writeFile(wb, title.replace(/\s+/g,'_') + '.xlsx');
   }
-  function downloadBlob(content, filename, mime){
-    const blob = new Blob([content], {type: mime});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    setTimeout(()=>{ URL.revokeObjectURL(url); a.remove(); }, 0);
+
+  function exportPDF(table, title) {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    doc.text(title, 14, 10);
+    doc.autoTable({ html: table });
+    doc.save(title.replace(/\s+/g,'_') + '.pdf');
   }
-  function exportCSV(table, title){
-    const name = (title||'tabela').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'') + '_' + new Date().toISOString().slice(0,10) + '.csv';
-    downloadBlob(toCSV(table), name, 'text/csv;charset=utf-8;');
-  }
-  function exportXLSX(table, title){
-    if (typeof XLSX === 'undefined' || !XLSX?.utils?.table_to_book) {
-      alert('Para exportar em Excel (.xlsx), mantém a biblioteca XLSX incluída no <head>.');
-      return;
-    }
-    const wb = XLSX.utils.table_to_book(table, {sheet: (title||'TABELA').slice(0,31)});
-    const name = (title||'tabela').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'') + '_' + new Date().toISOString().slice(0,10) + '.xlsx';
-    XLSX.writeFile(wb, name);
-  }
+
   function bindExports(sectionId, tableId, titleText){
     const tbl = document.getElementById(tableId);
-    document.getElementById(sectionId).querySelector('#exp-'+sectionId.split('admin-')[1]+'-csv')?.addEventListener('click', ()=> exportCSV(tbl, titleText));
-    document.getElementById(sectionId).querySelector('#exp-'+sectionId.split('admin-')[1]+'-xlsx')?.addEventListener('click', ()=> exportXLSX(tbl, titleText));
+    document.getElementById('exp-'+sectionId.split('admin-')[1]+'-pdf')?.addEventListener('click', ()=> exportPDF(tbl, titleText));
+    document.getElementById('exp-'+sectionId.split('admin-')[1]+'-xlsx')?.addEventListener('click', ()=> exportExcel(tbl, titleText));
   }
 
   function render(){
@@ -165,42 +141,49 @@
     const fim = document.getElementById('filtro-fim')?.value || '';
     const pedidos = filtrarPorData(getPedidos(), ini, fim);
 
-    // resumo
     const totalQtd = pedidos.reduce((s,p)=>s+(p.quantidade||0),0);
     const totalVal = pedidos.reduce((s,p)=>s+(p.total||0),0);
     const resumo = document.getElementById('admin-resumo');
     if (resumo) resumo.innerHTML = `<b>${pedidos.length}</b> registos | Qtde: <b>${totalQtd}</b> | Valor: <b>${money(totalVal)}</b>`;
 
-    // detalhados
-    const tb1 = document.querySelector('#admin-detalhados-table tbody');
-    tb1.innerHTML = '';
+    const tbDetalhe = document.querySelector('#admin-detalhados-table tbody');
+    tbDetalhe.innerHTML = '';
     pedidos.forEach(p => {
       const tr = document.createElement('tr');
       tr.innerHTML = `
-        <td>${p.nome}</td><td>${p.email}</td><td>${p.ramo}</td>
-        <td>${p.produto}</td><td>${p.tamanho}</td><td>${p.quantidade||0}</td>
-        <td>${money(p.precoUnit)}</td><td>${money(p.total)}</td><td>${p.data||''}</td>`;
-      tb1.appendChild(tr);
+        <td>${p.nome}</td>
+        <td>${p.email}</td>
+        <td>${p.ramo}</td>
+        <td>${p.produto}</td>
+        <td>${p.tamanho}</td>
+        <td>${p.quantidade||0}</td>
+        <td>${money(p.precoUnit)}</td>
+        <td>${money(p.total)}</td>
+        <td>${p.data||''}</td>
+      `;
+      tbDetalhe.appendChild(tr);
     });
 
-    // por ramo (agregado)
     const grupos = agrupar(pedidos, p => [p.ramo, p.produto, p.tamanho].join(' | '));
-    const tb2 = document.querySelector('#admin-por-ramo-table tbody');
-    tb2.innerHTML = '';
+    const tbRamo = document.querySelector('#admin-por-ramo-table tbody');
+    tbRamo.innerHTML = '';
     grupos.forEach(g => {
       const [ramo, produto, tamanho] = g.key.split(' | ');
       const tr = document.createElement('tr');
       tr.innerHTML = `
-        <td>${ramo}</td><td>${produto}</td><td>${tamanho}</td>
-        <td>${g.quantidade}</td><td>${money(g.total)}</td>`;
-      tb2.appendChild(tr);
+        <td>${ramo}</td>
+        <td>${produto}</td>
+        <td>${tamanho}</td>
+        <td>${g.quantidade}</td>
+        <td>${money(g.total)}</td>
+      `;
+      tbRamo.appendChild(tr);
     });
 
-    // por ramo — tabelas
     const secRamos = document.getElementById('admin-por-ramo-detalhes');
-    Array.from(secRamos.querySelectorAll('table, .ramo-title')).forEach(n => n.remove());
-    const ramos = Array.from(new Set(pedidos.map(p => p.ramo))).filter(Boolean);
-    ramos.forEach(ramo => {
+    secRamos.innerHTML = '<h2>Por ramo — detalhes</h2>';
+    const rams = Array.from(new Set(pedidos.map(p => p.ramo))).filter(Boolean);
+    rams.forEach(ramo => {
       const h = document.createElement('div');
       h.className = 'ramo-title';
       h.textContent = ramo;
@@ -208,9 +191,10 @@
 
       const bar = document.createElement('div');
       bar.className = 'table-actions';
-      const b1 = document.createElement('button'); b1.type='button'; b1.textContent='Exportar CSV';
-      const b2 = document.createElement('button'); b2.type='button'; b2.textContent='Exportar Excel';
-      bar.appendChild(b1); bar.appendChild(b2);
+      bar.style.cssText = 'display:flex;gap:8px;flex-wrap:wrap;margin:6px 0;';
+      const bPDF = document.createElement('button'); bPDF.type='button'; bPDF.textContent='Exportar PDF'; bPDF.className='btn-pdf';
+      const bXLSX = document.createElement('button'); bXLSX.type='button'; bXLSX.textContent='Exportar Excel'; bXLSX.className='btn-excel';
+      bar.appendChild(bPDF); bar.appendChild(bXLSX);
       secRamos.appendChild(bar);
 
       const tbl = document.createElement('table');
@@ -218,18 +202,25 @@
         <th>Nome</th><th>Email</th><th>Produto</th><th>Tamanho</th><th>Qtd</th><th>Preço unit.</th><th>Total</th><th>Data</th>
       </tr></thead><tbody></tbody>`;
       const tb = tbl.querySelector('tbody');
-      pedidos.filter(p=>p.ramo===ramo).forEach(p => {
+      const lista = pedidos.filter(p=>p.ramo===ramo);
+      lista.forEach(p => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
-          <td>${p.nome}</td><td>${p.email}</td><td>${p.produto}</td>
-          <td>${p.tamanho}</td><td>${p.quantidade||0}</td>
-          <td>${money(p.precoUnit)}</td><td>${money(p.total)}</td><td>${p.data||''}</td>`;
+          <td>${p.nome}</td>
+          <td>${p.email}</td>
+          <td>${p.produto}</td>
+          <td>${p.tamanho}</td>
+          <td>${p.quantidade||0}</td>
+          <td>${money(p.precoUnit)}</td>
+          <td>${money(p.total)}</td>
+          <td>${p.data||''}</td>
+        `;
         tb.appendChild(tr);
       });
       secRamos.appendChild(tbl);
 
-      b1.addEventListener('click', ()=> exportCSV(tbl, 'Pedidos '+ramo));
-      b2.addEventListener('click', ()=> exportXLSX(tbl, 'Pedidos '+ramo));
+      bPDF.addEventListener('click', ()=> exportPDF(tbl, 'Pedidos '+ramo));
+      bXLSX.addEventListener('click', ()=> exportExcel(tbl, 'Pedidos '+ramo));
     });
 
     bindExports('admin-detalhados','admin-detalhados-table','Pedidos detalhados');
@@ -244,7 +235,32 @@
   });
   window.addEventListener('storage', render);
   window.addEventListener('load', render);
-  </script>
+</script>
+
+<style>
+  .btn-excel {
+    background-color: #28a745;
+    color: white;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  .btn-excel:hover {
+    background-color: #218838;
+  }
+  .btn-pdf {
+    background-color: #d9534f;
+    color: white;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  .btn-pdf:hover {
+    background-color: #c9302c;
+  }
+</style>
 
 </body>
 </html>
