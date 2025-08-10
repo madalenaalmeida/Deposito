@@ -62,104 +62,107 @@
 <!-- Seção de Produtos -->
 <main>
 <section class="produtos">
-<!-- Exemplo de produto com tamanho e quantidade -->
- <!-- T-shirt Trevo Azul -->
- <div class="produto">
-  <img src="images/tshirt trevo.png" alt="T-shirt Trevo Azul" />
-  <h2>T-shirt Trevo Azul</h2>
-  <p class="preco">8,50€</p>
-  <button class="adicionar" data-options="tamanho,quantidade" data-precos='{
-    "8":8.5,"10":8.5,"12":8.5,"14":8.5,
-    "S":8.5,"M":8.5,"L":8.5,"XL":8.5,"XXL":8.5,"XXXL":8.5
-  }' data-produto="T-shirt Trevo Azul">Adicionar ao Carrinho</button>
-</div>
+  <!-- Produtos (iguais aos teus) -->
+  <!-- T-shirt Trevo Amarela -->
+  <div class="produto">
+    <img src="images/tshirtaves.png" alt="T-shirt Trevo Amarela" />
+    <h2>T-shirt Trevo Amarela</h2>
+    <p class="preco">8,50€</p>
+    <button class="adicionar" data-options="tamanho,quantidade" data-precos='{
+      "6":8.5,"8":8.5,"10":8.5,"12":8.5,"14":8.5,"S":8.5
+    }' data-produto="T-shirt Trevo Amarela">Adicionar ao Carrinho</button>
+  </div>
 
-<!-- T-shirt Ser Guia É -->
-<div class="produto">
-  <img src="images/serguia.png" alt="T-shirt Ser Guia É" />
-  <h2>T-shirt Ser Guia É</h2>
-  <p class="preco">6,00€</p>
-  <button class="adicionar" data-options="tamanho,quantidade" data-precos='{
-    "8":6.0,"10":6.0,"12":6.0,
-    "S":6.0,"M":6.0,"L":6.0,"XL":6.0,"XXL":6.0
-  }' data-produto="T-shirt Ser Guia É">Adicionar ao Carrinho</button>
-</div>
+  <!-- T-shirt Trevo Azul -->
+  <div class="produto">
+    <img src="images/tshirt trevo.png" alt="T-shirt Trevo Azul" />
+    <h2>T-shirt Trevo Azul</h2>
+    <p class="preco">8,50€</p>
+    <button class="adicionar" data-options="tamanho,quantidade" data-precos='{
+      "8":8.5,"10":8.5,"12":8.5,"14":8.5,
+      "S":8.5,"M":8.5,"L":8.5,"XL":8.5,"XXL":8.5,"XXXL":8.5
+    }' data-produto="T-shirt Trevo Azul">Adicionar ao Carrinho</button>
+  </div>
 
-<!-- Sweat-shirt (criança+adulto+XXXL) -->
-<div class="produto">
-  <img src="images/sweat.png" alt="Sweat-shirt" />
-  <h2>Sweat-shirt</h2>
-  <p class="preco">desde 12,00€</p>
-  <button class="adicionar" data-options="tamanho,quantidade" data-precos='{
-    "6":12.0,
-    "8":12.5,"10":12.5,"12":12.5,"14":12.5,
-    "S":13.5,"M":13.5,"L":13.5,"XL":13.5,"XXL":13.5,
-    "XXXL":14.9
-  }' data-produto="Sweat-shirt">Adicionar ao Carrinho</button>
-</div>
-<!-- Adicione os demais produtos conforme necessário -->
+  <!-- T-shirt Ser Guia É -->
+  <div class="produto">
+    <img src="images/serguia.png" alt="T-shirt Ser Guia É" />
+    <h2>T-shirt Ser Guia É</h2>
+    <p class="preco">6,00€</p>
+    <button class="adicionar" data-options="tamanho,quantidade" data-precos='{
+      "8":6.0,"10":6.0,"12":6.0,
+      "S":6.0,"M":6.0,"L":6.0,"XL":6.0,"XXL":6.0
+    }' data-produto="T-shirt Ser Guia É">Adicionar ao Carrinho</button>
+  </div>
+
+  <!-- Sweat-shirt (criança+adulto+XXXL) -->
+  <div class="produto">
+    <img src="images/sweat.png" alt="Sweat-shirt" />
+    <h2>Sweat-shirt</h2>
+    <p class="preco">desde 12,00€</p>
+    <button class="adicionar" data-options="tamanho,quantidade" data-precos='{
+      "6":12.0,
+      "8":12.5,"10":12.5,"12":12.5,"14":12.5,
+      "S":13.5,"M":13.5,"L":13.5,"XL":13.5,"XXL":13.5,
+      "XXXL":14.9
+    }' data-produto="Sweat-shirt">Adicionar ao Carrinho</button>
+  </div>
+
 </section>
 </main>
-<br/>
-<br/>
-<!-- Botão Fixo do Carrinho -->
+
 <button class="cart-btn" id="cart-btn">
-<i class="fas fa-shopping-cart"></i>
-<span id="cart-count">0</span>
+  <i class="fas fa-shopping-cart"></i><span id="cart-count">0</span>
 </button>
-<!-- Modal para Seleção de Opções -->
+
+<!-- Modal de opções -->
 <div class="modal" id="modal">
-<div class="modal-content">
-<span class="close" id="modal-close">×</span>
-<h2>Selecione as opções</h2>
-<form id="modal-form">
-<!-- Campo de Tamanho (oculto por padrão) -->
-<label for="tamanho" id="tamanho-label" style="display: none;">Tamanho:</label>
-<select id="tamanho" name="tamanho" style="display: none;">
-<option value="XS">XS(34)</option>
-<option value="S">S(36)</option>
-<option value="M">M(38)</option>
-<option value="L">L(40)</option>
-<option value="XL">XL(42)</option>
-<option value="XXL">XXL(44)</option>
-</select>
-<!-- Campo de Quantidade (oculto por padrão) -->
-<label for="quantidade" id="quantidade-label" style="display: none;">Quantidade:</label>
-<input id="quantidade" min="1" name="quantidade" style="display: none;" type="number" value="1"/>
-<!-- Campo de Especialidade (oculto por padrão) -->
-<label for="especialidade" id="especialidade-label" style="display: none;">Especifique:</label>
-<input id="especialidade" name="especialidade" placeholder="Especifique o produto!" style="display: none;" type="text"/>
-<button type="submit">Adicionar ao Carrinho</button>
-</form>
+  <div class="modal-content">
+    <span class="close" id="modal-close">×</span>
+    <h2>Selecione as opções</h2>
+    <form id="modal-form">
+      <label for="tamanho" id="tamanho-label" style="display:none;">Tamanho:</label>
+      <select id="tamanho" name="tamanho" style="display:none;"></select>
+
+      <label for="quantidade" id="quantidade-label" style="display:none;">Quantidade:</label>
+      <input id="quantidade" type="number" min="1" value="1" style="display:none;"/>
+
+      <label for="especialidade" id="especialidade-label" style="display:none;">Especifique:</label>
+      <input id="especialidade" type="text" placeholder="Especifique o produto!" style="display:none;"/>
+
+      <button type="submit">Adicionar ao Carrinho</button>
+    </form>
+  </div>
 </div>
-</div>
-<!-- Modal do Carrinho -->
+
+<!-- Modal Carrinho -->
 <div class="modal" id="cart-modal">
-<div class="modal-content">
-<span class="close" id="cart-modal-close">×</span>
-<h2>Carrinho</h2>
-<div id="cart-items"></div>
-<button id="confirm-cart">Confirmar</button>
+  <div class="modal-content">
+    <span class="close" id="cart-modal-close">×</span>
+    <h2>Carrinho</h2>
+    <div id="cart-items"></div>
+    <button id="confirm-cart">Confirmar</button>
+  </div>
 </div>
-</div>
-<!-- Modal de Checkout -->
+
+<!-- Modal Checkout -->
 <div class="modal" id="checkout-modal">
-<div class="modal-content">
-<span class="close" id="checkout-close">×</span>
-<h2>Finalize seu Pedido</h2>
-<div id="checkout-summary"></div>
-<form id="checkout-form">
-<label for="nome-cliente">Nome:</label>
-<input id="nome-cliente" name="nome-cliente" required="" type="text"/>
-<label for="email-cliente">Email:</label>
-<input id="email-cliente" name="email-cliente" required="" type="email"/>
-<button type="submit">Confirmar Pedido</button>
-</form>
+  <div class="modal-content">
+    <span class="close" id="checkout-close">×</span>
+    <h2>Finalize seu Pedido</h2>
+    <div id="checkout-summary"></div>
+    <form id="checkout-form">
+      <label for="nome-cliente">Nome:</label>
+      <input id="nome-cliente" name="nome-cliente" type="text" required/>
+      <label for="email-cliente">Email:</label>
+      <input id="email-cliente" name="email-cliente" type="email" required/>
+      <button type="submit">Confirmar Pedido</button>
+    </form>
+  </div>
 </div>
-</div>
-<!-- JavaScript -->
+
 <script>
-// =========================
+  // =========================
   // Estado
   // =========================
   let currentProduct = null;
@@ -325,7 +328,7 @@
     const unit = resolveUnitPrice(size || 'Único');
 
     cart.push({
-      branch: 'Moinhos',
+      branch: 'Avezinhas',
       product: currentProduct,
       price: unit,       // número (unitário)
       size: size,
@@ -412,7 +415,7 @@
     const email = document.getElementById('email-cliente').value;
 
     const pedidos = cart.map(item => ({
-      ramo: 'Moinhos',
+      ramo: 'Avezinhas',
       produto: item.product + (item.especialidade ? ' - ' + item.especialidade : ''),
       tamanho: item.size,
       quantidade: item.quantity,
