@@ -63,131 +63,41 @@
 <main>
 <section class="produtos">
 <!-- Exemplo de produto com tamanho e quantidade -->
+<!-- T-shirt Trevo Azul -->
 <div class="produto">
-<img alt="T-Shirt Trevo" src="images/tshirt trevo.png"/>
-<h2>T-shirt Trevo Azul</h2>
-<p class="preco">8,5€</p>
-<button class="adicionar" data-options="tamanho,quantidade" data-preco="8" data-precos='{"8": 8.5, "10": 8.5, "12": 8.5, "14": 8.5}' data-produto="T-shirt Trevo Azul">Adicionar ao Carrinho</button>
+  <img src="images/tshirt trevo.png" alt="T-shirt Trevo Azul" />
+  <h2>T-shirt Trevo Azul</h2>
+  <p class="preco">8,50€</p>
+  <button class="adicionar" data-options="tamanho,quantidade" data-precos='{
+    "8":8.5,"10":8.5,"12":8.5,"14":8.5,
+    "S":8.5,"M":8.5,"L":8.5,"XL":8.5,"XXL":8.5,"XXXL":8.5
+  }' data-produto="T-shirt Trevo Azul">Adicionar ao Carrinho</button>
 </div>
+
+<!-- T-shirt Ser Guia É -->
 <div class="produto">
-<img alt="T-Shirt Ser Guia" src="images/serguia.png"/>
-<h2>T-shirt Ser Guia É</h2>
-<p class="preco">6,0€</p>
-<button class="adicionar" data-options="tamanho,quantidade" data-preco="6" data-precos='{"8": 6.0, "10": 6.0, "12": 6.0}' data-produto="T-shirt Ser Guia É">
-                Adicionar ao Carrinho</button>
+  <img src="images/serguia.png" alt="T-shirt Ser Guia É" />
+  <h2>T-shirt Ser Guia É</h2>
+  <p class="preco">6,00€</p>
+  <button class="adicionar" data-options="tamanho,quantidade" data-precos='{
+    "8":6.0,"10":6.0,"12":6.0,
+    "S":6.0,"M":6.0,"L":6.0,"XL":6.0,"XXL":6.0
+  }' data-produto="T-shirt Ser Guia É">Adicionar ao Carrinho</button>
 </div>
+
+<!-- Sweat-shirt (criança+adulto+XXXL) -->
 <div class="produto">
-<img alt="Sweat" src="images/sweat.png"/>
-<h2>Sweat-shirt</h2>
-<p class="preco">desde 13,5€</p>
-<button class="adicionar" data-options="tamanho,quantidade" data-preco="12" data-precos='{"Único": 14.9, "S": 13.5, "M": 13.5, "L": 13.5, "XL": 13.5, "XXL": 13.5}' data-produto="Sweat-shirt">
-                Adicionar ao Carrinho</button>
+  <img src="images/sweat.png" alt="Sweat-shirt" />
+  <h2>Sweat-shirt</h2>
+  <p class="preco">desde 12,00€</p>
+  <button class="adicionar" data-options="tamanho,quantidade" data-precos='{
+    "6":12.0,
+    "8":12.5,"10":12.5,"12":12.5,"14":12.5,
+    "S":13.5,"M":13.5,"L":13.5,"XL":13.5,"XXL":13.5,
+    "XXXL":14.9
+  }' data-produto="Sweat-shirt">Adicionar ao Carrinho</button>
 </div>
-<div class="produto">
-<img alt="Camisola de Lã" src="images/CAMISOLALA.png"/>
-<h2>Camisola de lã</h2>
-<p class="preco">23,5€</p>
-<button class="adicionar" data-options="tamanho,quantidade" data-preco="23,5" data-precos='{"6": 23.5, "8": 23.5, "10": 23.5, "12": 23.5, "14": 23.5, "S": 23.5, "M": 23.5, "L": 23.5, "XL": 23.5, "XXL": 23.5, "XXXL": 23.5}' data-produto="Camisola de lã">
-                  Adicionar ao Carrinho</button>
-</div>
-<div class="produto">
-<img alt="Camisa" src="images/camisa.png"/>
-<h2>Camisa</h2>
-<p class="preco">20,0€</p>
-<button class="adicionar" data-options="tamanho,quantidade" data-preco="20" data-precos='{"8": 20.0, "10": 20.0, "12": 20.0, "14": 20.0, "36": 20.0, "38": 20.0, "40": 20.0, "42": 20.0, "44": 20.0, "46": 20.0, "48": 20.0, "50": 20.0}' data-produto="Camisa">
-                Adicionar ao Carrinho</button>
-</div>
-<div class="produto">
-<img alt="Saia" src="images/saia.png"/>
-<h2>Saia</h2>
-<p class="preco">20,0€</p>
-<button class="adicionar" data-options="tamanho,quantidade" data-preco="20" data-precos='{"6": 20.0, "8": 20.0, "10": 20.0, "12": 20.0, "14": 20.0, "36": 20.0, "38": 20.0, "40": 20.0, "42": 20.0, "44": 20.0, "46": 20.0, "48": 20.0, "50": 20.0}' data-produto="Saia">
-                Adicionar ao Carrinho</button>
-</div>
-<div class="produto">
-<img alt="Casaco Impermeavel" src="images/imprimiavel.png"/>
-<h2>Casaco impermeável</h2>
-<p class="preco">19,5€</p>
-<button class="adicionar" data-options="tamanho,quantidade" data-preco="19,5" data-precos='{"6": 19.5, "8": 19.5, "10": 19.5, "12": 19.5, "14": 19.5, "S": 19.5, "M": 19.5, "L": 19.5, "XL": 19.5, "XXL": 19.5, "XXXL": 19.5}' data-produto="Casaco impermeável">
-                Adicionar ao Carrinho</button>
-</div>
-<div class="produto">
-<img alt="Anilha Entrelacada" src="images/anilhaint.png"/>
-<h2>Anilha entrançada</h2>
-<p class="preco">1,0€</p>
-<button class="adicionar" data-options="quantidade" data-preco="1" data-precos='{"Único": 1.0}' data-produto="Anilha entrançada">
-                  Adicionar ao Carrinho</button>
-</div>
-<div class="produto">
-<img alt="Anilhas de Linho" src="images/anilhalinho.png"/>
-<h2>Anilha de linho</h2>
-<p class="preco">2,0€</p>
-<button ata-options="quantidade" class="adicionar" data-options="quantidade" data-preco="2" data-precos='{"Único": 2.0}' data-produto="Anilha de linho">
-                  Adicionar ao Carrinho</button>
-</div>
-<div class="produto">
-<img alt="Cinto" src="images/cinto.png"/>
-<h2>Cinto</h2>
-<p class="preco">6,5€</p>
-<button class="adicionar" data-options="tamanho,quantidade" data-preco="6,5" data-precos='{"60": 6.5, "65": 6.5, "70": 6.5, "75": 6.5, "80": 6.5, "85": 6.5, "90": 6.5, "95": 6.5, "100": 6.5, "105": 6.5, "110": 6.5, "115": 6.5}' data-produto="Cinto">
-        Adicionar ao Carrinho</button>
-</div>
-<div class="produto">
-<img alt="Trevo Promessa" src="images/trevopromessa.png"/>
-<h2>Trevo da Promessa</h2>
-<p class="preco">2,7€</p>
-<button class="adicionar" data-options="quantidade" data-preco="2,7" data-precos='{"Único": 2.7}' data-produto="Trevo da Promessa">
-                  Adicionar ao Carrinho</button>
-</div>
-<div class="produto">
-<img alt="Pena" src="images/pena.png"/>
-<h2>Pena</h2>
-<p class="preco">2,3€</p>
-<button class="adicionar" data-options="quantidade" data-preco="2,3" data-precos='{"Único": 2.3}' data-produto="Pena">
-                  Adicionar ao Carrinho</button>
-</div>
-<div class="produto">
-<img alt="Fita AGP" src="images/fitaagp.png"/>
-<h2>Fita AGP</h2>
-<p class="preco">1,1€</p>
-<button class="adicionar" data-options="quantidade" data-preco="1,1" data-precos='{"Único": 1.1}' data-produto="Fita AGP">
-                Adicionar ao Carrinho</button>
-</div>
-<div class="produto">
-<img alt="Emblema Regiao" src="images/emblemaregiao.png"/>
-<h2>Emblemas de Região</h2>
-<p class="preco">1,5€</p>
-<button class="adicionar" data-options="quantidade" data-preco="1,5" data-precos='{"Único": 1.5}' data-produto="Emblemas de Região">
-                    Adicionar ao Carrinho</button>
-</div>
-<div class="produto">
-<img alt="Fita Companhia" src="images/fitacom.png"/>
-<h2>Fitas de Companhia</h2>
-<p class="preco">1,1€</p>
-<button class="adicionar" data-options="quantidade" data-preco="1,1" data-precos='{"Único": 1.1}' data-produto="Fitas de Companhia">
-                Adicionar ao Carrinho</button>
-</div>
-<div class="produto">
-<img alt="Estrelas Servico" src="images/estrelas.png"/>
-<h2>Estrela de serviço</h2>
-<p class="preco">1,5€</p>
-<button class="adicionar" data-options="tamanho,quantidade" data-preco="1,5" data-precos='{"1": 1.5, "2": 1.5, "3": 1.5, "4": 1.5, "5": 1.5}' data-produto="Estrela de serviço">
-                Adicionar ao Carrinho</button>
-</div>
-<div class="produto">
-<img alt="Escalada" src="images/escalada.png"/>
-<h2>Escalada</h2>
-<p class="preco">4,5€</p>
-<button class="adicionar" data-options="quantidade" data-preco="1,5" data-precos='{"Único": 4.5}' data-produto="Escalada">
-                Adicionar ao Carrinho</button>
-</div>
-<div class="produto">
-<img alt="Horizonte" src="images/horizonte.png"/>
-<h2>Horizonte</h2>
-<p class="preco">4,5€</p>
-<button class="adicionar" data-options="quantidade" data-preco="1,5" data-precos='{"Único": 4.5}' data-produto="Horizonte">
-                Adicionar ao Carrinho</button>
-</div>
+
 <!-- Adicione os demais produtos conforme necessário -->
 </section>
 </main>
