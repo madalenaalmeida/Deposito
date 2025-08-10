@@ -707,16 +707,16 @@
 </div>
 <!-- JavaScript -->
 <script>
-   // =========================
+ // =========================
 // Estado global
 // =========================
 let currentProduct = null;
-let currentPrice = null;      // fallback (pode nem existir no botão)
+let currentPrice = null;      // fallback (data-preco)
 let currentPriceMap = null;   // mapa vindo de data-precos
 let cart = [];
 
 // =========================
-/* Helpers */
+// Helpers
 // =========================
 const parsePrice = (v) => {
   if (v == null) return 0;
@@ -727,20 +727,45 @@ const parsePrice = (v) => {
 const money = (n) =>
   (Math.round(n * 100) / 100).toFixed(2).replace('.', ',') + '€';
 
-// devolve o preço unitário com base no tamanho escolhido ou "Único"
+// Devolve preço unitário com base no tamanho/Único/mapa
 function resolveUnitPrice(size) {
-  // se veio um mapa, tenta pelo tamanho primeiro
   if (currentPriceMap) {
     if (size && currentPriceMap[size] != null) {
       return parsePrice(currentPriceMap[size]);
     }
-    // senão tenta a chave "Único"
     if (currentPriceMap['Único'] != null) {
       return parsePrice(currentPriceMap['Único']);
     }
   }
-  // fallback: atributo data-preco (pode estar com vírgula)
-  return parsePrice(currentPrice);
+  return parsePrice(currentPrice); // fallback (data-preco)
+}
+
+// Popular dinamicamente as opções de tamanho a partir do mapa de preços
+function populateSizeOptionsFromMap(map) {
+  // limpa opções atuais
+  tamanhoField.innerHTML = '';
+  if (!map) return false;
+
+  const keys = Object.keys(map);
+  // se só existir "Único", não mostrar o campo
+  const sizeKeys = keys.filter((k) => k !== 'Único');
+
+  if (sizeKeys.length === 0) {
+    // não exibimos o seletor; o preço virá pela chave Único
+    return false;
+  }
+
+  // cria opções exatamente como no data-precos
+  sizeKeys.forEach((k) => {
+    const opt = document.createElement('option');
+    opt.value = k;
+    opt.textContent = k;
+    tamanhoField.appendChild(opt);
+  });
+
+  // define o primeiro como default
+  tamanhoField.value = sizeKeys[0];
+  return true;
 }
 
 // =========================
@@ -761,7 +786,7 @@ const checkoutClose = document.getElementById('checkout-close');
 const checkoutForm = document.getElementById('checkout-form');
 const checkoutSummaryDiv = document.getElementById('checkout-summary');
 
-// Campos do modal de opções
+// Campos do modal
 const tamanhoField = document.getElementById('tamanho');
 const tamanhoLabel = document.getElementById('tamanho-label');
 const quantidadeField = document.getElementById('quantidade');
@@ -777,7 +802,7 @@ menuBtn.addEventListener('click', () => {
 });
 
 // =========================
-// Abrir modal de opções ao clicar em "Adicionar ao Carrinho"
+// Abrir modal de opções
 // =========================
 const addButtons = document.querySelectorAll('.adicionar');
 addButtons.forEach((button) => {
@@ -785,7 +810,7 @@ addButtons.forEach((button) => {
     currentProduct = this.dataset.produto || '';
     currentPrice = this.dataset.preco ?? null;
 
-    // ler e guardar o mapa de preços (data-precos)
+    // ler mapa de preços (data-precos)
     try {
       currentPriceMap = this.dataset.precos
         ? JSON.parse(this.dataset.precos)
@@ -794,17 +819,25 @@ addButtons.forEach((button) => {
       currentPriceMap = null;
     }
 
-    // Descobrir opções exibidas
+    // opções pedidas no botão
     const options = this.dataset.options
       ? this.dataset.options.split(',').map((opt) => opt.trim().toLowerCase())
       : [];
 
     // Tamanho
     if (options.includes('tamanho')) {
-      tamanhoField.style.display = 'inline-block';
-      tamanhoLabel.style.display = 'block';
-      // valor default
-      tamanhoField.value = tamanhoField.options[0]?.value || 'S';
+      // tenta construir o seletor com base nas chaves do data-precos
+      const hasSizes = populateSizeOptionsFromMap(currentPriceMap);
+
+      if (hasSizes) {
+        tamanhoField.style.display = 'inline-block';
+        tamanhoLabel.style.display = 'block';
+      } else {
+        // sem tamanhos (só "Único"): esconder
+        tamanhoField.style.display = 'none';
+        tamanhoLabel.style.display = 'none';
+        tamanhoField.value = ''; // vamos usar "Único" internamente
+      }
     } else {
       tamanhoField.style.display = 'none';
       tamanhoLabel.style.display = 'none';
@@ -822,7 +855,7 @@ addButtons.forEach((button) => {
       quantidadeField.value = '';
     }
 
-    // Especialidade (texto livre)
+    // Especialidade
     if (options.includes('especialidade')) {
       especialidadeField.style.display = 'inline-block';
       especialidadeLabel.style.display = 'block';
@@ -859,7 +892,7 @@ modalForm.addEventListener('submit', (event) => {
   const tamanho =
     tamanhoField.style.display !== 'none' && tamanhoField.value
       ? tamanhoField.value
-      : '';
+      : ''; // '' fará o resolve usar "Único"
 
   const quantidade =
     quantidadeField.style.display !== 'none'
@@ -869,7 +902,7 @@ modalForm.addEventListener('submit', (event) => {
   const especialidade =
     especialidadeField.style.display !== 'none' ? especialidadeField.value : '';
 
-  // preço unitário resolvido com base no tamanho/Único/mapa
+  // preço unitário resolvido pelo tamanho/Único/mapa
   const unit = resolveUnitPrice(tamanho || 'Único');
 
   cart.push({
@@ -977,7 +1010,7 @@ checkoutForm.addEventListener('submit', (event) => {
       item.product + (item.especialidade ? ' - ' + item.especialidade : ''),
     tamanho: item.size,
     quantidade: item.quantity,
-    preco_unit: item.price, // número
+    preco_unit: item.price,
     nome: nome,
     email: email,
   }));
@@ -991,6 +1024,7 @@ checkoutForm.addEventListener('submit', (event) => {
   checkoutModal.style.display = 'none';
   alert('Pedido confirmado com sucesso!');
 });
+
 
   </script>
 <footer class="footer">
