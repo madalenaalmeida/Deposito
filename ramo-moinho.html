@@ -159,165 +159,211 @@
 </div>
 <!-- JavaScript -->
 <script>
-    // Variáveis globais
-let currentProduct = null;
-let currentPrice = null;
-let currentPricesMap = null;
-let cart = [];
+// =========================
+  // Estado
+  // =========================
+  let currentProduct = null;
+  let currentPrice = null;      // fallback
+  let currentPriceMap = null;   // mapa de data-precos
+  let cart = [];
 
-// Elementos do DOM
-const modal = document.getElementById('modal');
-const modalClose = document.getElementById('modal-close');
-const modalForm = document.getElementById('modal-form');
-const cartCountSpan = document.getElementById('cart-count');
-const cartBtn = document.getElementById('cart-btn');
-const cartModal = document.getElementById('cart-modal');
-const cartModalClose = document.getElementById('cart-modal-close');
-const cartItemsDiv = document.getElementById('cart-items');
-const confirmCartBtn = document.getElementById('confirm-cart');
-const checkoutModal = document.getElementById('checkout-modal');
-const checkoutClose = document.getElementById('checkout-close');
-const checkoutForm = document.getElementById('checkout-form');
-const checkoutSummaryDiv = document.getElementById('checkout-summary');
+  // =========================
+  // Helpers
+  // =========================
+  const parsePrice = (v) => {
+    if (v == null) return 0;
+    const n = Number(String(v).replace(',', '.'));
+    return isNaN(n) ? 0 : n;
+  };
+  const money = (n) => (Math.round(n*100)/100).toFixed(2).replace('.', ',') + '€';
 
-// Seleção dos campos do modal
-const tamanhoField = document.getElementById('tamanho');
-const tamanhoLabel = document.getElementById('tamanho-label');
-const quantidadeField = document.getElementById('quantidade');
-const quantidadeLabel = document.getElementById('quantidade-label');
-const especialidadeField = document.getElementById('especialidade');
-const especialidadeLabel = document.getElementById('especialidade-label');
-
-// Menu lateral
-const menuBtn = document.getElementById('menu-btn');
-const sidebar = document.getElementById('sidebar');
-menuBtn.addEventListener('click', () => {
-  sidebar.classList.toggle('active');
-});
-
-// Ao clicar em um botão "Adicionar ao Carrinho"
-const addButtons = document.querySelectorAll('.adicionar');
-addButtons.forEach(button => {
-  button.addEventListener('click', function() {
-    currentProduct = this.dataset.produto;
-    currentPrice = parseFloat(this.dataset.preco) || 0;
-    currentPricesMap = this.dataset.precos ? JSON.parse(this.dataset.precos) : null;
-
-    // Lê as opções definidas no atributo data-options
-    const options = this.dataset.options
-      ? this.dataset.options.split(',').map(opt => opt.trim().toLowerCase())
-      : [];
-
-    // Campo Tamanho
-    if (options.includes('tamanho')) {
-      tamanhoField.style.display = 'inline-block';
-      tamanhoLabel.style.display = 'block';
-      tamanhoField.value = Object.keys(currentPricesMap || {})[0] || '';
-    } else {
-      tamanhoField.style.display = 'none';
-      tamanhoLabel.style.display = 'none';
-      tamanhoField.value = '';
+  function resolveUnitPrice(size) {
+    if (currentPriceMap) {
+      if (size && currentPriceMap[size] != null) return parsePrice(currentPriceMap[size]);
+      if (currentPriceMap['Único'] != null) return parsePrice(currentPriceMap['Único']);
     }
-
-    // Campo Quantidade
-    if (options.includes('quantidade')) {
-      quantidadeField.style.display = 'inline-block';
-      quantidadeLabel.style.display = 'block';
-      quantidadeField.value = 1;
-    } else {
-      quantidadeField.style.display = 'none';
-      quantidadeLabel.style.display = 'none';
-      quantidadeField.value = '';
-    }
-
-    // Campo Especialidade
-    if (options.includes('especialidade')) {
-      especialidadeField.style.display = 'inline-block';
-      especialidadeLabel.style.display = 'block';
-      especialidadeField.value = '';
-    } else {
-      especialidadeField.style.display = 'none';
-      especialidadeLabel.style.display = 'none';
-      especialidadeField.value = '';
-    }
-
-    modal.style.display = 'block';
-  });
-});
-
-// Fechar modal de seleção
-modalClose.addEventListener('click', () => {
-  modal.style.display = 'none';
-});
-
-// Processar formulário do modal
-modalForm.addEventListener('submit', (event) => {
-  event.preventDefault();
-
-  const tamanho = (tamanhoField.style.display !== 'none') ? tamanhoField.value : '';
-  const quantidade = (quantidadeField.style.display !== 'none') ? parseInt(quantidadeField.value) : 1;
-  const especialidade = (especialidadeField.style.display !== 'none') ? especialidadeField.value : '';
-
-  // Preço certo com base no tamanho
-  let precoFinal = currentPrice;
-  if (currentPricesMap && tamanho && currentPricesMap[tamanho] !== undefined) {
-    precoFinal = parseFloat(currentPricesMap[tamanho]);
+    return parsePrice(currentPrice);
   }
 
-  cart.push({
-    branch: 'Moinhos',
-    product: currentProduct,
-    price: precoFinal,
-    size: tamanho,
-    quantity: quantidade,
-    especialidade: especialidade
+  function populateSizeOptionsFromMap(map) {
+    tamanhoField.innerHTML = '';
+    if (!map) return false;
+    const keys = Object.keys(map);
+    const sizeKeys = keys.filter(k => k !== 'Único');
+    if (sizeKeys.length === 0) return false;
+    sizeKeys.forEach(k => {
+      const opt = document.createElement('option');
+      opt.value = k;
+      opt.textContent = k;
+      tamanhoField.appendChild(opt);
+    });
+    tamanhoField.value = sizeKeys[0];
+    return true;
+  }
+
+  // =========================
+  // DOM
+  // =========================
+  const modal = document.getElementById('modal');
+  const modalClose = document.getElementById('modal-close');
+  const modalForm = document.getElementById('modal-form');
+
+  const cartCountSpan = document.getElementById('cart-count');
+  const cartBtn = document.getElementById('cart-btn');
+  const cartModal = document.getElementById('cart-modal');
+  const cartModalClose = document.getElementById('cart-modal-close');
+  const cartItemsDiv = document.getElementById('cart-items');
+  const confirmCartBtn = document.getElementById('confirm-cart');
+  const checkoutModal = document.getElementById('checkout-modal');
+  const checkoutClose = document.getElementById('checkout-close');
+  const checkoutForm = document.getElementById('checkout-form');
+  const checkoutSummaryDiv = document.getElementById('checkout-summary');
+
+  const tamanhoField = document.getElementById('tamanho');
+  const tamanhoLabel = document.getElementById('tamanho-label');
+  const quantidadeField = document.getElementById('quantidade');
+  const quantidadeLabel = document.getElementById('quantidade-label');
+  const especialidadeField = document.getElementById('especialidade');
+  const especialidadeLabel = document.getElementById('especialidade-label');
+
+  const menuBtn = document.getElementById('menu-btn');
+  const sidebar = document.getElementById('sidebar');
+  menuBtn.addEventListener('click', () => sidebar.classList.toggle('active'));
+
+  // =========================
+  // Abrir modal de opções
+  // =========================
+  document.querySelectorAll('.adicionar').forEach(button => {
+    button.addEventListener('click', function () {
+      currentProduct = this.dataset.produto || '';
+      currentPrice = this.dataset.preco ?? null;
+
+      try {
+        currentPriceMap = this.dataset.precos ? JSON.parse(this.dataset.precos) : null;
+      } catch {
+        currentPriceMap = null;
+      }
+
+      const options = this.dataset.options
+        ? this.dataset.options.split(',').map(o => o.trim().toLowerCase())
+        : [];
+
+      if (options.includes('tamanho')) {
+        const hasSizes = populateSizeOptionsFromMap(currentPriceMap);
+        if (hasSizes) {
+          tamanhoField.style.display = 'inline-block';
+          tamanhoLabel.style.display = 'block';
+        } else {
+          tamanhoField.style.display = 'none';
+          tamanhoLabel.style.display = 'none';
+          tamanhoField.value = '';
+        }
+      } else {
+        tamanhoField.style.display = 'none';
+        tamanhoLabel.style.display = 'none';
+        tamanhoField.value = '';
+      }
+
+      if (options.includes('quantidade')) {
+        quantidadeField.style.display = 'inline-block';
+        quantidadeLabel.style.display = 'block';
+        quantidadeField.value = 1;
+      } else {
+        quantidadeField.style.display = 'none';
+        quantidadeLabel.style.display = 'none';
+        quantidadeField.value = '';
+      }
+
+      if (options.includes('especialidade')) {
+        especialidadeField.style.display = 'inline-block';
+        especialidadeLabel.style.display = 'block';
+        especialidadeField.value = '';
+      } else {
+        especialidadeField.style.display = 'none';
+        especialidadeLabel.style.display = 'none';
+        especialidadeField.value = '';
+      }
+
+      modal.style.display = 'block';
+    });
   });
 
-  updateCartCount();
-  alert(`Adicionado: ${currentProduct} ${quantidade ? '- Quantidade: ' + quantidade : ''}${tamanho ? ', Tamanho: ' + tamanho : ''}${especialidade ? ', Especialidade: ' + especialidade : ''} - Preço: €${precoFinal.toFixed(2)}`);
-  modal.style.display = 'none';
-});
+  // =========================
+  // Fechar modais
+  // =========================
+  modalClose.addEventListener('click', () => modal.style.display = 'none');
+  cartModalClose.addEventListener('click', () => cartModal.style.display = 'none');
+  checkoutClose.addEventListener('click', () => checkoutModal.style.display = 'none');
 
-// Atualizar a contagem do carrinho
-function updateCartCount() {
-  cartCountSpan.textContent = cart.length;
-}
+  window.addEventListener('click', (e) => {
+    if (e.target === modal) modal.style.display = 'none';
+    if (e.target === cartModal) cartModal.style.display = 'none';
+    if (e.target === checkoutModal) checkoutModal.style.display = 'none';
+  });
 
-// Abrir modal do carrinho
-cartBtn.addEventListener('click', () => {
-  displayCartItems();
-  cartModal.style.display = 'block';
-});
+  // =========================
+  // Submit do modal -> carrinho
+  // =========================
+  modalForm.addEventListener('submit', (e) => {
+    e.preventDefault();
 
-// Fechar modal do carrinho
-cartModalClose.addEventListener('click', () => {
-  cartModal.style.display = 'none';
-});
+    const size =
+      tamanhoField.style.display !== 'none' && tamanhoField.value
+        ? tamanhoField.value
+        : '';
 
-// Fechar modais ao clicar fora
-window.addEventListener('click', (event) => {
-  if (event.target === modal) modal.style.display = 'none';
-  if (event.target === cartModal) cartModal.style.display = 'none';
-  if (event.target === checkoutModal) checkoutModal.style.display = 'none';
-});
+    const qty =
+      quantidadeField.style.display !== 'none'
+        ? Number(quantidadeField.value) || 1
+        : 1;
 
-// Exibir itens do carrinho
-function displayCartItems() {
-  cartItemsDiv.innerHTML = '';
-  if (cart.length === 0) {
-    cartItemsDiv.innerHTML = '<p>Carrinho vazio.</p>';
-  } else {
+    const espec =
+      especialidadeField.style.display !== 'none'
+        ? especialidadeField.value
+        : '';
+
+    const unit = resolveUnitPrice(size || 'Único');
+
+    cart.push({
+      branch: 'Moinhos',
+      product: currentProduct,
+      price: unit,       // número (unitário)
+      size: size,
+      quantity: qty,
+      especialidade: espec
+    });
+
+    updateCartCount();
+    modal.style.display = 'none';
+  });
+
+  // =========================
+  // Carrinho
+  // =========================
+  function updateCartCount(){ cartCountSpan.textContent = cart.length; }
+
+  cartBtn.addEventListener('click', () => {
+    displayCartItems();
+    cartModal.style.display = 'block';
+  });
+
+  function displayCartItems() {
+    cartItemsDiv.innerHTML = '';
+    if (cart.length === 0) {
+      cartItemsDiv.innerHTML = '<p>Carrinho vazio.</p>';
+      return;
+    }
+
     cart.forEach((item, index) => {
-      const itemDiv = document.createElement('div');
-      itemDiv.classList.add('cart-item');
-      let text = `${item.product}`;
-      if (item.quantity) { text += ` - Quantidade: ${item.quantity}`; }
-      if (item.size) { text += ` - Tamanho: ${item.size}`; }
-      if (item.especialidade) { text += ` - Especialidade: ${item.especialidade}`; }
-      text += ` - Preço: €${item.price.toFixed(2)}`;
-      itemDiv.innerHTML = `<p>${text}</p>`;
+      const lineTotal = item.price * (item.quantity || 1);
+      const div = document.createElement('div');
+      div.classList.add('cart-item');
+      div.innerHTML = `<p>${item.product}
+        ${item.quantity ? ` - Quantidade: ${item.quantity}` : ''}
+        ${item.size ? ` - Tamanho: ${item.size}` : ''}
+        ${item.especialidade ? ` - Especialidade: ${item.especialidade}` : ''}
+        - Unit: ${money(item.price)} (Total: ${money(lineTotal)})</p>`;
 
-      // Botão remover
       const removeBtn = document.createElement('button');
       removeBtn.textContent = 'Remover';
       removeBtn.addEventListener('click', () => {
@@ -325,68 +371,65 @@ function displayCartItems() {
         updateCartCount();
         displayCartItems();
       });
-      itemDiv.appendChild(removeBtn);
-      cartItemsDiv.appendChild(itemDiv);
+
+      div.appendChild(removeBtn);
+      cartItemsDiv.appendChild(div);
     });
   }
-}
 
-// Confirmar carrinho
-confirmCartBtn.addEventListener('click', () => {
-  if (cart.length === 0) {
-    alert('Carrinho vazio!');
-  } else {
+  // =========================
+  // Checkout
+  // =========================
+  confirmCartBtn.addEventListener('click', () => {
+    if (cart.length === 0) { alert('Carrinho vazio!'); return; }
     displayCheckoutSummary();
     cartModal.style.display = 'none';
     checkoutModal.style.display = 'block';
-  }
-});
+  });
 
-// Resumo do checkout
-function displayCheckoutSummary() {
-  checkoutSummaryDiv.innerHTML = '';
-  if (cart.length === 0) {
-    checkoutSummaryDiv.innerHTML = '<p>Carrinho vazio.</p>';
-  } else {
+  function displayCheckoutSummary() {
+    checkoutSummaryDiv.innerHTML = '';
+    if (cart.length === 0) {
+      checkoutSummaryDiv.innerHTML = '<p>Carrinho vazio.</p>';
+      return;
+    }
+    let total = 0;
     cart.forEach(item => {
-      let text = `${item.product}`;
-      if (item.quantity) { text += ` - Quantidade: ${item.quantity}`; }
-      if (item.size) { text += ` - Tamanho: ${item.size}`; }
-      if (item.especialidade) { text += ` - Especialidade: ${item.especialidade}`; }
-      text += ` - Preço: €${item.price.toFixed(2)}`;
-      checkoutSummaryDiv.innerHTML += `<p>${text}</p>`;
+      const line = item.price * (item.quantity || 1);
+      total += line;
+      checkoutSummaryDiv.innerHTML += `<p>${item.product}
+        ${item.quantity ? ` - Quantidade: ${item.quantity}` : ''}
+        ${item.size ? ` - Tamanho: ${item.size}` : ''}
+        ${item.especialidade ? ` - Especialidade: ${item.especialidade}` : ''}
+        - Unit: ${money(item.price)} - Total: ${money(line)}</p>`;
     });
+    checkoutSummaryDiv.innerHTML += `<hr><p><strong>Total: ${money(total)}</strong></p>`;
   }
-}
 
-// Submeter pedido
-checkoutForm.addEventListener('submit', (event) => {
-  event.preventDefault();
+  checkoutForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const nome = document.getElementById('nome-cliente').value;
+    const email = document.getElementById('email-cliente').value;
 
-  const nome = document.getElementById('nome-cliente').value;
-  const email = document.getElementById('email-cliente').value;
+    const pedidos = cart.map(item => ({
+      ramo: 'Moinhos',
+      produto: item.product + (item.especialidade ? ' - ' + item.especialidade : ''),
+      tamanho: item.size,
+      quantidade: item.quantity,
+      preco: item.price,                 // <- numérico (unitário) p/ admin
+      nome,
+      email,
+      data: new Date().toISOString()     // opcional: ajuda no filtro por data
+    }));
 
-  const pedidos = cart.map(item => ({
-    ramo: item.branch,
-    produto: item.product,
-    tamanho: item.size,
-    quantidade: item.quantity,
-    preco: item.price,
-    especialidade: item.especialidade,
-    nome: nome,
-    email: email
-  }));
+    const existing = JSON.parse(localStorage.getItem('pedidos')) || [];
+    localStorage.setItem('pedidos', JSON.stringify(existing.concat(pedidos)));
 
-  const existingPedidos = JSON.parse(localStorage.getItem('pedidos')) || [];
-  const updatedPedidos = existingPedidos.concat(pedidos);
-  localStorage.setItem('pedidos', JSON.stringify(updatedPedidos));
-
-  cart = [];
-  updateCartCount();
-  checkoutModal.style.display = 'none';
-  alert('Pedido confirmado com sucesso!');
-});
-
+    cart = [];
+    updateCartCount();
+    checkoutModal.style.display = 'none';
+    alert('Pedido confirmado com sucesso!');
+  });
   </script>
 <footer class="footer">
 <div class="footer-content">
