@@ -72,29 +72,44 @@
   </section>
 </div>
 
-<script>
-  const parseMaybeNumber = (v) => {
-    if (typeof v === 'number') return v;
-    if (v == null) return 0;
+
+ <script>
+  // Helpers
+  const parseMaybeNumber = (v, fallback = 0) => {
+    if (typeof v === 'number' && !isNaN(v)) return v;
+    if (v == null || v === '') return fallback;
     const n = Number(String(v).replace(',', '.'));
-    return isNaN(n) ? 0 : n;
+    return isNaN(n) ? fallback : n;
   };
   const money = (n) => (Math.round(n*100)/100).toFixed(2).replace('.', ',') + '€';
-  const norm = (p) => ({
-    nome: p.nome || p.name || '',
-    email: p.email || '',
-    ramo: p.ramo || p.branch || '',
-    produto: p.produto || p.product || '',
-    tamanho: p.tamanho || p.size || '',
-    quantidade: parseMaybeNumber(p.quantidade != null ? p.quantidade : p.quantity),
-    precoUnit: parseMaybeNumber(p.preco != null ? p.preco : p.price),
-    total: parseMaybeNumber(p.preco != null ? p.preco : p.price) * parseMaybeNumber(p.quantidade != null ? p.quantidade : p.quantity),
-    data: p.data || p.timestamp || ''
-  });
-  const getPedidos = () => {
-    try { const arr = JSON.parse(localStorage.getItem('pedidos')) || []; return Array.isArray(arr)?arr.map(norm):[]; }
-    catch(e){ return []; }
+
+  // Normalização – agora lê preco_unit primeiro
+  const norm = (p) => {
+    const qtd = parseMaybeNumber(p.quantidade != null ? p.quantidade : p.quantity, 1);
+    const unit = parseMaybeNumber(
+      p.preco_unit ?? p.preco ?? p.price,
+      0
+    );
+    return {
+      nome: p.nome || p.name || '',
+      email: p.email || '',
+      ramo: p.ramo || p.branch || '',
+      produto: p.produto || p.product || '',
+      tamanho: p.tamanho || p.size || '',
+      quantidade: qtd,
+      precoUnit: unit,
+      total: unit * qtd,
+      data: p.data || p.timestamp || ''
+    };
   };
+
+  const getPedidos = () => {
+    try {
+      const arr = JSON.parse(localStorage.getItem('pedidos')) || [];
+      return Array.isArray(arr) ? arr.map(norm) : [];
+    } catch(e){ return []; }
+  };
+
   const filtrarPorData = (arr, ini, fim) => {
     if (!ini && !fim) return arr;
     const i = ini ? new Date(ini) : null;
@@ -107,6 +122,7 @@
       return true;
     });
   };
+
   const agrupar = (arr, keyFn) => {
     const map = new Map();
     for (const p of arr) {
@@ -123,7 +139,6 @@
     const wb = XLSX.utils.table_to_book(table, {sheet: title});
     XLSX.writeFile(wb, title.replace(/\s+/g,'_') + '.xlsx');
   }
-
   function exportPDF(table, title) {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
@@ -131,7 +146,6 @@
     doc.autoTable({ html: table });
     doc.save(title.replace(/\s+/g,'_') + '.pdf');
   }
-
   function bindExports(sectionId, tableId, titleText){
     const tbl = document.getElementById(tableId);
     document.getElementById('exp-'+sectionId.split('admin-')[1]+'-pdf')?.addEventListener('click', ()=> exportPDF(tbl, titleText));
@@ -148,6 +162,7 @@
     const resumo = document.getElementById('admin-resumo');
     if (resumo) resumo.innerHTML = `<b>${pedidos.length}</b> registos | Qtde: <b>${totalQtd}</b> | Valor: <b>${money(totalVal)}</b>`;
 
+    // Tabela detalhada
     const tbDetalhe = document.querySelector('#admin-detalhados-table tbody');
     tbDetalhe.innerHTML = '';
     pedidos.forEach(p => {
@@ -166,6 +181,7 @@
       tbDetalhe.appendChild(tr);
     });
 
+    // Agregado por ramo/produto/tamanho
     const grupos = agrupar(pedidos, p => [p.ramo, p.produto, p.tamanho].join(' | '));
     const tbRamo = document.querySelector('#admin-por-ramo-table tbody');
     tbRamo.innerHTML = '';
@@ -182,6 +198,7 @@
       tbRamo.appendChild(tr);
     });
 
+    // Secção por ramo (detalhes)
     const secRamos = document.getElementById('admin-por-ramo-detalhes');
     secRamos.innerHTML = '<h2>Por ramo — detalhes</h2>';
     const rams = Array.from(new Set(pedidos.map(p => p.ramo))).filter(Boolean);
@@ -228,18 +245,15 @@
     bindExports('admin-por-ramo','admin-por-ramo-table','Pedidos por ramo (agregado)');
   }
 
+  // Filtros
   document.getElementById('aplicar-filtro').addEventListener('click', () => {
     const ini = document.getElementById('filtro-inicio').value || '';
     const fim = document.getElementById('filtro-fim').value || '';
-
-    // Guardar para o index
     localStorage.setItem('dataInicio', ini);
     localStorage.setItem('dataFim', fim);
-
     render();
     alert('Período definido! Verifique no index.html.');
   });
-
   document.getElementById('limpar-filtro').addEventListener('click', () => {
     document.getElementById('filtro-inicio').value = '';
     document.getElementById('filtro-fim').value = '';
@@ -251,6 +265,8 @@
   window.addEventListener('storage', render);
   window.addEventListener('load', render);
 </script>
+
+
 
 </body>
 </html>
