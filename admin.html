@@ -71,7 +71,9 @@
     <span id="admin-resumo"></span>
   </section>
 </div>
-
+<button id="limpar-pedidos" type="button" style="background-color: #c62828; color: white;">
+  Limpar todos os pedidos
+</button>
 
  <script>
   // Helpers
@@ -264,6 +266,14 @@
 
   window.addEventListener('storage', render);
   window.addEventListener('load', render);
+  document.getElementById('limpar-pedidos').addEventListener('click', () => {
+  if (confirm('Tem a certeza que deseja apagar todos os pedidos? Esta ação não pode ser desfeita.')) {
+    localStorage.removeItem('pedidos');
+    render();
+    alert('Todos os pedidos foram apagados.');
+  }
+});
+
 </script>
 
 
