@@ -240,7 +240,7 @@ header {
 .produto img {
   width: 100%;
   height: 200px;           /* altura fixa para todas as imagens */
-  object-fit: contain;     /* mantém proporção da imagem */
+  object-fit: cover;     /* mantém proporção da imagem */
   border-bottom: 1px solid #ccc;
   background-color: #fff;  /* fundo branco para imagens pequenas */
 }
