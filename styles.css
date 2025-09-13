@@ -218,7 +218,7 @@ header {
     justify-content: center;
     gap: 20px;
     margin-top: 20px;
-    align-items: stretch; /* 🔑 força todos os cartões a mesma altura */
+    align-items: stretch; /* todos os cartões com mesma altura */
   }
   
   .produto {
@@ -230,12 +230,16 @@ header {
     background-color: #fff;
     transition: transform 0.3s, box-shadow 0.3s;
   
-    display: flex;             /* 🔑 flex container */
-    flex-direction: column;    /* organiza verticalmente */
+    display: flex;
+    flex-direction: column;
+    
+    /* 🔑 tira qualquer espaço fantasma */
+    margin: 0;
+    padding: 0;
   }
   
   .produto img {
-    display: block;
+    display: block;          /* remove espaço de img inline */
     width: 100%;
     height: 220px;
     object-fit: cover;
@@ -263,15 +267,10 @@ header {
     cursor: pointer;
     transition: background-color 0.3s, transform 0.2s;
   
-    margin-top: auto; /* 🔑 cola o botão ao fundo */
+    margin-top: auto;   /* cola ao fundo */
+    margin-bottom: 0;   /* 🔑 remove espaço em baixo */
   }
   
-  .adicionar:hover {
-    background-color: #555;
-    transform: scale(1.02);
-  }
-  
-
   
   /* Botão fixo do carrinho - somente o ícone, sem fundo */
   .cart-btn {
