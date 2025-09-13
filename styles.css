@@ -212,7 +212,6 @@ header {
   .branch-dirigentes {
     background-color: #F44336; /* Vermelho */
   }
-  
   .produtos {
     display: flex;
     flex-wrap: wrap;
@@ -231,6 +230,7 @@ header {
     flex-direction: column;
     background-color: #fff;
     transition: transform 0.3s, box-shadow 0.3s;
+    text-align: center; /* 🔑 centraliza tudo dentro do card */
   }
   
   .produto:hover {
@@ -239,25 +239,24 @@ header {
   }
   
   .produto img {
+    display: block;       /* 🔑 remove espaços em baixo da imagem */
     width: 100%;
-    height: 220px;      /* altura uniforme */
-    object-fit: cover;  /* 🔑 ocupa sempre todo o espaço */
+    height: 220px;        /* altura fixa para todas */
+    object-fit: cover;    /* ocupa todo o espaço */
     border-bottom: 1px solid #ccc;
     background-color: #fff;
   }
   
   .produto h2 {
-    margin: 10px 5px 5px 5px;
+    margin: 10px 0 5px 0;
     font-size: 1.2rem;
     color: #333;
-    text-align: center; /* 🔑 centraliza título */
   }
   
   .produto p {
-    margin: 5px 0 10px 0;
+    margin: 0 0 10px 0;
     font-size: 1rem;
     color: #555;
-    text-align: center; /* 🔑 centraliza preço */
   }
   
   .adicionar {
