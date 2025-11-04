@@ -75,7 +75,7 @@
   Limpar todos os pedidos
 </button>
 
- <script>
+<script>
   // Helpers
   const parseMaybeNumber = (v, fallback = 0) => {
     if (typeof v === 'number' && !isNaN(v)) return v;
@@ -85,13 +85,10 @@
   };
   const money = (n) => (Math.round(n*100)/100).toFixed(2).replace('.', ',') + '€';
 
-  // Normalização – agora lê preco_unit primeiro
+  // Normalização para o formato da tabela (usa campos da API)
   const norm = (p) => {
-    const qtd = parseMaybeNumber(p.quantidade != null ? p.quantidade : p.quantity, 1);
-    const unit = parseMaybeNumber(
-      p.preco_unit ?? p.preco ?? p.price,
-      0
-    );
+    const qtd = parseMaybeNumber(p.quantidade ?? p.quantity, 1);
+    const unit = parseMaybeNumber(p.preco_unit ?? p.preco ?? p.price, 0);
     return {
       nome: p.nome || p.name || '',
       email: p.email || '',
@@ -101,29 +98,23 @@
       quantidade: qtd,
       precoUnit: unit,
       total: unit * qtd,
-      data: p.data || p.timestamp || ''
+      data: p.data || p.created_at || '' // a API devolve ISO
     };
   };
 
-  const getPedidos = () => {
-    try {
-      const arr = JSON.parse(localStorage.getItem('pedidos')) || [];
-      return Array.isArray(arr) ? arr.map(norm) : [];
-    } catch(e){ return []; }
-  };
+  async function fetchPedidosAPI() {
+    const ini = document.getElementById('filtro-inicio')?.value || '';
+    const fim = document.getElementById('filtro-fim')?.value || '';
+    const params = new URLSearchParams();
+    if (ini) params.set('start', ini);
+    if (fim) params.set('end', fim);
 
-  const filtrarPorData = (arr, ini, fim) => {
-    if (!ini && !fim) return arr;
-    const i = ini ? new Date(ini) : null;
-    const f = fim ? new Date(fim) : null;
-    return arr.filter(p => {
-      if (!p.data) return true;
-      const d = new Date(p.data);
-      if (i && d < i) return false;
-      if (f && d > f) return false;
-      return true;
-    });
-  };
+    const url = '/api/orders' + (params.toString() ? `?${params.toString()}` : '');
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('Falha ao carregar /api/orders');
+    const arr = await res.json();
+    return Array.isArray(arr) ? arr.map(norm) : [];
+  }
 
   const agrupar = (arr, keyFn) => {
     const map = new Map();
@@ -154,126 +145,122 @@
     document.getElementById('exp-'+sectionId.split('admin-')[1]+'-xlsx')?.addEventListener('click', ()=> exportExcel(tbl, titleText));
   }
 
-  function render(){
-    const ini = document.getElementById('filtro-inicio')?.value || '';
-    const fim = document.getElementById('filtro-fim')?.value || '';
-    const pedidos = filtrarPorData(getPedidos(), ini, fim);
+  async function render(){
+    try {
+      const pedidos = await fetchPedidosAPI();
 
-    const totalQtd = pedidos.reduce((s,p)=>s+(p.quantidade||0),0);
-    const totalVal = pedidos.reduce((s,p)=>s+(p.total||0),0);
-    const resumo = document.getElementById('admin-resumo');
-    if (resumo) resumo.innerHTML = `<b>${pedidos.length}</b> registos | Qtde: <b>${totalQtd}</b> | Valor: <b>${money(totalVal)}</b>`;
+      // Resumo
+      const totalQtd = pedidos.reduce((s,p)=>s+(p.quantidade||0),0);
+      const totalVal = pedidos.reduce((s,p)=>s+(p.total||0),0);
+      const resumo = document.getElementById('admin-resumo');
+      if (resumo) resumo.innerHTML = `<b>${pedidos.length}</b> registos | Qtde: <b>${totalQtd}</b> | Valor: <b>${money(totalVal)}</b>`;
 
-    // Tabela detalhada
-    const tbDetalhe = document.querySelector('#admin-detalhados-table tbody');
-    tbDetalhe.innerHTML = '';
-    pedidos.forEach(p => {
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td>${p.nome}</td>
-        <td>${p.email}</td>
-        <td>${p.ramo}</td>
-        <td>${p.produto}</td>
-        <td>${p.tamanho}</td>
-        <td>${p.quantidade||0}</td>
-        <td>${money(p.precoUnit)}</td>
-        <td>${money(p.total)}</td>
-        <td>${p.data||''}</td>
-      `;
-      tbDetalhe.appendChild(tr);
-    });
-
-    // Agregado por ramo/produto/tamanho
-    const grupos = agrupar(pedidos, p => [p.ramo, p.produto, p.tamanho].join(' | '));
-    const tbRamo = document.querySelector('#admin-por-ramo-table tbody');
-    tbRamo.innerHTML = '';
-    grupos.forEach(g => {
-      const [ramo, produto, tamanho] = g.key.split(' | ');
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td>${ramo}</td>
-        <td>${produto}</td>
-        <td>${tamanho}</td>
-        <td>${g.quantidade}</td>
-        <td>${money(g.total)}</td>
-      `;
-      tbRamo.appendChild(tr);
-    });
-
-    // Secção por ramo (detalhes)
-    const secRamos = document.getElementById('admin-por-ramo-detalhes');
-    secRamos.innerHTML = '<h2>Por ramo — detalhes</h2>';
-    const rams = Array.from(new Set(pedidos.map(p => p.ramo))).filter(Boolean);
-    rams.forEach(ramo => {
-      const h = document.createElement('div');
-      h.className = 'ramo-title';
-      h.textContent = ramo;
-      secRamos.appendChild(h);
-
-      const bar = document.createElement('div');
-      bar.className = 'table-actions';
-      const bPDF = document.createElement('button'); bPDF.type='button'; bPDF.textContent='Exportar PDF'; bPDF.className='btn-pdf';
-      const bXLSX = document.createElement('button'); bXLSX.type='button'; bXLSX.textContent='Exportar Excel'; bXLSX.className='btn-excel';
-      bar.appendChild(bPDF); bar.appendChild(bXLSX);
-      secRamos.appendChild(bar);
-
-      const tbl = document.createElement('table');
-      tbl.innerHTML = `<thead><tr>
-        <th>Nome</th><th>Email</th><th>Produto</th><th>Tamanho</th><th>Qtd</th><th>Preço unit.</th><th>Total</th><th>Data</th>
-      </tr></thead><tbody></tbody>`;
-      const tb = tbl.querySelector('tbody');
-      const lista = pedidos.filter(p=>p.ramo===ramo);
-      lista.forEach(p => {
+      // Tabela detalhada
+      const tbDetalhe = document.querySelector('#admin-detalhados-table tbody');
+      tbDetalhe.innerHTML = '';
+      pedidos.forEach(p => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
           <td>${p.nome}</td>
           <td>${p.email}</td>
+          <td>${p.ramo}</td>
           <td>${p.produto}</td>
           <td>${p.tamanho}</td>
           <td>${p.quantidade||0}</td>
           <td>${money(p.precoUnit)}</td>
           <td>${money(p.total)}</td>
-          <td>${p.data||''}</td>
+          <td>${p.data ? new Date(p.data).toLocaleString('pt-PT') : ''}</td>
         `;
-        tb.appendChild(tr);
+        tbDetalhe.appendChild(tr);
       });
-      secRamos.appendChild(tbl);
 
-      bPDF.addEventListener('click', ()=> exportPDF(tbl, 'Pedidos '+ramo));
-      bXLSX.addEventListener('click', ()=> exportExcel(tbl, 'Pedidos '+ramo));
-    });
+      // Agregado por ramo/produto/tamanho
+      const grupos = agrupar(pedidos, p => [p.ramo, p.produto, p.tamanho].join(' | '));
+      const tbRamo = document.querySelector('#admin-por-ramo-table tbody');
+      tbRamo.innerHTML = '';
+      grupos.forEach(g => {
+        const [ramo, produto, tamanho] = g.key.split(' | ');
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${ramo}</td>
+          <td>${produto}</td>
+          <td>${tamanho}</td>
+          <td>${g.quantidade}</td>
+          <td>${money(g.total)}</td>
+        `;
+        tbRamo.appendChild(tr);
+      });
 
-    bindExports('admin-detalhados','admin-detalhados-table','Pedidos detalhados');
-    bindExports('admin-por-ramo','admin-por-ramo-table','Pedidos por ramo (agregado)');
+      // Secção por ramo (detalhes)
+      const secRamos = document.getElementById('admin-por-ramo-detalhes');
+      secRamos.innerHTML = '<h2>Por ramo — detalhes</h2>';
+      const rams = Array.from(new Set(pedidos.map(p => p.ramo))).filter(Boolean);
+      rams.forEach(ramo => {
+        const h = document.createElement('div');
+        h.className = 'ramo-title';
+        h.textContent = ramo;
+        secRamos.appendChild(h);
+
+        const bar = document.createElement('div');
+        bar.className = 'table-actions';
+        const bPDF = document.createElement('button'); bPDF.type='button'; bPDF.textContent='Exportar PDF'; bPDF.className='btn-pdf';
+        const bXLSX = document.createElement('button'); bXLSX.type='button'; bXLSX.textContent='Exportar Excel'; bXLSX.className='btn-excel';
+        bar.appendChild(bPDF); bar.appendChild(bXLSX);
+        secRamos.appendChild(bar);
+
+        const tbl = document.createElement('table');
+        tbl.innerHTML = `<thead><tr>
+          <th>Nome</th><th>Email</th><th>Produto</th><th>Tamanho</th><th>Qtd</th><th>Preço unit.</th><th>Total</th><th>Data</th>
+        </tr></thead><tbody></tbody>`;
+        const tb = tbl.querySelector('tbody');
+        const lista = pedidos.filter(p=>p.ramo===ramo);
+        lista.forEach(p => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${p.nome}</td>
+            <td>${p.email}</td>
+            <td>${p.produto}</td>
+            <td>${p.tamanho}</td>
+            <td>${p.quantidade||0}</td>
+            <td>${money(p.precoUnit)}</td>
+            <td>${money(p.total)}</td>
+            <td>${p.data ? new Date(p.data).toLocaleString('pt-PT') : ''}</td>
+          `;
+          tb.appendChild(tr);
+        });
+        secRamos.appendChild(tbl);
+
+        bPDF.addEventListener('click', ()=> exportPDF(tbl, 'Pedidos '+ramo));
+        bXLSX.addEventListener('click', ()=> exportExcel(tbl, 'Pedidos '+ramo));
+      });
+
+      bindExports('admin-detalhados','admin-detalhados-table','Pedidos detalhados');
+      bindExports('admin-por-ramo','admin-por-ramo-table','Pedidos por ramo (agregado)');
+
+    } catch (e) {
+      console.error(e);
+      const resumo = document.getElementById('admin-resumo');
+      if (resumo) resumo.textContent = 'Erro ao carregar pedidos do servidor.';
+    }
   }
 
-  // Filtros
-  document.getElementById('aplicar-filtro').addEventListener('click', () => {
-    const ini = document.getElementById('filtro-inicio').value || '';
-    const fim = document.getElementById('filtro-fim').value || '';
-    localStorage.setItem('dataInicio', ini);
-    localStorage.setItem('dataFim', fim);
-    render();
-    alert('Período definido! Verifique no index.html.');
-  });
+  // Filtros (apenas atualizam a renderização; pedidos já vêm da API)
+  document.getElementById('aplicar-filtro').addEventListener('click', render);
   document.getElementById('limpar-filtro').addEventListener('click', () => {
     document.getElementById('filtro-inicio').value = '';
     document.getElementById('filtro-fim').value = '';
-    localStorage.removeItem('dataInicio');
-    localStorage.removeItem('dataFim');
     render();
   });
 
-  window.addEventListener('storage', render);
-  window.addEventListener('load', render);
-  document.getElementById('limpar-pedidos').addEventListener('click', () => {
-  if (confirm('Tem a certeza que deseja apagar todos os pedidos? Esta ação não pode ser desfeita.')) {
-    localStorage.removeItem('pedidos');
-    render();
-    alert('Todos os pedidos foram apagados.');
+  // Botão "Limpar todos os pedidos" — agora não faz nada (remove se não precisares)
+  const limparBtn = document.getElementById('limpar-pedidos');
+  if (limparBtn) {
+    limparBtn.addEventListener('click', () => {
+      alert('Os pedidos estão na base de dados. Se precisares de um botão para apagar na BD, eu adiciono um endpoint seguro.');
+    });
   }
-});
 
+  window.addEventListener('load', render);
 </script>
 
 

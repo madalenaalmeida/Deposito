@@ -478,13 +478,62 @@
     let total=0; cart.forEach((item)=>{ const lt=item.price*(item.quantity||1); total+=lt; checkoutSummaryDiv.innerHTML += `<p>${item.product}${item.quantity?` - Quantidade: ${item.quantity}`:''}${item.size?` - Tamanho: ${item.size}`:''}${item.especialidade?` - Especialidade: ${item.especialidade}`:''} - Unit: ${money(item.price)} - Total: ${money(lt)}</p>`; });
     checkoutSummaryDiv.innerHTML += `<hr><p><strong>Total: ${money(total)}</strong></p>`;
   }
-  checkoutForm.addEventListener('submit',(e)=>{
-    e.preventDefault();
-    const nome=document.getElementById('nome-cliente').value; const email=document.getElementById('email-cliente').value;
-    const pedidos = cart.map((item)=>({ ramo:'Dirigentes', produto: item.product + (item.especialidade?(' - '+item.especialidade):''), tamanho:item.size, quantidade:item.quantity, preco_unit:item.price, nome, email }));
-    const existing = JSON.parse(localStorage.getItem('pedidos'))||[]; localStorage.setItem('pedidos', JSON.stringify(existing.concat(pedidos)));
-    cart=[]; updateCartCount(); checkoutModal.style.display='none'; alert('Pedido confirmado com sucesso!');
-  });
+  checkoutForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  if (cart.length === 0) {
+    alert('Carrinho vazio!');
+    return;
+  }
+
+  const nome  = document.getElementById('nome-cliente').value.trim();
+  const email = document.getElementById('email-cliente').value.trim();
+
+  if (!nome || !email) {
+    alert('Preenche o nome e o email.');
+    return;
+  }
+
+  try {
+    // Envia cada item do carrinho como um pedido
+    const respostas = await Promise.all(cart.map(item => {
+      const payload = {
+        nome,
+        email,
+        ramo: 'Dirigentes', // esta página é do ramo Avezinhas
+        produto: item.product + (item.especialidade ? ' - ' + item.especialidade : ''),
+        tamanho: item.size || '',
+        quantidade: Number(item.quantity || 1),
+        preco_unit: Number(item.price || 0)
+      };
+
+      return fetch('/api/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      }).then(r => r.json());
+    }));
+
+    // Verifica se algum falhou
+    const falhas = respostas.filter(r => !r || r.ok !== true);
+    if (falhas.length > 0) {
+      console.error('Falhas ao enviar:', falhas);
+      alert('Alguns items não foram enviados. Tenta novamente, por favor.');
+      return;
+    }
+
+    // Sucesso: limpa UI
+    cart = [];
+    updateCartCount();
+    checkoutModal.style.display = 'none';
+    alert('Pedido confirmado! Recebemos a tua encomenda.');
+
+  } catch (err) {
+    console.error(err);
+    alert('Erro a enviar o pedido. Verifica a ligação e tenta novamente.');
+  }
+});
+
   </script>
 </body>
 </html>

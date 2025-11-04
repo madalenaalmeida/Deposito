@@ -12,33 +12,49 @@
 <body class="login-page">
   <div class="login-container">
     <h1>Login - Administrador</h1>
-    <form id="login-form" action="admin-dashboard.html" method="POST">
+    <form id="login-form" action="/login" method="POST">
       <label for="username">Nome de Usuário:</label>
       <input type="text" id="username" name="username" required>
-
+    
       <label for="password">Senha:</label>
       <input type="password" id="password" name="password" required>
-
+    
       <button type="submit">Entrar</button>
     </form>
+    
   </div>
 
   <!-- Scripts -->
   <script>
-    // Simples validação de login (para fins de exemplo)
-    document.getElementById('login-form').addEventListener('submit', function(event) {
+    document.getElementById('login-form').addEventListener('submit', async function(event) {
       event.preventDefault();
-
-      const username = document.getElementById('username').value;
-      const password = document.getElementById('password').value;
-
-      // Simulando autenticação (substitua com autenticação real no back-end)
-      if (username === 'admin' && password === 'guiasdeviseu') {
-        window.location.href = 'admin.html';  // Redireciona para a página do administrador
-      } else {
-        alert('Nome de usuário ou senha incorretos!');
+  
+      const form = event.currentTarget;
+      const formData = new URLSearchParams();
+      formData.set('username', document.getElementById('username').value.trim());
+      formData.set('password', document.getElementById('password').value.trim());
+  
+      try {
+        const res = await fetch(form.action, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: formData.toString(),
+          redirect: 'follow' // permite seguir 302 do Flask
+        });
+  
+        if (res.ok) {
+          // Se o servidor redirecionar para /admin, abrimos a tua página admin.html frontend
+          // (Se estás a usar o meu backend “preservado”, a rota /admin já serve a UI de admin)
+          window.location.href = 'admin.html';
+        } else {
+          alert('Nome de utilizador ou palavra-passe incorretos.');
+        }
+      } catch (err) {
+        console.error(err);
+        alert('Erro a ligar ao servidor. Verifica se o backend está a correr.');
       }
     });
   </script>
+
 </body>
 </html>

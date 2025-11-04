@@ -1,11 +1,24 @@
+// =========================
 // Variáveis globais
+// =========================
 let currentProduct = null;
 let currentPrice = null;
 let currentPriceMap = null;
 let modalPriceEl = null;
 let cart = [];
 
+// Detecta o ramo pela classe do <body> (ex.: "ramo-avezinha", "ramo-aventura", etc.)
+const bodyClass = document.body.className || "";
+let RAMO_ATUAL = "Geral";
+if (bodyClass.includes("ramo-avezinha")) RAMO_ATUAL = "Avezinhas";
+else if (bodyClass.includes("ramo-aventura")) RAMO_ATUAL = "Aventura";
+else if (bodyClass.includes("ramo-caravela")) RAMO_ATUAL = "Caravela";
+else if (bodyClass.includes("ramo-moinho")) RAMO_ATUAL = "Moinho";
+else if (bodyClass.includes("dirigentes")) RAMO_ATUAL = "Dirigentes";
+
+// =========================
 // Elementos do DOM
+// =========================
 const modal = document.getElementById('modal');
 const modalClose = document.getElementById('modal-close');
 const modalForm = document.getElementById('modal-form');
@@ -31,25 +44,63 @@ const especialidadeLabel = document.getElementById('especialidade-label');
 // Menu lateral
 const menuBtn = document.getElementById('menu-btn');
 const sidebar = document.getElementById('sidebar');
-menuBtn.addEventListener('click', () => {
-  sidebar.classList.toggle('active');
+menuBtn?.addEventListener('click', () => {
+  sidebar?.classList.toggle('active');
 });
 
-// Ao clicar em um botão "Adicionar ao Carrinho"
-const addButtons = document.querySelectorAll('.adicionar');
-addButtons.forEach(button => {
-  button.addEventListener('click', function() {
-    currentProduct = this.dataset.produto;
-    currentPrice = this.dataset.preco;
-    
-    
-    // Suporte a preços por tamanho (data-precos='{"S":12,"M":13.5,"L":15}')
+// =========================
+// Helpers
+// =========================
+const parsePrice = (v) => {
+  if (v == null) return 0;
+  const n = Number(String(v).replace(',', '.'));
+  return isNaN(n) ? 0 : n;
+};
+const money = (n) => (Math.round(n * 100) / 100).toFixed(2).replace('.', ',') + '€';
+
+function updateCartCount() {
+  if (cartCountSpan) cartCountSpan.textContent = cart.length;
+}
+
+function resolveUnitPrice(size) {
+  if (currentPriceMap) {
+    if (size && currentPriceMap[size] != null) return parsePrice(currentPriceMap[size]);
+    if (currentPriceMap['Único'] != null) return parsePrice(currentPriceMap['Único']);
+  }
+  return parsePrice(currentPrice);
+}
+
+function populateSizeOptionsFromMap(map) {
+  tamanhoField.innerHTML = '';
+  if (!map) return false;
+  const keys = Object.keys(map);
+  const sizeKeys = keys.filter(k => k !== 'Único');
+  if (sizeKeys.length === 0) return false;
+  sizeKeys.forEach(k => {
+    const opt = document.createElement('option');
+    opt.value = k;
+    opt.textContent = k;
+    tamanhoField.appendChild(opt);
+  });
+  tamanhoField.value = sizeKeys[0];
+  return true;
+}
+
+// =========================
+ // Abrir modal de opções
+// =========================
+document.querySelectorAll('.adicionar').forEach(button => {
+  button.addEventListener('click', function () {
+    currentProduct = this.dataset.produto || '';
+    currentPrice = this.dataset.preco ?? null;
+
+    // Preços por tamanho (data-precos='{"S":12,"M":13.5,"L":15}')
     currentPriceMap = null;
     if (this.dataset.precos) {
       try {
         const parsed = JSON.parse(this.dataset.precos);
         currentPriceMap = {};
-        for (const [k,v] of Object.entries(parsed)) {
+        for (const [k, v] of Object.entries(parsed)) {
           const num = typeof v === 'string' ? parseFloat(v.replace(',', '.')) : Number(v);
           if (!isNaN(num)) currentPriceMap[k] = num;
         }
@@ -57,58 +108,62 @@ addButtons.forEach(button => {
         console.warn('data-precos inválido para', currentProduct, e);
       }
     }
-    
+
     // Criar/obter um elemento no modal para mostrar o preço atual
     if (!modalPriceEl) {
       modalPriceEl = document.createElement('div');
       modalPriceEl.id = 'modal-price';
       modalPriceEl.style.margin = '8px 0 12px';
       modalPriceEl.style.fontWeight = '600';
-      modalForm.insertBefore(modalPriceEl, modalForm.firstChild.nextSibling);
+      modalForm.insertBefore(modalPriceEl, modalForm.firstChild?.nextSibling || null);
     }
     const setPriceForSize = (size) => {
       if (currentPriceMap && size && currentPriceMap[size] != null) {
         currentPrice = currentPriceMap[size];
-        modalPriceEl.textContent = 'Preço: ' + currentPrice.toString().replace('.', ',') + '€';
+        modalPriceEl.textContent = 'Preço: ' + money(currentPrice);
       } else {
         const base = this.dataset.preco ? parseFloat(this.dataset.preco.replace(',', '.')) : null;
         currentPrice = base;
-        modalPriceEl.textContent = base != null ? ('Preço: ' + base.toString().replace('.', ',') + '€') : '';
+        modalPriceEl.textContent = base != null ? ('Preço: ' + money(base)) : '';
       }
     };
-// Lê as opções definidas no atributo data-options
-    const options = this.dataset.options 
-      ? this.dataset.options.split(',').map(opt => opt.trim().toLowerCase())
+
+    // Lê as opções definidas no atributo data-options
+    const options = this.dataset.options
+      ? this.dataset.options.split(',').map(o => o.trim().toLowerCase())
       : [];
-    
+
     // Configurar o campo Tamanho
     if (options.includes('tamanho')) {
-      tamanhoField.style.display = 'inline-block';
-      tamanhoLabel.style.display = 'block';
-      // Não forçar 'P' porque os ramos têm opções diferentes; manter selecionado atual
-      if (!tamanhoField.value) tamanhoField.selectedIndex = 0;
-      // Listener para atualizar preço quando o tamanho muda
+      const hasSizes = populateSizeOptionsFromMap(currentPriceMap);
+      if (hasSizes) {
+        tamanhoField.style.display = 'inline-block';
+        tamanhoLabel.style.display = 'block';
+      } else {
+        tamanhoField.style.display = 'none';
+        tamanhoLabel.style.display = 'none';
+        tamanhoField.value = '';
+      }
       tamanhoField.onchange = () => setPriceForSize(tamanhoField.value);
       setPriceForSize(tamanhoField.value);
     } else {
       tamanhoField.style.display = 'none';
       tamanhoLabel.style.display = 'none';
       tamanhoField.value = '';
-      // Sem tamanho, usa preço base
       setPriceForSize('');
     }
-    
+
     // Configurar o campo Quantidade
     if (options.includes('quantidade')) {
       quantidadeField.style.display = 'inline-block';
       quantidadeLabel.style.display = 'block';
-      quantidadeField.value = 1; // Valor padrão
+      quantidadeField.value = 1; // padrão
     } else {
       quantidadeField.style.display = 'none';
       quantidadeLabel.style.display = 'none';
       quantidadeField.value = '';
     }
-    
+
     // Configurar o campo Especialidade
     if (options.includes('especialidade')) {
       especialidadeField.style.display = 'inline-block';
@@ -119,162 +174,184 @@ addButtons.forEach(button => {
       especialidadeLabel.style.display = 'none';
       especialidadeField.value = '';
     }
-    
+
     modal.style.display = 'block';
   });
 });
 
-// Fechar modal de seleção
-modalClose.addEventListener('click', () => {
-  modal.style.display = 'none';
+// =========================
+// Fechar modais
+// =========================
+modalClose?.addEventListener('click', () => { modal.style.display = 'none'; });
+cartModalClose?.addEventListener('click', () => { cartModal.style.display = 'none'; });
+checkoutClose?.addEventListener('click', () => { checkoutModal.style.display = 'none'; });
+
+window.addEventListener('click', (e) => {
+  if (e.target === modal) modal.style.display = 'none';
+  if (e.target === cartModal) cartModal.style.display = 'none';
+  if (e.target === checkoutModal) checkoutModal.style.display = 'none';
 });
 
-// Processar formulário do modal para adicionar ao carrinho
+// =========================
+// Adicionar ao carrinho
+// =========================
 modalForm.addEventListener('submit', (event) => {
   event.preventDefault();
-  
-  // Coleta os valores dos campos somente se estiverem visíveis
-  const tamanho = (tamanhoField.style.display !== 'none') ? tamanhoField.value : "";
-  const quantidade = (quantidadeField.style.display !== 'none') ? quantidadeField.value : "";
-  const especialidade = (especialidadeField.style.display !== 'none') ? especialidadeField.value : "";
-  
-  // Adiciona o item ao carrinho com os dados coletados
-  cart.push({ 
-    branch: 'Avezinhas', 
-    product: currentProduct, 
-    price: Number(currentPrice),
-    size: tamanho, 
-    quantity: quantidade,
-    especialidade: especialidade
+
+  const size = (tamanhoField.style.display !== 'none' && tamanhoField.value) ? tamanhoField.value : '';
+  const qty = (quantidadeField.style.display !== 'none') ? Number(quantidadeField.value || 1) : 1;
+  const espec = (especialidadeField.style.display !== 'none') ? (especialidadeField.value || '') : '';
+
+  const unit = resolveUnitPrice(size || 'Único');
+
+  cart.push({
+    branch: RAMO_ATUAL,
+    product: currentProduct,
+    price: Number(unit),
+    size: size,
+    quantity: qty,
+    especialidade: espec
   });
-  
+
   updateCartCount();
-  alert(`Adicionado: ${currentProduct} - ${quantidade ? quantidade + ' unidade(s)' : ''}${tamanho ? ', Tamanho: ' + tamanho : ''}${especialidade ? ', Especialidade: ' + especialidade : ''}`);
-  
+  alert(`Adicionado: ${currentProduct}${qty ? ' — Qtd: ' + qty : ''}${size ? ' — Tamanho: ' + size : ''}${espec ? ' — ' + espec : ''} — Unit: ${money(unit)}`);
+
   modal.style.display = 'none';
 });
 
-// Atualizar a contagem do carrinho
-function updateCartCount() {
-  cartCountSpan.textContent = cart.length;
-}
-
-// Abrir modal do carrinho
-cartBtn.addEventListener('click', () => {
+// =========================
+// Carrinho
+// =========================
+cartBtn?.addEventListener('click', () => {
   displayCartItems();
   cartModal.style.display = 'block';
 });
 
-// Fechar modal do carrinho
-cartModalClose.addEventListener('click', () => {
-  cartModal.style.display = 'none';
-});
-
-// Fechar modais ao clicar fora
-window.addEventListener('click', (event) => {
-  if (event.target === modal) modal.style.display = 'none';
-  if (event.target === cartModal) cartModal.style.display = 'none';
-  if (event.target === checkoutModal) checkoutModal.style.display = 'none';
-});
-
-// Exibir itens do carrinho no modal
 function displayCartItems() {
   cartItemsDiv.innerHTML = '';
   if (cart.length === 0) {
     cartItemsDiv.innerHTML = '<p>Carrinho vazio.</p>';
-  } else {
-    cart.forEach((item, index) => {
-      const itemDiv = document.createElement('div');
-      itemDiv.classList.add('cart-item');
-      let text = `${item.product} - ${item.quantity ? 'Quantidade: ' + item.quantity : ''}${item.size ? ' - Tamanho: ' + item.size : ''}${item.especialidade ? ' - Especialidade: ' + item.especialidade : ''} - Preço: R$ ${item.price}`;
-      itemDiv.innerHTML = `<p>${text}</p>`;
-      // Botão para remover item do carrinho
-      const removeBtn = document.createElement('button');
-      removeBtn.textContent = 'Remover';
-      removeBtn.addEventListener('click', () => {
-        cart.splice(index, 1);
-        updateCartCount();
-        displayCartItems();
-      });
-      itemDiv.appendChild(removeBtn);
-      cartItemsDiv.appendChild(itemDiv);
-    });
+    return;
   }
+
+  cart.forEach((item, index) => {
+    const lineTotal = item.price * (item.quantity || 1);
+    const div = document.createElement('div');
+    div.classList.add('cart-item');
+    div.innerHTML = `<p>${item.product}
+      ${item.quantity ? ` — Quantidade: ${item.quantity}` : ''}
+      ${item.size ? ` — Tamanho: ${item.size}` : ''}
+      ${item.especialidade ? ` — ${item.especialidade}` : ''}
+      — Unit: ${money(item.price)} (Total: ${money(lineTotal)})</p>`;
+
+    const removeBtn = document.createElement('button');
+    removeBtn.textContent = 'Remover';
+    removeBtn.addEventListener('click', () => {
+      cart.splice(index, 1);
+      updateCartCount();
+      displayCartItems();
+    });
+
+    div.appendChild(removeBtn);
+    cartItemsDiv.appendChild(div);
+  });
 }
 
-// Ao clicar em "Confirmar" no carrinho, abre o modal de checkout
-confirmCartBtn.addEventListener('click', () => {
-  if (cart.length === 0) {
-    alert('Carrinho vazio!');
-  } else {
-    displayCheckoutSummary();
-    cartModal.style.display = 'none';
-    checkoutModal.style.display = 'block';
-  }
+// =========================
+// Checkout
+// =========================
+confirmCartBtn?.addEventListener('click', () => {
+  if (cart.length === 0) { alert('Carrinho vazio!'); return; }
+  displayCheckoutSummary();
+  cartModal.style.display = 'none';
+  checkoutModal.style.display = 'block';
 });
 
-// Montar resumo do pedido no modal de checkout
 function displayCheckoutSummary() {
   checkoutSummaryDiv.innerHTML = '';
   if (cart.length === 0) {
     checkoutSummaryDiv.innerHTML = '<p>Carrinho vazio.</p>';
-  } else {
-    cart.forEach(item => {
-      let text = `${item.product} - ${item.quantity ? 'Quantidade: ' + item.quantity : ''}${item.size ? ' - Tamanho: ' + item.size : ''}${item.especialidade ? ' - Especialidade: ' + item.especialidade : ''} - Preço: R$ ${item.price}`;
-      checkoutSummaryDiv.innerHTML += `<p>${text}</p>`;
-    });
+    return;
   }
+  let total = 0;
+  cart.forEach(item => {
+    const line = item.price * (item.quantity || 1);
+    total += line;
+    checkoutSummaryDiv.innerHTML += `<p>${item.product}
+      ${item.quantity ? ` — Quantidade: ${item.quantity}` : ''}
+      ${item.size ? ` — Tamanho: ${item.size}` : ''}
+      ${item.especialidade ? ` — ${item.especialidade}` : ''}
+      — Unit: ${money(item.price)} — Total: ${money(line)}</p>`;
+  });
+  checkoutSummaryDiv.innerHTML += `<hr><p><strong>Total: ${money(total)}</strong></p>`;
 }
 
-// Processar formulário de checkout
-checkoutForm.addEventListener('submit', (event) => {
+// =========================
+// Enviar pedidos para o backend (substitui o localStorage)
+// =========================
+checkoutForm.addEventListener('submit', async (event) => {
   event.preventDefault();
-  
-  const nome = document.getElementById('nome-cliente').value;
-  const email = document.getElementById('email-cliente').value;
-  
-  // Criar array de pedidos
-  const pedidos = cart.map(item => ({
-    ramo: item.branch,
-    produto: item.product,
-    tamanho: item.size,
-    quantidade: item.quantity,
-    preco: item.price,
-    especialidade: item.especialidade,
-    nome: nome,
-    email: email
-  }));
-  
-  // Salvar pedidos no localStorage
-  const existingPedidos = JSON.parse(localStorage.getItem('pedidos')) || [];
-  const updatedPedidos = existingPedidos.concat(pedidos);
-  localStorage.setItem('pedidos', JSON.stringify(updatedPedidos));
-  
-  // Limpar carrinho e fechar modal
-  cart = [];
-  updateCartCount();
-  checkoutModal.style.display = 'none';
-  alert('Pedido confirmado com sucesso!');
-});
-// Função para salvar as datas de encomenda
-function salvarDatas() {
-  const dataInicio = document.getElementById('data-inicio').value;
-  const dataFim = document.getElementById('data-fim').value;
 
-  // Verificar se as datas estão válidas
-  if (!dataInicio || !dataFim) {
-    alert("Por favor, preencha ambas as datas.");
+  if (cart.length === 0) {
+    alert('Carrinho vazio!');
     return;
   }
 
-  // Salvar as datas no localStorage (ou em outro banco de dados)
-  localStorage.setItem("dataInicio", dataInicio);
-  localStorage.setItem("dataFim", dataFim);
+  const nome  = document.getElementById('nome-cliente').value.trim();
+  const email = document.getElementById('email-cliente').value.trim();
 
-  // Avisar o administrador que as datas foram salvas
+  if (!nome || !email) {
+    alert('Preenche o nome e o email.');
+    return;
+  }
+
+  try {
+    const respostas = await Promise.all(
+      cart.map(item => {
+        const payload = {
+          nome,
+          email,
+          ramo: RAMO_ATUAL,
+          produto: item.product + (item.especialidade ? ' - ' + item.especialidade : ''),
+          tamanho: item.size || '',
+          quantidade: Number(item.quantity || 1),
+          preco_unit: Number(item.price || 0)
+        };
+        return fetch('/api/orders', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        }).then(r => r.json());
+      })
+    );
+
+    const falhas = respostas.filter(r => !r || r.ok !== true);
+    if (falhas.length > 0) {
+      console.error('Falhas ao enviar:', falhas);
+      alert('Alguns itens não foram enviados. Tenta novamente, por favor.');
+      return;
+    }
+
+    cart = [];
+    updateCartCount();
+    checkoutModal.style.display = 'none';
+    alert('Pedido confirmado! Recebemos a tua encomenda.');
+
+  } catch (err) {
+    console.error(err);
+    alert('Erro a enviar o pedido. Verifica a ligação e tenta novamente.');
+  }
+});
+
+// =========================
+// (Opcional) salvar/períodos de encomenda no localStorage
+// =========================
+function salvarDatas() {
+  const di = document.getElementById('data-inicio')?.value;
+  const df = document.getElementById('data-fim')?.value;
+  if (!di || !df) { alert("Por favor, preencha ambas as datas."); return; }
+  localStorage.setItem("dataInicio", di);
+  localStorage.setItem("dataFim", df);
   alert("Datas salvas com sucesso!");
-
-  // Atualizar a interface ou realizar outras ações necessárias
-  atualizarDatasNaTela();
+  if (typeof atualizarDatasNaTela === 'function') atualizarDatasNaTela();
 }
-
