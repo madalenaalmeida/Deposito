@@ -22,7 +22,7 @@
     #admin-datas label { display: flex; flex-direction: column; gap: .25rem; }
     #status-datas { font-weight: 600; }
     #admin-resumo { display:block; margin: 1rem 0; font-weight: 700; text-align:center; }
-    
+
     /* Botão vermelho em baixo */
     #exportar-e-limpar {
       display: block;
@@ -39,9 +39,16 @@
       cursor: pointer;
       transition: background-color 0.3s;
     }
-    #exportar-e-limpar:hover {
-      background-color: #a82020;
+    #exportar-e-limpar:hover { background-color: #a82020; }
+
+    /* Barra de ações em cada ramo */
+    .table-actions { display:flex; gap:.5rem; margin:.5rem 0 1rem; }
+    .ramo-title { font-weight:700; font-size:1.1rem; margin-top:1rem; }
+    .btn-pdf, .btn-excel {
+      padding:.45rem .75rem; border:none; border-radius:6px; cursor:pointer;
     }
+    .btn-pdf { background:#e53935; color:#fff; }
+    .btn-excel { background:#2e7d32; color:#fff; }
   </style>
 </head>
 <body>
@@ -220,6 +227,63 @@
     document.getElementById('exp-'+sectionId.split('admin-')[1]+'-xlsx')?.addEventListener('click', ()=> exportExcel(tbl, titleText));
   }
 
+  // -------- Secção "Por ramo — detalhes" --------
+  function renderDetalhesPorRamo(pedidos) {
+    const sec = document.getElementById('admin-por-ramo-detalhes');
+    if (!sec) return;
+
+    sec.innerHTML = '<h2>Por ramo — detalhes</h2>';
+
+    // ramos únicos
+    const ramos = Array.from(new Set(pedidos.map(p => p.ramo))).filter(Boolean);
+
+    ramos.forEach(ramo => {
+      // título do ramo
+      const h = document.createElement('div');
+      h.className = 'ramo-title';
+      h.textContent = ramo;
+      sec.appendChild(h);
+
+      // barra de export
+      const bar = document.createElement('div');
+      bar.className = 'table-actions';
+      const bPDF = document.createElement('button'); bPDF.type='button'; bPDF.textContent='Exportar PDF'; bPDF.className='btn-pdf';
+      const bXLSX = document.createElement('button'); bXLSX.type='button'; bXLSX.textContent='Exportar Excel'; bXLSX.className='btn-excel';
+      bar.appendChild(bPDF); bar.appendChild(bXLSX);
+      sec.appendChild(bar);
+
+      // tabela do ramo
+      const tbl = document.createElement('table');
+      tbl.innerHTML = `<thead><tr>
+        <th>Nome</th><th>Email</th><th>Produto</th><th>Tamanho</th>
+        <th>Qtd</th><th>Preço unit.</th><th>Total</th><th>Data</th>
+      </tr></thead><tbody></tbody>`;
+      const tb = tbl.querySelector('tbody');
+
+      const lista = pedidos.filter(p=>p.ramo===ramo);
+      lista.forEach(p => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${p.nome}</td>
+          <td>${p.email}</td>
+          <td>${p.produto}</td>
+          <td>${p.tamanho}</td>
+          <td>${p.quantidade||0}</td>
+          <td>${money(p.precoUnit)}</td>
+          <td>${money(p.total)}</td>
+          <td>${p.data ? new Date(p.data).toLocaleString('pt-PT') : ''}</td>`;
+        tb.appendChild(tr);
+      });
+
+      sec.appendChild(tbl);
+
+      // binds de export para esta tabela específica
+      bPDF.addEventListener('click', ()=> exportPDF(tbl, 'Pedidos '+ramo));
+      bXLSX.addEventListener('click', ()=> exportExcel(tbl, 'Pedidos '+ramo));
+    });
+  }
+
+  // -------- Render principal --------
   async function render(){
     try {
       const pedidos = await fetchPedidosAPI();
@@ -259,8 +323,12 @@
         tbRamo.appendChild(tr);
       });
 
+      // Export dos dois blocos principais
       bindExports('admin-detalhados','admin-detalhados-table','Pedidos detalhados');
       bindExports('admin-por-ramo','admin-por-ramo-table','Pedidos por ramo (agregado)');
+
+      // >>> NOVO: desenhar as tabelas por ramo
+      renderDetalhesPorRamo(pedidos);
 
     } catch (e) {
       console.error(e);
