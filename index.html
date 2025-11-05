@@ -77,11 +77,11 @@
         <div class="dates-container">
           <div class="date-box">
             <h3>Data de Início</h3>
-            <p id="start-date">Data não definida</p>
+            <p id="start-date">A carregar...</p>
           </div>
           <div class="date-box">
             <h3>Data de Fim</h3>
-            <p id="end-date">Data não definida</p>
+            <p id="end-date">A carregar...</p>
           </div>
         </div>
         <p>As encomendas podem ser feitas durante este período.</p>
@@ -97,34 +97,32 @@
       });
     </script>
 
-    <!-- Script para mostrar datas do localStorage -->
+    <!-- Script para mostrar datas vindas do backend -->
     <script>
-      function atualizarDatas() {
-        const dataInicio = localStorage.getItem('dataInicio') || '';
-        const dataFim    = localStorage.getItem('dataFim') || '';
+      async function preencherDatas(){
+        try {
+          const res = await fetch('/api/config');
+          if (!res.ok) throw new Error('Falha ao ler /api/config');
+          const cfg = await res.json();
 
-        const startEl = document.getElementById("start-date");
-        const endEl   = document.getElementById("end-date");
+          const startEl = document.getElementById("start-date");
+          const endEl   = document.getElementById("end-date");
 
-        if (dataInicio) {
-          startEl.textContent = new Date(dataInicio).toLocaleDateString('pt-PT');
-        } else {
-          startEl.textContent = "Data não definida";
-        }
+          startEl.textContent = cfg.orders_start
+            ? new Date(cfg.orders_start).toLocaleDateString('pt-PT')
+            : 'Data não definida';
 
-        if (dataFim) {
-          endEl.textContent = new Date(dataFim).toLocaleDateString('pt-PT');
-        } else {
-          endEl.textContent = "Data não definida";
+          endEl.textContent = cfg.orders_end
+            ? new Date(cfg.orders_end).toLocaleDateString('pt-PT')
+            : 'Data não definida';
+        } catch (e) {
+          console.error(e);
+          document.getElementById("start-date").textContent = 'Erro';
+          document.getElementById("end-date").textContent = 'Erro';
         }
       }
 
-      window.addEventListener('load', atualizarDatas);
-      window.addEventListener('storage', (e) => {
-        if (e.key === 'dataInicio' || e.key === 'dataFim' || e.key === 'filtroPing') {
-          atualizarDatas();
-        }
-      });
+      window.addEventListener('load', preencherDatas);
     </script>
 
     <footer class="footer">
