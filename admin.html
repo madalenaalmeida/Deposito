@@ -15,7 +15,6 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 
   <style>
-    /* Estilo pequeno para a secção das datas */
     #admin-datas .controls {
       display: flex; gap: .75rem; align-items: end; flex-wrap: wrap;
       margin: .5rem 0 1rem;
@@ -23,6 +22,7 @@
     #admin-datas label { display: flex; flex-direction: column; gap: .25rem; }
     #status-datas { font-weight: 600; }
     #admin-resumo { display:block; margin: 1rem 0; font-weight: 700; }
+    .actions-row { display:flex; gap:.5rem; flex-wrap:wrap; margin:.75rem 0; }
   </style>
 </head>
 <body>
@@ -36,15 +36,16 @@
 
 <div class="container">
 
-  <!-- ===================== -->
-  <!--   TABELAS             -->
-  <!-- ===================== -->
+  <!-- TABELA DETALHADA -->
   <section id="admin-detalhados">
     <h2>Pedidos detalhados (todos)</h2>
-    <div class="table-actions">
+    <div class="actions-row">
       <button class="btn-pdf" type="button" id="exp-detalhados-pdf">Exportar PDF</button>
       <button class="btn-excel" type="button" id="exp-detalhados-xlsx">Exportar Excel</button>
+      <!-- NOVO: Exportar + Limpar -->
+      <button class="btn-excel" type="button" id="exportar-e-limpar">Exportar Excel & Limpar</button>
     </div>
+
     <table id="admin-detalhados-table">
       <thead>
         <tr>
@@ -57,9 +58,10 @@
     </table>
   </section>
 
+  <!-- AGREGADO POR RAMO -->
   <section id="admin-por-ramo">
     <h2>Pedidos por ramo (agregado)</h2>
-    <div class="table-actions">
+    <div class="actions-row">
       <button class="btn-pdf" type="button" id="exp-porramo-pdf">Exportar PDF</button>
       <button class="btn-excel" type="button" id="exp-porramo-xlsx">Exportar Excel</button>
     </div>
@@ -74,16 +76,15 @@
     </table>
   </section>
 
+  <!-- DETALHES POR RAMO -->
   <section id="admin-por-ramo-detalhes">
     <h2>Por ramo — detalhes</h2>
   </section>
 
-  <!-- Resumo no fim das tabelas -->
+  <!-- RESUMO -->
   <div id="admin-resumo"></div>
 
-  <!-- ===================== -->
-  <!--   PERÍODOS EM BAIXO   -->
-  <!-- ===================== -->
+  <!-- PERÍODOS (EM BAIXO) -->
   <section id="admin-datas">
     <h2>Períodos de Encomenda</h2>
     <div class="controls">
@@ -99,12 +100,8 @@
   </section>
 </div>
 
-<button id="limpar-pedidos" type="button" style="background-color:#c62828;color:#fff;">
-  Limpar todos os pedidos
-</button>
-
 <script>
-  // ========= Helpers =========
+  // -------- Helpers --------
   const parseMaybeNumber = (v, fallback = 0) => {
     if (typeof v === 'number' && !isNaN(v)) return v;
     if (v == null || v === '') return fallback;
@@ -129,7 +126,7 @@
     };
   };
 
-  // ========= Config (datas) =========
+  // -------- Config (datas) --------
   async function carregarDatas(){
     try {
       const res = await fetch('/api/config', { credentials: 'same-origin' });
@@ -163,10 +160,9 @@
     }
   }
 
-  // ========= Pedidos (tabelas) =========
+  // -------- Pedidos (tabelas) --------
   async function fetchPedidosAPI() {
-    const url = '/api/orders';
-    const res = await fetch(url, { credentials: 'same-origin' });
+    const res = await fetch('/api/orders', { credentials: 'same-origin' });
     if (!res.ok) throw new Error('Falha ao carregar /api/orders');
     const arr = await res.json();
     return Array.isArray(arr) ? arr.map(norm) : [];
@@ -250,17 +246,40 @@
     }
   }
 
-  // ========= Binds =========
-  const limparBtn = document.getElementById('limpar-pedidos');
-  if (limparBtn) {
-    limparBtn.addEventListener('click', () => {
-      alert('Os pedidos estão na base de dados. Se precisares de um botão para apagar na BD, eu adiciono um endpoint seguro.');
-    });
+  // -------- Exportar & Limpar --------
+  function exportarTabelaDetalhadaParaExcel() {
+    const tbl = document.getElementById('admin-detalhados-table');
+    const wb = XLSX.utils.table_to_book(tbl, { sheet: 'Pedidos' });
+    const hoje = new Date().toISOString().slice(0,10); // YYYY-MM-DD
+    XLSX.writeFile(wb, `Pedidos_${hoje}.xlsx`);
   }
 
+  async function limparPedidosBD() {
+    const res = await fetch('/api/orders/clear', {
+      method: 'POST',
+      credentials: 'same-origin'
+    });
+    if (!res.ok) throw new Error('Erro ao limpar pedidos');
+  }
+
+  async function exportarELimpar() {
+    try {
+      exportarTabelaDetalhadaParaExcel();
+      if (!confirm('Queres apagar TODOS os pedidos da base de dados? (Já foi exportado para Excel)')) return;
+      await limparPedidosBD();
+      await render();
+      alert('Exportado e apagado com sucesso.');
+    } catch (e) {
+      console.error(e);
+      alert('Falhou ao exportar/limpar. Vê a consola.');
+    }
+  }
+
+  // -------- Binds --------
   window.addEventListener('load', carregarDatas);
   window.addEventListener('load', render);
   document.getElementById('guardar-datas').addEventListener('click', guardarDatas);
+  document.getElementById('exportar-e-limpar').addEventListener('click', exportarELimpar);
 </script>
 
 </body>
