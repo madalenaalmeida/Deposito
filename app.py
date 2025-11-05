@@ -174,6 +174,13 @@ def get_orders():
         "especialidade": p.especialidade,
         "data": p.created_at
     } for p in pedidos])
+@app.route("/api/orders/clear", methods=["POST"])
+def clear_orders():
+    if not is_logged_in():
+        return jsonify({"error": "Não autorizado"}), 401
+    Pedido.query.delete()
+    db.session.commit()
+    return jsonify({"ok": True})
 
 # -------------------------
 # LOGIN / LOGOUT

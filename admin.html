@@ -9,20 +9,20 @@
   <link rel="stylesheet" href="admin-style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-  <!-- Biblioteca para Excel -->
+  <!-- Excel/PDF -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-  <!-- Biblioteca para PDF -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 
   <style>
-    /* Mini styling para a secção das datas (opcional) */
+    /* Estilo pequeno para a secção das datas */
     #admin-datas .controls {
       display: flex; gap: .75rem; align-items: end; flex-wrap: wrap;
       margin: .5rem 0 1rem;
     }
     #admin-datas label { display: flex; flex-direction: column; gap: .25rem; }
     #status-datas { font-weight: 600; }
+    #admin-resumo { display:block; margin: 1rem 0; font-weight: 700; }
   </style>
 </head>
 <body>
@@ -37,23 +37,8 @@
 <div class="container">
 
   <!-- ===================== -->
-  <!--   Períodos de Encomenda -->
+  <!--   TABELAS             -->
   <!-- ===================== -->
-  <section id="admin-datas">
-    <h2>Períodos de Encomenda</h2>
-    <div class="controls">
-      <label>Data de Início
-        <input type="date" id="orders-start">
-      </label>
-      <label>Data de Fim
-        <input type="date" id="orders-end">
-      </label>
-      <button id="guardar-datas" type="button">Guardar</button>
-      <span id="status-datas"></span>
-    </div>
-  </section>
-
-  <!-- Tabelas -->
   <section id="admin-detalhados">
     <h2>Pedidos detalhados (todos)</h2>
     <div class="table-actions">
@@ -63,7 +48,9 @@
     <table id="admin-detalhados-table">
       <thead>
         <tr>
-          <th>Nome</th><th>Email</th><th>Ramo</th><th>Produto</th><th>Tamanho</th><th>Qtd</th><th>Preço unit.</th><th>Total</th><th>Data</th>
+          <th>Nome</th><th>Email</th><th>Ramo</th>
+          <th>Produto</th><th>Tamanho</th><th>Qtd</th>
+          <th>Preço unit.</th><th>Total</th><th>Data</th>
         </tr>
       </thead>
       <tbody></tbody>
@@ -79,7 +66,8 @@
     <table id="admin-por-ramo-table">
       <thead>
         <tr>
-          <th>Ramo</th><th>Produto</th><th>Tamanho</th><th>Quantidade</th><th>Preço (total)</th>
+          <th>Ramo</th><th>Produto</th><th>Tamanho</th>
+          <th>Quantidade</th><th>Preço (total)</th>
         </tr>
       </thead>
       <tbody></tbody>
@@ -90,24 +78,33 @@
     <h2>Por ramo — detalhes</h2>
   </section>
 
-  <!-- Filtros no fim -->
-  <section id="admin-filtros" class="controls">
-    <label>De <input type="date" id="filtro-inicio"></label>
-    <label>Até <input type="date" id="filtro-fim"></label>
-    <button id="aplicar-filtro" type="button">Aplicar filtro</button>
-    <button id="limpar-filtro" type="button">Limpar</button>
-    <span id="admin-resumo"></span>
+  <!-- Resumo no fim das tabelas -->
+  <div id="admin-resumo"></div>
+
+  <!-- ===================== -->
+  <!--   PERÍODOS EM BAIXO   -->
+  <!-- ===================== -->
+  <section id="admin-datas">
+    <h2>Períodos de Encomenda</h2>
+    <div class="controls">
+      <label>Data de Início
+        <input type="date" id="orders-start">
+      </label>
+      <label>Data de Fim
+        <input type="date" id="orders-end">
+      </label>
+      <button id="guardar-datas" type="button">Guardar</button>
+      <span id="status-datas"></span>
+    </div>
   </section>
 </div>
 
-<button id="limpar-pedidos" type="button" style="background-color: #c62828; color: white;">
+<button id="limpar-pedidos" type="button" style="background-color:#c62828;color:#fff;">
   Limpar todos os pedidos
 </button>
 
 <script>
-  // =========================
-  // Helpers
-  // =========================
+  // ========= Helpers =========
   const parseMaybeNumber = (v, fallback = 0) => {
     if (typeof v === 'number' && !isNaN(v)) return v;
     if (v == null || v === '') return fallback;
@@ -116,7 +113,6 @@
   };
   const money = (n) => (Math.round(n*100)/100).toFixed(2).replace('.', ',') + '€';
 
-  // Normalização para o formato da tabela (usa campos da API)
   const norm = (p) => {
     const qtd = parseMaybeNumber(p.quantidade ?? p.quantity, 1);
     const unit = parseMaybeNumber(p.preco_unit ?? p.preco ?? p.price, 0);
@@ -129,13 +125,11 @@
       quantidade: qtd,
       precoUnit: unit,
       total: unit * qtd,
-      data: p.data || p.created_at || '' // a API devolve ISO
+      data: p.data || p.created_at || ''
     };
   };
 
-  // =========================
-  // Datas (Config do site)
-  // =========================
+  // ========= Config (datas) =========
   async function carregarDatas(){
     try {
       const res = await fetch('/api/config', { credentials: 'same-origin' });
@@ -169,17 +163,9 @@
     }
   }
 
-  // =========================
-  // Pedidos (tabelas)
-  // =========================
+  // ========= Pedidos (tabelas) =========
   async function fetchPedidosAPI() {
-    const ini = document.getElementById('filtro-inicio')?.value || '';
-    const fim = document.getElementById('filtro-fim')?.value || '';
-    const params = new URLSearchParams();
-    if (ini) params.set('start', ini);
-    if (fim) params.set('end', fim);
-
-    const url = '/api/orders' + (params.toString() ? `?${params.toString()}` : '');
+    const url = '/api/orders';
     const res = await fetch(url, { credentials: 'same-origin' });
     if (!res.ok) throw new Error('Falha ao carregar /api/orders');
     const arr = await res.json();
@@ -223,24 +209,21 @@
       const totalQtd = pedidos.reduce((s,p)=>s+(p.quantidade||0),0);
       const totalVal = pedidos.reduce((s,p)=>s+(p.total||0),0);
       const resumo = document.getElementById('admin-resumo');
-      if (resumo) resumo.innerHTML = `<b>${pedidos.length}</b> registos | Qtde: <b>${totalQtd}</b> | Valor: <b>${money(totalVal)}</b>`;
+      if (resumo) resumo.innerHTML =
+        `<b>${pedidos.length}</b> registos | Qtde: <b>${totalQtd}</b> | Valor: <b>${money(totalVal)}</b>`;
 
-      // Tabela detalhada
+      // Detalhados
       const tbDetalhe = document.querySelector('#admin-detalhados-table tbody');
       tbDetalhe.innerHTML = '';
       pedidos.forEach(p => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
-          <td>${p.nome}</td>
-          <td>${p.email}</td>
-          <td>${p.ramo}</td>
-          <td>${p.produto}</td>
-          <td>${p.tamanho}</td>
+          <td>${p.nome}</td><td>${p.email}</td><td>${p.ramo}</td>
+          <td>${p.produto}</td><td>${p.tamanho}</td>
           <td>${p.quantidade||0}</td>
           <td>${money(p.precoUnit)}</td>
           <td>${money(p.total)}</td>
-          <td>${p.data ? new Date(p.data).toLocaleString('pt-PT') : ''}</td>
-        `;
+          <td>${p.data ? new Date(p.data).toLocaleString('pt-PT') : ''}</td>`;
         tbDetalhe.appendChild(tr);
       });
 
@@ -252,56 +235,9 @@
         const [ramo, produto, tamanho] = g.key.split(' | ');
         const tr = document.createElement('tr');
         tr.innerHTML = `
-          <td>${ramo}</td>
-          <td>${produto}</td>
-          <td>${tamanho}</td>
-          <td>${g.quantidade}</td>
-          <td>${money(g.total)}</td>
-        `;
+          <td>${ramo}</td><td>${produto}</td><td>${tamanho}</td>
+          <td>${g.quantidade}</td><td>${money(g.total)}</td>`;
         tbRamo.appendChild(tr);
-      });
-
-      // Secção por ramo (detalhes)
-      const secRamos = document.getElementById('admin-por-ramo-detalhes');
-      secRamos.innerHTML = '<h2>Por ramo — detalhes</h2>';
-      const rams = Array.from(new Set(pedidos.map(p => p.ramo))).filter(Boolean);
-      rams.forEach(ramo => {
-        const h = document.createElement('div');
-        h.className = 'ramo-title';
-        h.textContent = ramo;
-        secRamos.appendChild(h);
-
-        const bar = document.createElement('div');
-        bar.className = 'table-actions';
-        const bPDF = document.createElement('button'); bPDF.type='button'; bPDF.textContent='Exportar PDF'; bPDF.className='btn-pdf';
-        const bXLSX = document.createElement('button'); bXLSX.type='button'; bXLSX.textContent='Exportar Excel'; bXLSX.className='btn-excel';
-        bar.appendChild(bPDF); bar.appendChild(bXLSX);
-        secRamos.appendChild(bar);
-
-        const tbl = document.createElement('table');
-        tbl.innerHTML = `<thead><tr>
-          <th>Nome</th><th>Email</th><th>Produto</th><th>Tamanho</th><th>Qtd</th><th>Preço unit.</th><th>Total</th><th>Data</th>
-        </tr></thead><tbody></tbody>`;
-        const tb = tbl.querySelector('tbody');
-        const lista = pedidos.filter(p=>p.ramo===ramo);
-        lista.forEach(p => {
-          const tr = document.createElement('tr');
-          tr.innerHTML = `
-            <td>${p.nome}</td>
-            <td>${p.email}</td>
-            <td>${p.produto}</td>
-            <td>${p.tamanho}</td>
-            <td>${p.quantidade||0}</td>
-            <td>${money(p.precoUnit)}</td>
-            <td>${money(p.total)}</td>
-            <td>${p.data ? new Date(p.data).toLocaleString('pt-PT') : ''}</td>
-          `;
-          tb.appendChild(tr);
-        });
-        secRamos.appendChild(tbl);
-
-        bPDF.addEventListener('click', ()=> exportPDF(tbl, 'Pedidos '+ramo));
-        bXLSX.addEventListener('click', ()=> exportExcel(tbl, 'Pedidos '+ramo));
       });
 
       bindExports('admin-detalhados','admin-detalhados-table','Pedidos detalhados');
@@ -314,16 +250,7 @@
     }
   }
 
-  // =========================
-  // Binds
-  // =========================
-  document.getElementById('aplicar-filtro').addEventListener('click', render);
-  document.getElementById('limpar-filtro').addEventListener('click', () => {
-    document.getElementById('filtro-inicio').value = '';
-    document.getElementById('filtro-fim').value = '';
-    render();
-  });
-
+  // ========= Binds =========
   const limparBtn = document.getElementById('limpar-pedidos');
   if (limparBtn) {
     limparBtn.addEventListener('click', () => {
@@ -331,7 +258,6 @@
     });
   }
 
-  // carregar painel
   window.addEventListener('load', carregarDatas);
   window.addEventListener('load', render);
   document.getElementById('guardar-datas').addEventListener('click', guardarDatas);
