@@ -21,8 +21,27 @@
     }
     #admin-datas label { display: flex; flex-direction: column; gap: .25rem; }
     #status-datas { font-weight: 600; }
-    #admin-resumo { display:block; margin: 1rem 0; font-weight: 700; }
-    .actions-row { display:flex; gap:.5rem; flex-wrap:wrap; margin:.75rem 0; }
+    #admin-resumo { display:block; margin: 1rem 0; font-weight: 700; text-align:center; }
+    
+    /* Botão vermelho em baixo */
+    #exportar-e-limpar {
+      display: block;
+      width: 100%;
+      max-width: 400px;
+      margin: 2rem auto;
+      background-color: #c62828;
+      color: #fff;
+      font-size: 1.1rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      padding: 1rem;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    #exportar-e-limpar:hover {
+      background-color: #a82020;
+    }
   </style>
 </head>
 <body>
@@ -39,11 +58,9 @@
   <!-- TABELA DETALHADA -->
   <section id="admin-detalhados">
     <h2>Pedidos detalhados (todos)</h2>
-    <div class="actions-row">
+    <div class="table-actions">
       <button class="btn-pdf" type="button" id="exp-detalhados-pdf">Exportar PDF</button>
       <button class="btn-excel" type="button" id="exp-detalhados-xlsx">Exportar Excel</button>
-      <!-- NOVO: Exportar + Limpar -->
-      <button class="btn-excel" type="button" id="exportar-e-limpar">Exportar Excel & Limpar</button>
     </div>
 
     <table id="admin-detalhados-table">
@@ -61,7 +78,7 @@
   <!-- AGREGADO POR RAMO -->
   <section id="admin-por-ramo">
     <h2>Pedidos por ramo (agregado)</h2>
-    <div class="actions-row">
+    <div class="table-actions">
       <button class="btn-pdf" type="button" id="exp-porramo-pdf">Exportar PDF</button>
       <button class="btn-excel" type="button" id="exp-porramo-xlsx">Exportar Excel</button>
     </div>
@@ -84,7 +101,7 @@
   <!-- RESUMO -->
   <div id="admin-resumo"></div>
 
-  <!-- PERÍODOS (EM BAIXO) -->
+  <!-- PERÍODOS -->
   <section id="admin-datas">
     <h2>Períodos de Encomenda</h2>
     <div class="controls">
@@ -98,7 +115,11 @@
       <span id="status-datas"></span>
     </div>
   </section>
+
 </div>
+
+<!-- BOTÃO VERMELHO EM BAIXO -->
+<button id="exportar-e-limpar">Exportar Excel & Limpar Pedidos</button>
 
 <script>
   // -------- Helpers --------
@@ -160,7 +181,7 @@
     }
   }
 
-  // -------- Pedidos (tabelas) --------
+  // -------- Pedidos --------
   async function fetchPedidosAPI() {
     const res = await fetch('/api/orders', { credentials: 'same-origin' });
     if (!res.ok) throw new Error('Falha ao carregar /api/orders');
@@ -184,6 +205,7 @@
     const wb = XLSX.utils.table_to_book(table, {sheet: title});
     XLSX.writeFile(wb, title.replace(/\s+/g,'_') + '.xlsx');
   }
+
   function exportPDF(table, title) {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
@@ -191,6 +213,7 @@
     doc.autoTable({ html: table });
     doc.save(title.replace(/\s+/g,'_') + '.pdf');
   }
+
   function bindExports(sectionId, tableId, titleText){
     const tbl = document.getElementById(tableId);
     document.getElementById('exp-'+sectionId.split('admin-')[1]+'-pdf')?.addEventListener('click', ()=> exportPDF(tbl, titleText));
@@ -208,7 +231,7 @@
       if (resumo) resumo.innerHTML =
         `<b>${pedidos.length}</b> registos | Qtde: <b>${totalQtd}</b> | Valor: <b>${money(totalVal)}</b>`;
 
-      // Detalhados
+      // Tabela detalhada
       const tbDetalhe = document.querySelector('#admin-detalhados-table tbody');
       tbDetalhe.innerHTML = '';
       pedidos.forEach(p => {
@@ -223,7 +246,7 @@
         tbDetalhe.appendChild(tr);
       });
 
-      // Agregado por ramo/produto/tamanho
+      // Agregado por ramo
       const grupos = agrupar(pedidos, p => [p.ramo, p.produto, p.tamanho].join(' | '));
       const tbRamo = document.querySelector('#admin-por-ramo-table tbody');
       tbRamo.innerHTML = '';
@@ -250,7 +273,7 @@
   function exportarTabelaDetalhadaParaExcel() {
     const tbl = document.getElementById('admin-detalhados-table');
     const wb = XLSX.utils.table_to_book(tbl, { sheet: 'Pedidos' });
-    const hoje = new Date().toISOString().slice(0,10); // YYYY-MM-DD
+    const hoje = new Date().toISOString().slice(0,10);
     XLSX.writeFile(wb, `Pedidos_${hoje}.xlsx`);
   }
 
