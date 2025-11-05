@@ -2,12 +2,18 @@ from flask import Flask, request, jsonify, redirect, send_from_directory, sessio
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 import click, os
-from datetime import datetime
+from datetime import datetime, date
 
 app = Flask(__name__)
+
+# ---- Configuração básica ----
 app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "segredo_guias_viseu")
 app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL", "sqlite:///database.db")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+# (opcional) cookies de sessão mais seguros
+app.config["SESSION_COOKIE_HTTPONLY"] = True
+app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
+
 db = SQLAlchemy(app)
 
 # -------------------------
@@ -22,11 +28,20 @@ class User(db.Model):
 
 class Pedido(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    nome = db.Column(db.String(120)); email = db.Column(db.String(120))
-    ramo = db.Column(db.String(80)); produto = db.Column(db.String(200))
-    tamanho = db.Column(db.String(80)); quantidade = db.Column(db.Integer)
-    preco = db.Column(db.Float); especialidade = db.Column(db.String(200))
-    created_at = db.Column(db.String(60))
+    nome = db.Column(db.String(120))
+    email = db.Column(db.String(120))
+    ramo = db.Column(db.String(80))
+    produto = db.Column(db.String(200))
+    tamanho = db.Column(db.String(80))
+    quantidade = db.Column(db.Integer)
+    preco = db.Column(db.Float)
+    especialidade = db.Column(db.String(200))
+    created_at = db.Column(db.String(60))  # ISO: "YYYY-MM-DDTHH:MM:SS.sssZ" ou local
+
+class SiteConfig(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    orders_start = db.Column(db.String(25))  # "YYYY-MM-DD"
+    orders_end   = db.Column(db.String(25))
 
 # -------------------------
 # UTIL
@@ -34,21 +49,29 @@ class Pedido(db.Model):
 def is_logged_in():
     return "user_id" in session
 
+def in_period():
+    """Define se encomendas estão abertas. Se não definires datas, permite por omissão."""
+    cfg = SiteConfig.query.first()
+    if not cfg or not cfg.orders_start or not cfg.orders_end:
+        return True
+    today = date.today().isoformat()
+    return cfg.orders_start <= today <= cfg.orders_end
+
 # -------------------------
 # ROTAS PÚBLICAS (ficheiros)
 # -------------------------
 @app.route("/")
-def index():
+def root_index():
     return send_from_directory(".", "index.html")
 
-# Serve ficheiros, mas bloqueia acesso direto a admin.html (usa /admin protegido)
+# Serve ficheiros estáticos da raiz, mas evita abrir admin.html diretamente
 @app.route("/<path:filename>")
 def static_files(filename):
     if filename.lower() == "admin.html":
         return redirect("/admin")
     return send_from_directory(".", filename)
 
-# Página de login (ficheiro do teu projeto)
+# Página de login (ficheiro)
 @app.route("/login.html")
 def login_page():
     return send_from_directory(".", "login.html")
@@ -60,14 +83,45 @@ def login_page():
 def admin_page():
     if not is_logged_in():
         return redirect("/login.html")
-    # Aqui devolvemos exatamente o teu admin.html
     return send_from_directory(".", "admin.html")
+
+# -------------------------
+# API DE CONFIG (datas de encomenda)
+# -------------------------
+@app.route("/api/config", methods=["GET"])
+def get_config():
+    cfg = SiteConfig.query.first()
+    if not cfg:
+        return jsonify({"orders_start": None, "orders_end": None})
+    return jsonify({
+        "orders_start": cfg.orders_start,
+        "orders_end": cfg.orders_end
+    })
+
+@app.route("/api/config", methods=["POST"])
+def set_config():
+    if not is_logged_in():
+        return jsonify({"error": "Não autorizado"}), 401
+    data = request.get_json() or {}
+    cfg = SiteConfig.query.first()
+    if not cfg:
+        cfg = SiteConfig()
+        db.session.add(cfg)
+    if "orders_start" in data:
+        cfg.orders_start = data["orders_start"] or None
+    if "orders_end" in data:
+        cfg.orders_end = data["orders_end"] or None
+    db.session.commit()
+    return jsonify({"ok": True})
 
 # -------------------------
 # API DE PEDIDOS
 # -------------------------
 @app.route("/api/orders", methods=["POST"])
 def add_order():
+    if not in_period():
+        return jsonify({"ok": False, "error": "Fora do período de encomendas"}), 403
+
     data = request.get_json()
     if not data:
         return jsonify({"ok": False, "error": "Pedido inválido"}), 400
@@ -95,7 +149,19 @@ def add_order():
 def get_orders():
     if not is_logged_in():
         return jsonify({"error": "Não autorizado"}), 401
-    pedidos = Pedido.query.order_by(Pedido.id.desc()).all()
+
+    q = Pedido.query
+
+    # filtros opcionais por data (YYYY-MM-DD)
+    start = request.args.get("start")
+    end   = request.args.get("end")
+
+    if start:
+        q = q.filter(Pedido.created_at >= f"{start}")
+    if end:
+        q = q.filter(Pedido.created_at <= f"{end}T23:59:59")
+
+    pedidos = q.order_by(Pedido.id.desc()).all()
     return jsonify([{
         "id": p.id,
         "nome": p.nome,
@@ -114,13 +180,21 @@ def get_orders():
 # -------------------------
 @app.route("/login", methods=["POST"])
 def login():
+    # Se vier form-urlencoded (do login.html)
     username = request.form.get("username")
     password = request.form.get("password")
+
+    # (se quiseres aceitar JSON também:)
+    if not username and request.is_json:
+        data = request.get_json(silent=True) or {}
+        username = data.get("username")
+        password = data.get("password")
+
     user = User.query.filter_by(username=username).first()
     if user and user.check_password(password):
         session["user_id"] = user.id
         session["username"] = user.username
-        return redirect("/admin")   # vai para a rota protegida que serve o teu admin.html
+        return redirect("/admin")  # frontend deve seguir para /admin
     return "Credenciais inválidas", 401
 
 @app.route("/logout")
@@ -147,9 +221,13 @@ def create_admin(username, password):
         click.echo(f"✅ Utilizador '{username}' criado com sucesso.")
 
 # -------------------------
-# INICIO
+# INÍCIO
 # -------------------------
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()
+        # cria configuração vazia caso não exista
+        if SiteConfig.query.first() is None:
+            db.session.add(SiteConfig(orders_start=None, orders_end=None))
+            db.session.commit()
     app.run(debug=True)
