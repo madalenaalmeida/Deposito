@@ -864,24 +864,45 @@ body.tamanhos-page header h1 {
   background-color: #0056b3;
   transform: scale(1.1);
 }
+/* Aviso de Portes */
 .shipping-warning {
-  margin: 30px auto;
-  text-align: center;
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
 }
 
-.warning-box {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  background: #fff3cd;
-  color: #856404;
-  padding: 15px 20px;
-  border: 1px solid #ffeeba;
-  border-radius: 8px;
-  font-size: 16px;
+.warning-card {
+  background: #f7f9fc;
+  padding: 25px 30px;
   max-width: 600px;
+  width: 90%;
+  border-radius: 15px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  border-left: 7px solid #f0ad4e; /* cor de aviso */
+  animation: fadeIn 0.6s ease-in-out;
+}
+.warning-area {
+  background-color: #f3f5fa; /* <- mesmo fundo cinza/azul clarinho */
+  padding: 5px 0;
 }
 
-.warning-box i {
-  font-size: 20px;
+.warning-card i {
+  font-size: 45px;
+  color: #d9822b; /* laranja mais forte */
+  margin-bottom: 10px;
 }
+
+.warning-card h3 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 600;
+  color: #7a4b00;
+}
+
+.warning-card p {
+  font-size: 16px;
+  margin-top: 10px;
+  color: #5c3a00;
+}
+
