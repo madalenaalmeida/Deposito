@@ -864,3 +864,24 @@ body.tamanhos-page header h1 {
   background-color: #0056b3;
   transform: scale(1.1);
 }
+.shipping-warning {
+  margin: 30px auto;
+  text-align: center;
+}
+
+.warning-box {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: #fff3cd;
+  color: #856404;
+  padding: 15px 20px;
+  border: 1px solid #ffeeba;
+  border-radius: 8px;
+  font-size: 16px;
+  max-width: 600px;
+}
+
+.warning-box i {
+  font-size: 20px;
+}
