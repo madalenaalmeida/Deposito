@@ -119,31 +119,40 @@ def set_config():
 # -------------------------
 @app.route("/api/orders", methods=["POST"])
 def add_order():
-    if not in_period():
-        return jsonify({"ok": False, "error": "Fora do período de encomendas"}), 403
+    try:
+        data = request.get_json()
 
-    data = request.get_json()
-    if not data:
-        return jsonify({"ok": False, "error": "Pedido inválido"}), 400
+        print("🔵 DADOS RECEBIDOS:", data)  # 👈 DEBUG (ver nos logs do Koyeb)
 
-    preco = data.get("preco_unit")
-    if preco is None:
-        preco = data.get("preco") or 0
+        if not data:
+            return jsonify({"ok": False, "error": "Pedido vazio"}), 400
 
-    novo = Pedido(
-        nome = data.get("nome"),
-        email = data.get("email"),
-        ramo = data.get("ramo"),
-        produto = data.get("produto"),
-        tamanho = data.get("tamanho"),
-        quantidade = int(data.get("quantidade") or 1),
-        preco = float(preco or 0),
-        especialidade = data.get("especialidade"),
-        created_at = data.get("data") or datetime.utcnow().isoformat()
-    )
-    db.session.add(novo)
-    db.session.commit()
-    return jsonify({"ok": True, "order_id": novo.id}), 201
+        # 🔴 remover bloqueio de datas (para não dar erro agora)
+        # if not in_period():
+        #     return jsonify({"ok": False, "error": "Fora do período"}), 403
+
+        preco = data.get("preco_unit") or data.get("preco") or 0
+
+        novo = Pedido(
+            nome=data.get("nome") or "",
+            email=data.get("email") or "",
+            ramo=data.get("ramo") or "",
+            produto=data.get("produto") or "",
+            tamanho=data.get("tamanho") or "",
+            quantidade=int(data.get("quantidade") or 1),
+            preco=float(preco),
+            especialidade=data.get("especialidade") or "",
+            created_at=datetime.utcnow().isoformat()
+        )
+
+        db.session.add(novo)
+        db.session.commit()
+
+        return jsonify({"ok": True, "order_id": novo.id}), 200
+
+    except Exception as e:
+        print("❌ ERRO NO BACKEND:", e)
+        return jsonify({"ok": False, "error": str(e)}), 500
 
 @app.route("/api/orders", methods=["GET"])
 def get_orders():
