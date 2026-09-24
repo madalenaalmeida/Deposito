@@ -1,152 +1,633 @@
-/* =========================
-   Estilo geral da página admin
-   ========================= */
+/* =========================================================
+   ADMIN — GUIAS DE VISEU
+   ========================================================= */
 
-   body {
+   :root {
+    --azul: #003366;
+    --azul-claro: #eaf2f8;
+    --azul-hover: #004b8d;
+  
+    --verde: #2e7d32;
+    --verde-bg: #e8f5e9;
+  
+    --vermelho: #c62828;
+    --vermelho-bg: #ffebee;
+  
+    --cinza-bg: #f5f7fa;
+    --cinza-borda: #e3e8ef;
+    --cinza-texto: #667085;
+    --texto: #1f2937;
+  
+    --branco: #ffffff;
+  
+    --raio: 14px;
+    --sombra: 0 4px 18px rgba(0, 51, 102, 0.07);
+  }
+  
+  
+  /* =========================================================
+     GERAL
+     ========================================================= */
+  
+  * {
+    box-sizing: border-box;
+  }
+  
+  body {
     font-family: Arial, sans-serif;
-    background: #f8fafd;
+    background: var(--cinza-bg);
+    color: var(--texto);
     margin: 0;
     padding: 0;
   }
   
   .container {
-    padding: 20px;
+    width: min(1400px, calc(100% - 40px));
+    margin: 0 auto;
+    padding: 28px 0 50px;
   }
   
-  /* Navbar */
+  
+  /* =========================================================
+     NAVBAR
+     ========================================================= */
+  
   .navbar {
-    background-color: #003366;
+    background: var(--azul);
     color: white;
+  
+    min-height: 64px;
+    padding: 0 28px;
+  
     display: flex;
     align-items: center;
-    padding: 12px;
-    font-size: 1.2rem;
-    font-weight: bold;
+  
+    box-shadow: 0 2px 10px rgba(0, 0, 0, .12);
+  
+    position: sticky;
+    top: 0;
+    z-index: 100;
   }
   
   .navbar a {
     color: white;
     text-decoration: none;
-    margin-right: 10px;
+  }
+  
+  .voltar-inicio {
+    width: 40px;
+    height: 40px;
+  
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  
+    border-radius: 10px;
+  
+    transition: background .2s ease;
+  }
+  
+  .voltar-inicio:hover {
+    background: rgba(255,255,255,.12);
   }
   
   .navbar-text {
     flex: 1;
     text-align: center;
+  
+    font-size: 1.15rem;
+    font-weight: 700;
+  
+    letter-spacing: .2px;
   }
   
-  /* =========================
-     Secções
-     ========================= */
+  
+  /* =========================================================
+     SECÇÕES
+     ========================================================= */
+  
   section {
-    background: #fff;
-    border-radius: 10px;
-    padding: 14px;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    background: var(--branco);
+  
+    border: 1px solid var(--cinza-borda);
+    border-radius: var(--raio);
+  
+    padding: 24px;
+  
+    margin-bottom: 24px;
+  
+    box-shadow: var(--sombra);
   }
   
-  h2 {
-    margin-top: 0;
-    color: #003366;
+  section h2 {
+    margin: 0 0 18px;
+  
+    color: var(--azul);
+  
+    font-size: 1.25rem;
+    font-weight: 700;
   }
   
-  /* =========================
-     Botões
-     ========================= */
+  
+  /* =========================================================
+     RESUMO
+     ========================================================= */
+  
+  #admin-resumo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 28px;
+  
+    background: white;
+  
+    border: 1px solid var(--cinza-borda);
+    border-radius: var(--raio);
+  
+    padding: 18px 24px;
+  
+    margin: 0 0 24px;
+  
+    color: var(--cinza-texto);
+  
+    font-size: .95rem;
+  
+    box-shadow: var(--sombra);
+  }
+  
+  #admin-resumo b {
+    color: var(--azul);
+    font-size: 1.1rem;
+  }
+  
+  
+  /* =========================================================
+     GESTÃO DAS ENCOMENDAS
+     ========================================================= */
+  
+  #admin-datas {
+    background: white;
+  
+    border: 1px solid var(--cinza-borda);
+    border-radius: var(--raio);
+  
+    padding: 24px;
+  
+    margin: 0 0 24px;
+  
+    box-shadow: var(--sombra);
+  }
+  
+  #admin-datas h2 {
+    margin-bottom: 18px;
+  }
+  
+  
+  /* =========================================================
+     ESTADO DAS ENCOMENDAS
+     ========================================================= */
+  
+  #estado-encomendas {
+    width: 100%;
+  
+    padding: 15px 18px;
+  
+    border-radius: 11px;
+  
+    margin-bottom: 22px;
+  
+    font-size: .95rem;
+    font-weight: 700;
+  
+    border: 1px solid transparent;
+  
+    transition: .2s ease;
+  }
+  
+  #estado-encomendas.aberto {
+    background: var(--verde-bg);
+    color: var(--verde);
+    border-color: #c8e6c9;
+  }
+  
+  #estado-encomendas.fechado {
+    background: var(--vermelho-bg);
+    color: var(--vermelho);
+    border-color: #ffcdd2;
+  }
+  
+  
+  /* =========================================================
+     CONTROLOS DAS DATAS
+     ========================================================= */
+  
+  #admin-datas .controls {
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+    flex-wrap: wrap;
+  
+    margin: 0;
+  }
+  
+  #admin-datas .controls label {
+    display: flex;
+    flex-direction: column;
+  
+    gap: 7px;
+  
+    font-weight: 600;
+    color: var(--texto);
+  
+    font-size: .85rem;
+  }
+  
+  #admin-datas input[type="date"] {
+    min-width: 170px;
+  
+    padding: 11px 12px;
+  
+    border: 1px solid #d5dbe3;
+    border-radius: 9px;
+  
+    background: white;
+  
+    font-size: .9rem;
+    color: var(--texto);
+  
+    outline: none;
+  
+    transition: border .2s, box-shadow .2s;
+  }
+  
+  #admin-datas input[type="date"]:focus {
+    border-color: var(--azul);
+    box-shadow: 0 0 0 3px rgba(0, 51, 102, .08);
+  }
+  
+  
+  /* =========================================================
+     BOTÕES
+     ========================================================= */
+  
+  #admin-datas button,
   .table-actions button,
-  #admin-filtros button,
   .btn {
     appearance: none;
-    border: 0;
-    border-radius: 10px;
-    padding: 10px 16px;
-    font-weight: 600;
+  
+    border: none;
+    border-radius: 9px;
+  
+    padding: 11px 16px;
+  
+    font-size: .88rem;
+    font-weight: 700;
+  
     cursor: pointer;
-    transition: filter .15s ease, opacity .15s ease;
-    display: inline-block;
-    width: auto;
+  
+    transition:
+      transform .15s ease,
+      filter .15s ease,
+      box-shadow .15s ease;
   }
   
-  /* Excel (verde) */
-  .btn-excel {
-    background: #22c55e;   /* verde */
-    color: #fff;
+  #admin-datas button:hover,
+  .table-actions button:hover,
+  .btn:hover {
+    filter: brightness(1.05);
+    transform: translateY(-1px);
   }
-  .btn-excel:hover { filter: brightness(1.08); }
   
-  /* PDF (cinza escuro) */
-  .btn-pdf {
-    background: #1f2937;   /* cinza-escuro */
-    color: #fff;
+  #admin-datas button:active,
+  .table-actions button:active,
+  .btn:active {
+    transform: translateY(0);
   }
-  .btn-pdf:hover { filter: brightness(1.08); }
   
-  /* Barra de ações das tabelas */
+  
+  /* Guardar */
+  
+  #guardar-datas {
+    background: var(--azul);
+    color: white;
+  
+    box-shadow: 0 3px 8px rgba(0, 51, 102, .18);
+  }
+  
+  
+  /* Fechar */
+  
+  #fechar-agora {
+    background: #fff0f0;
+    color: var(--vermelho);
+  
+    border: 1px solid #ffcdd2 !important;
+  }
+  
+  
+  /* Abrir */
+  
+  #abrir-agora {
+    background: var(--verde-bg);
+    color: var(--verde);
+  
+    border: 1px solid #c8e6c9 !important;
+  }
+  
+  
+  /* =========================================================
+     MENSAGEM DAS DATAS
+     ========================================================= */
+  
+  #status-datas {
+    display: block;
+  
+    width: 100%;
+  
+    margin-top: 8px;
+  
+    font-size: .85rem;
+    font-weight: 600;
+  }
+  
+  
+  /* =========================================================
+     BARRA DE AÇÕES
+     ========================================================= */
+  
   .table-actions {
     display: flex;
-    gap: 10px;
+  
+    gap: 8px;
+  
     flex-wrap: wrap;
-    margin: 10px 0 14px;
+  
+    margin: 0 0 16px;
   }
   
-  /* =========================
-     Inputs e filtros
-     ========================= */
-  #admin-filtros {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    flex-wrap: wrap;
-    margin-top: 24px;
+  
+  /* =========================================================
+     BOTÃO PDF
+     ========================================================= */
+  
+  .btn-pdf {
+    background: #fff0f0;
+    color: #c62828;
+  
+    border: 1px solid #ffcdd2 !important;
   }
   
-  #admin-filtros label {
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    gap: 4px;
+  .btn-pdf:hover {
+    background: #ffebee;
   }
   
-  #admin-filtros input[type="date"] {
-    padding: 6px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
+  
+  /* =========================================================
+     BOTÃO EXCEL
+     ========================================================= */
+  
+  .btn-excel {
+    background: #edf8ef;
+    color: #2e7d32;
+  
+    border: 1px solid #c8e6c9 !important;
   }
   
-  /* =========================
-     Tabelas
-     ========================= */
+  .btn-excel:hover {
+    background: #e8f5e9;
+  }
+  
+  
+  /* =========================================================
+     TABELAS
+     ========================================================= */
+  
   table {
     width: 100%;
+  
     border-collapse: separate;
     border-spacing: 0;
+  
     overflow: hidden;
-    border-radius: 10px;
+  
+    border: 1px solid var(--cinza-borda);
+  
+    border-radius: 11px;
+  
+    background: white;
   }
+  
+  
+  /* Cabeçalho */
   
   thead th {
-    background: #003366;
-    color: #fff;
-    padding: 10px;
+    background: var(--azul);
+    color: white;
+  
+    padding: 12px 13px;
+  
     text-align: left;
+  
+    font-size: .82rem;
+    font-weight: 700;
+  
+    white-space: nowrap;
   }
+  
+  
+  /* Células */
   
   tbody td {
-    background: #fff;
-    padding: 10px;
-    border-top: 1px solid #eee;
+    background: white;
+  
+    padding: 12px 13px;
+  
+    border-top: 1px solid var(--cinza-borda);
+  
+    font-size: .85rem;
+  
+    color: #344054;
   }
+  
+  
+  /* Linhas alternadas */
   
   tbody tr:nth-child(even) td {
-    background: #f7f9ff;
+    background: #f9fafb;
   }
   
-  /* =========================
-     Resumo
-     ========================= */
-  #admin-resumo {
-    font-weight: normal;
-    margin-top: 10px;
+  
+  /* Hover */
+  
+  tbody tr:hover td {
+    background: #f1f6fb;
   }
   
+  
+  /* =========================================================
+     DETALHES POR RAMO
+     ========================================================= */
+  
+  .ramo-title {
+    display: flex;
+    align-items: center;
+  
+    margin-top: 26px;
+    margin-bottom: 10px;
+  
+    padding-left: 12px;
+  
+    border-left: 4px solid var(--azul);
+  
+    color: var(--azul);
+  
+    font-size: 1.05rem;
+    font-weight: 700;
+  }
+  
+  
+  /* =========================================================
+     BOTÃO EXPORTAR + LIMPAR
+     ========================================================= */
+  
+  #exportar-e-limpar {
+    display: block;
+  
+    width: min(400px, calc(100% - 40px));
+  
+    margin: 30px auto 45px;
+  
+    background: #fff0f0;
+  
+    color: var(--vermelho);
+  
+    border: 1px solid #ffcdd2;
+  
+    border-radius: 10px;
+  
+    padding: 13px 18px;
+  
+    font-size: .9rem;
+    font-weight: 700;
+  
+    cursor: pointer;
+  
+    transition: .2s ease;
+  }
+  
+  #exportar-e-limpar:hover {
+    background: var(--vermelho);
+    color: white;
+  
+    transform: translateY(-1px);
+  }
+  
+  
+  /* =========================================================
+     SCROLL HORIZONTAL DAS TABELAS
+     ========================================================= */
+  
+  #admin-detalhados,
+  #admin-por-ramo,
+  #admin-por-ramo-detalhes {
+    overflow-x: auto;
+  }
+  
+  
+  /* =========================================================
+     MOBILE
+     ========================================================= */
+  
+  @media (max-width: 800px) {
+  
+    .container {
+      width: calc(100% - 24px);
+      padding: 18px 0 35px;
+    }
+  
+    .navbar {
+      padding: 0 14px;
+    }
+  
+    .navbar-text {
+      font-size: 1rem;
+    }
+  
+    section {
+      padding: 18px;
+      border-radius: 12px;
+    }
+  
+    #admin-resumo {
+      flex-direction: column;
+      gap: 7px;
+  
+      text-align: center;
+    }
+  
+    #admin-datas .controls {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  
+    #admin-datas .controls label,
+    #admin-datas input[type="date"],
+    #admin-datas button {
+      width: 100%;
+    }
+  
+    #admin-datas button {
+      text-align: center;
+    }
+  
+    .table-actions {
+      width: 100%;
+    }
+  
+    .table-actions button {
+      flex: 1;
+    }
+  
+    table {
+      min-width: 700px;
+    }
+  
+    #exportar-e-limpar {
+      width: calc(100% - 24px);
+    }
+  
+  }
+  
+  
+  /* =========================================================
+     MOBILE PEQUENO
+     ========================================================= */
+  
+  @media (max-width: 480px) {
+  
+    .navbar {
+      min-height: 58px;
+    }
+  
+    section {
+      padding: 15px;
+    }
+  
+    section h2 {
+      font-size: 1.1rem;
+    }
+  
+    #estado-encomendas {
+      font-size: .85rem;
+      padding: 13px;
+    }
+  
+    .table-actions {
+      flex-direction: column;
+    }
+  
+    .table-actions button {
+      width: 100%;
+    }
+  
+  }
