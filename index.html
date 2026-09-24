@@ -22,56 +22,65 @@
 
 
   <!-- =====================================================
-       ESTILOS DO ESTADO DAS ENCOMENDAS
+       ESTILO DO AVISO FLUTUANTE DAS ENCOMENDAS
        ===================================================== -->
 
   <style>
 
-    .order-status {
-      text-align: center;
-      margin-bottom: 1.5rem;
-    }
-
-
-    .order-status-box {
-      padding: 1.2rem 1.5rem;
+    .order-floating {
+      position: fixed;
+      right: 24px;
+      bottom: 24px;
+      width: min(360px, calc(100vw - 32px));
+      padding: 14px 42px 14px 16px;
       border-radius: 12px;
-      margin-bottom: 1.5rem;
+      box-shadow: 0 6px 24px rgba(0, 0, 0, .15);
+      z-index: 9999;
+      font-size: .88rem;
+      transition: opacity .25s ease, transform .25s ease;
     }
 
-
-    /* Encomendas abertas */
-
-    .order-status-box.open {
+    .order-floating.open {
       background: #e8f5e9;
       color: #2e7d32;
     }
 
-
-    /* Encomendas fechadas */
-
-    .order-status-box.closed {
-      background: #ffebee;
-      color: #c62828;
+    .order-floating.closed {
+      background: #f5f5f5;
+      color: #666;
     }
 
-
-    .order-status-box h2 {
-      margin: 0 0 .5rem;
-      font-size: 1.25rem;
+    .order-floating-title {
+      font-weight: 600;
+      font-size: .9rem;
+      margin-bottom: 3px;
     }
 
-
-    .order-status-box p {
-      margin: .25rem 0;
+    .order-floating-message {
+      font-size: .8rem;
+      line-height: 1.4;
     }
 
-
-    .order-status-icon {
-      font-size: 1.5rem;
-      margin-bottom: .4rem;
+    .order-floating-close {
+      position: absolute;
+      top: 8px;
+      right: 10px;
+      border: none;
+      background: transparent;
+      color: inherit;
+      font-size: 1.1rem;
+      cursor: pointer;
+      opacity: .65;
+      padding: 2px 5px;
     }
 
+    .order-floating-close:hover {
+      opacity: 1;
+    }
+
+    .order-floating.hidden {
+      display: none;
+    }
 
     /* Datas */
 
@@ -82,18 +91,15 @@
       flex-wrap: wrap;
     }
 
-
     .date-box {
       min-width: 180px;
     }
-
 
     /* Quando fechadas */
 
     .branches.orders-closed {
       opacity: .75;
     }
-
 
     .closed-info {
       text-align: center;
@@ -102,15 +108,12 @@
       color: #666;
     }
 
-
     @media (max-width: 600px) {
 
-      .order-status-box {
-        padding: 1rem;
-      }
-
-      .order-status-box h2 {
-        font-size: 1.1rem;
+      .order-floating {
+        right: 12px;
+        bottom: 12px;
+        width: calc(100vw - 24px);
       }
 
     }
@@ -238,38 +241,6 @@
 
 
   <main>
-
-
-    <!-- ===================================================
-         ESTADO DAS ENCOMENDAS
-         =================================================== -->
-
-    <section class="order-status">
-
-      <div
-        id="order-status-box"
-        class="order-status-box">
-
-        <div class="order-status-icon">
-          <i
-            id="order-status-icon"
-            class="fas fa-spinner fa-spin">
-          </i>
-        </div>
-
-
-        <h2 id="order-status-title">
-          A carregar...
-        </h2>
-
-
-        <p id="order-status-message">
-          A verificar o período de encomendas.
-        </p>
-
-      </div>
-
-    </section>
 
 
     <!-- ===================================================
@@ -515,6 +486,43 @@
 
 
 <!-- =====================================================
+     AVISO FLUTUANTE DO ESTADO DAS ENCOMENDAS
+     ===================================================== -->
+
+<div
+  id="order-floating"
+  class="order-floating hidden">
+
+  <button
+    type="button"
+    id="order-floating-close"
+    class="order-floating-close"
+    aria-label="Fechar aviso">
+
+    ×
+
+  </button>
+
+  <div
+    id="order-floating-title"
+    class="order-floating-title">
+
+    A carregar...
+
+  </div>
+
+  <div
+    id="order-floating-message"
+    class="order-floating-message">
+
+    A verificar o período de encomendas.
+
+  </div>
+
+</div>
+
+
+<!-- =====================================================
      MENU LATERAL
      ===================================================== -->
 
@@ -624,31 +632,21 @@
         await res.json();
 
 
-      // =================================================
-      // ELEMENTOS
-      // =================================================
-
-      const statusBox =
+      const floating =
         document.getElementById(
-          'order-status-box'
+          'order-floating'
         );
 
 
-      const statusIcon =
+      const title =
         document.getElementById(
-          'order-status-icon'
+          'order-floating-title'
         );
 
 
-      const statusTitle =
+      const message =
         document.getElementById(
-          'order-status-title'
-        );
-
-
-      const statusMessage =
-        document.getElementById(
-          'order-status-message'
+          'order-floating-message'
         );
 
 
@@ -708,28 +706,24 @@
 
       if (cfg.orders_open) {
 
-        statusBox.className =
-          'order-status-box open';
+        floating.className =
+          'order-floating open';
 
 
-        statusIcon.className =
-          'fas fa-check-circle order-status-icon';
-
-
-        statusTitle.textContent =
-          '🟢 Encomendas Abertas';
+        title.textContent =
+          'Encomendas abertas';
 
 
         if (cfg.orders_end) {
 
-          statusMessage.textContent =
+          message.textContent =
             `Podes realizar a tua encomenda até ${formatarData(
               cfg.orders_end
             )}.`;
 
         } else {
 
-          statusMessage.textContent =
+          message.textContent =
             'Podes realizar a tua encomenda neste momento.';
 
         }
@@ -756,16 +750,12 @@
 
       else {
 
-        statusBox.className =
-          'order-status-box closed';
+        floating.className =
+          'order-floating closed';
 
 
-        statusIcon.className =
-          'fas fa-lock order-status-icon';
-
-
-        statusTitle.textContent =
-          '🔒 Encomendas Encerradas';
+        title.textContent =
+          'Encomendas encerradas';
 
 
         // Verificar se existe uma próxima
@@ -786,21 +776,21 @@
 
           if (inicio > hoje) {
 
-            statusMessage.textContent =
+            message.textContent =
               `As encomendas abrem a ${formatarData(
                 cfg.orders_start
               )}.`;
 
           } else {
 
-            statusMessage.textContent =
+            message.textContent =
               'De momento não estamos a aceitar novas encomendas.';
 
           }
 
         } else {
 
-          statusMessage.textContent =
+          message.textContent =
             'De momento não estamos a aceitar novas encomendas.';
 
         }
@@ -828,14 +818,24 @@
       console.error(e);
 
 
+      const floating =
+        document.getElementById(
+          'order-floating'
+        );
+
+
+      floating.className =
+        'order-floating closed';
+
+
       document.getElementById(
-        'order-status-title'
+        'order-floating-title'
       ).textContent =
         'Estado indisponível';
 
 
       document.getElementById(
-        'order-status-message'
+        'order-floating-message'
       ).textContent =
         'Não foi possível verificar o período de encomendas.';
 
@@ -855,6 +855,32 @@
 
   }
 
+
+  // =====================================================
+  // FECHAR AVISO
+  // =====================================================
+
+  document.getElementById(
+    'order-floating-close'
+  ).addEventListener(
+    'click',
+    function() {
+
+      document
+        .getElementById(
+          'order-floating'
+        )
+        .classList.add(
+          'hidden'
+        );
+
+    }
+  );
+
+
+  // =====================================================
+  // CARREGAR AO ABRIR A PÁGINA
+  // =====================================================
 
   window.addEventListener(
     'load',
