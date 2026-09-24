@@ -3,150 +3,866 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>Início</title>
+
   <!-- Google Fonts: Poppins -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
+    rel="stylesheet"
+  >
+
   <!-- Font Awesome CDN -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+  >
+
   <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-  <div class="container">
-    <!-- Navbar com botão para abrir o menu lateral -->
-    <nav>
-      <div class="menu-btn" id="menu-btn"><i class="fas fa-bars"></i></div>
-    </nav>
 
-    <!-- Menu lateral (Sidebar) -->
-    <div class="sidebar" id="sidebar">
-      <div class="overlay" id="overlay"></div>
-      <ul>
-        <li><a href="index.html">Início</a></li>
-        <li><a href="ramo-avezinha.html">Ramo Avezinha</a></li>
-        <li><a href="ramo-aventura.html">Ramo Aventura</a></li>
-        <li><a href="ramo-caravela.html">Ramo Caravela</a></li>
-        <li><a href="ramo-moinho.html">Ramo Moinho</a></li>
-        <li><a href="dirigentes.html">Dirigentes</a></li>
-        <li><a href="faq.html">Questões Frequentes</a></li>
-        <li><a href="login.html">Área Administrativa</a></li>
-      </ul>
-    </div>
 
-    <!-- Header com imagem de fundo e texto centralizado -->
-    <header>
-      <h1>Bem-vindo ao Depósito - Escolhe o teu ramo para começar!</h1>
-    </header>
-    <a href="faq.html" class="faq-float" title="Questões Frequentes">
-      <i class="fas fa-question-circle"></i>
-    </a>
-    
-    <main>
-      <!-- Seção com caixas dos ramos -->
-      <section class="branches">
-        <div class="branches-container">
-          <a href="ramo-avezinha.html" class="branch-box branch-avezinha">
-            <i class="fas fa-dove"></i>
-            <p>Ramo Avezinha</p>
-          </a>
-          <a href="ramo-aventura.html" class="branch-box branch-aventura">
-            <i class="fas fa-compass"></i>
-            <p>Ramo Aventura</p>
-          </a>
-          <a href="ramo-caravela.html" class="branch-box branch-caravela">
-            <i class="fas fa-ship"></i>
-            <p>Ramo Caravela</p>
-          </a>
-          <a href="ramo-moinho.html" class="branch-box branch-moinho">
-            <i class="fas fa-wind"></i>
-            <p>Ramo Moinho</p>
-          </a>
-          <a href="dirigentes.html" class="branch-box branch-dirigentes">
-            <i class="fas fa-clover"></i>
-            <p>Dirigentes</p>
-          </a>
-          <a href="tamanho.html" class="branch-box branch-tamanhos">
-            <i class="fas fa-ruler-combined"></i>
-            <p>Guia de Tamanhos</p>
-          </a>
-        </div>
-      </section>
+  <!-- =====================================================
+       ESTILOS DO ESTADO DAS ENCOMENDAS
+       ===================================================== -->
 
-      <!-- Seção de datas de encomenda -->
-      <section class="order-dates">
-        <h2>Períodos de Encomenda</h2>
-        <div class="dates-container">
-          <div class="date-box">
-            <h3>Data de Início</h3>
-            <p id="start-date">A carregar...</p>
-          </div>
-          <div class="date-box">
-            <h3>Data de Fim</h3>
-            <p id="end-date">A carregar...</p>
-          </div>
-        </div>
-        <p>As encomendas podem ser feitas durante este período.</p>
-      </section>
-      <br>
-      <section class="warning-area">
-        <div class="shipping-warning">
-          <div class="warning-card">
-            <i class="fas fa-exclamation-triangle"></i>
-            <h3>Aviso Importante</h3>
-            <p>Ao valor final das encomendas será acrescentado o custo dos portes.</p>
-          </div>
-        </div>
-      </section>
-      
-    </main>
+  <style>
 
-   
-    <!-- Script para alternar o menu lateral -->
-    <script>
-      const menuBtn = document.getElementById('menu-btn');
-      const sidebar = document.getElementById('sidebar');
-      menuBtn.addEventListener('click', function() {
-        sidebar.classList.toggle('active');
-      });
-    </script>
+    .order-status {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
 
-    <!-- Script para mostrar datas vindas do backend -->
-    <script>
-      async function preencherDatas(){
-        try {
-          const res = await fetch('/api/config');
-          if (!res.ok) throw new Error('Falha ao ler /api/config');
-          const cfg = await res.json();
 
-          const startEl = document.getElementById("start-date");
-          const endEl   = document.getElementById("end-date");
+    .order-status-box {
+      padding: 1.2rem 1.5rem;
+      border-radius: 12px;
+      margin-bottom: 1.5rem;
+    }
 
-          startEl.textContent = cfg.orders_start
-            ? new Date(cfg.orders_start).toLocaleDateString('pt-PT')
-            : 'Data não definida';
 
-          endEl.textContent = cfg.orders_end
-            ? new Date(cfg.orders_end).toLocaleDateString('pt-PT')
-            : 'Data não definida';
-        } catch (e) {
-          console.error(e);
-          document.getElementById("start-date").textContent = 'Erro';
-          document.getElementById("end-date").textContent = 'Erro';
-        }
+    /* Encomendas abertas */
+
+    .order-status-box.open {
+      background: #e8f5e9;
+      color: #2e7d32;
+    }
+
+
+    /* Encomendas fechadas */
+
+    .order-status-box.closed {
+      background: #ffebee;
+      color: #c62828;
+    }
+
+
+    .order-status-box h2 {
+      margin: 0 0 .5rem;
+      font-size: 1.25rem;
+    }
+
+
+    .order-status-box p {
+      margin: .25rem 0;
+    }
+
+
+    .order-status-icon {
+      font-size: 1.5rem;
+      margin-bottom: .4rem;
+    }
+
+
+    /* Datas */
+
+    .dates-container {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+
+    .date-box {
+      min-width: 180px;
+    }
+
+
+    /* Quando fechadas */
+
+    .branches.orders-closed {
+      opacity: .75;
+    }
+
+
+    .closed-info {
+      text-align: center;
+      margin-top: 1rem;
+      font-size: .9rem;
+      color: #666;
+    }
+
+
+    @media (max-width: 600px) {
+
+      .order-status-box {
+        padding: 1rem;
       }
 
-      window.addEventListener('load', preencherDatas);
-    </script>
+      .order-status-box h2 {
+        font-size: 1.1rem;
+      }
 
-    <footer class="footer">
-      <div class="footer-content">
-        <p>&copy; 2025 Guias de Viseu - Depósito. Todos os direitos reservados.</p>
-        <div class="social-icons">
-          <a href="https://www.facebook.com" target="_blank"><i class="fab fa-facebook-f"></i></a>
-          <a href="https://www.instagram.com/guias.sjose" target="_blank"><i class="fab fa-instagram"></i></a>
-          <a href="mailto:exemplo@email.com"><i class="fas fa-envelope"></i></a>
-        </div>
-      </div>
-    </footer>
+    }
+
+  </style>
+
+</head>
+
+
+<body>
+
+<div class="container">
+
+
+  <!-- =====================================================
+       NAVBAR
+       ===================================================== -->
+
+  <nav>
+
+    <div
+      class="menu-btn"
+      id="menu-btn">
+
+      <i class="fas fa-bars"></i>
+
+    </div>
+
+  </nav>
+
+
+  <!-- =====================================================
+       MENU LATERAL
+       ===================================================== -->
+
+  <div
+    class="sidebar"
+    id="sidebar">
+
+    <div
+      class="overlay"
+      id="overlay">
+    </div>
+
+
+    <ul>
+
+      <li>
+        <a href="index.html">
+          Início
+        </a>
+      </li>
+
+      <li>
+        <a href="ramo-avezinha.html">
+          Ramo Avezinha
+        </a>
+      </li>
+
+      <li>
+        <a href="ramo-aventura.html">
+          Ramo Aventura
+        </a>
+      </li>
+
+      <li>
+        <a href="ramo-caravela.html">
+          Ramo Caravela
+        </a>
+      </li>
+
+      <li>
+        <a href="ramo-moinho.html">
+          Ramo Moinho
+        </a>
+      </li>
+
+      <li>
+        <a href="dirigentes.html">
+          Dirigentes
+        </a>
+      </li>
+
+      <li>
+        <a href="faq.html">
+          Questões Frequentes
+        </a>
+      </li>
+
+      <li>
+        <a href="login.html">
+          Área Administrativa
+        </a>
+      </li>
+
+    </ul>
+
   </div>
+
+
+  <!-- =====================================================
+       HEADER
+       ===================================================== -->
+
+  <header>
+
+    <h1>
+      Bem-vindo ao Depósito -
+      Escolhe o teu ramo para começar!
+    </h1>
+
+  </header>
+
+
+  <!-- FAQ -->
+
+  <a
+    href="faq.html"
+    class="faq-float"
+    title="Questões Frequentes">
+
+    <i class="fas fa-question-circle"></i>
+
+  </a>
+
+
+  <main>
+
+
+    <!-- ===================================================
+         ESTADO DAS ENCOMENDAS
+         =================================================== -->
+
+    <section class="order-status">
+
+      <div
+        id="order-status-box"
+        class="order-status-box">
+
+        <div class="order-status-icon">
+          <i
+            id="order-status-icon"
+            class="fas fa-spinner fa-spin">
+          </i>
+        </div>
+
+
+        <h2 id="order-status-title">
+          A carregar...
+        </h2>
+
+
+        <p id="order-status-message">
+          A verificar o período de encomendas.
+        </p>
+
+      </div>
+
+    </section>
+
+
+    <!-- ===================================================
+         RAMOS
+         =================================================== -->
+
+    <section
+      class="branches"
+      id="branches-section">
+
+      <div class="branches-container">
+
+
+        <a
+          href="ramo-avezinha.html"
+          class="branch-box branch-avezinha">
+
+          <i class="fas fa-dove"></i>
+
+          <p>
+            Ramo Avezinha
+          </p>
+
+        </a>
+
+
+        <a
+          href="ramo-aventura.html"
+          class="branch-box branch-aventura">
+
+          <i class="fas fa-compass"></i>
+
+          <p>
+            Ramo Aventura
+          </p>
+
+        </a>
+
+
+        <a
+          href="ramo-caravela.html"
+          class="branch-box branch-caravela">
+
+          <i class="fas fa-ship"></i>
+
+          <p>
+            Ramo Caravela
+          </p>
+
+        </a>
+
+
+        <a
+          href="ramo-moinho.html"
+          class="branch-box branch-moinho">
+
+          <i class="fas fa-wind"></i>
+
+          <p>
+            Ramo Moinho
+          </p>
+
+        </a>
+
+
+        <a
+          href="dirigentes.html"
+          class="branch-box branch-dirigentes">
+
+          <i class="fas fa-clover"></i>
+
+          <p>
+            Dirigentes
+          </p>
+
+        </a>
+
+
+        <a
+          href="tamanho.html"
+          class="branch-box branch-tamanhos">
+
+          <i class="fas fa-ruler-combined"></i>
+
+          <p>
+            Guia de Tamanhos
+          </p>
+
+        </a>
+
+
+      </div>
+
+
+      <p
+        id="closed-info"
+        class="closed-info"
+        style="display: none;">
+
+        Podes continuar a consultar os produtos.
+        As novas encomendas serão disponibilizadas
+        quando abrir um novo período.
+
+      </p>
+
+    </section>
+
+
+    <!-- ===================================================
+         PERÍODO DE ENCOMENDA
+         =================================================== -->
+
+    <section class="order-dates">
+
+      <h2>
+        Período de Encomenda
+      </h2>
+
+
+      <div class="dates-container">
+
+
+        <div class="date-box">
+
+          <h3>
+            Data de Início
+          </h3>
+
+          <p id="start-date">
+            A carregar...
+          </p>
+
+        </div>
+
+
+        <div class="date-box">
+
+          <h3>
+            Data de Fim
+          </h3>
+
+          <p id="end-date">
+            A carregar...
+          </p>
+
+        </div>
+
+
+      </div>
+
+
+      <p id="dates-description">
+        As encomendas podem ser feitas durante este período.
+      </p>
+
+
+    </section>
+
+
+    <br>
+
+
+    <!-- ===================================================
+         AVISO DOS PORTES
+         =================================================== -->
+
+    <section class="warning-area">
+
+      <div class="shipping-warning">
+
+        <div class="warning-card">
+
+          <i class="fas fa-exclamation-triangle"></i>
+
+          <h3>
+            Aviso Importante
+          </h3>
+
+          <p>
+            Ao valor final das encomendas será
+            acrescentado o custo dos portes.
+          </p>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+  </main>
+
+
+  <!-- =====================================================
+       FOOTER
+       ===================================================== -->
+
+  <footer class="footer">
+
+    <div class="footer-content">
+
+      <p>
+        &copy; 2025 Guias de Viseu - Depósito.
+        Todos os direitos reservados.
+      </p>
+
+
+      <div class="social-icons">
+
+        <a
+          href="https://www.facebook.com"
+          target="_blank">
+
+          <i class="fab fa-facebook-f"></i>
+
+        </a>
+
+
+        <a
+          href="https://www.instagram.com/guias.sjose"
+          target="_blank">
+
+          <i class="fab fa-instagram"></i>
+
+        </a>
+
+
+        <a
+          href="mailto:exemplo@email.com">
+
+          <i class="fas fa-envelope"></i>
+
+        </a>
+
+      </div>
+
+    </div>
+
+  </footer>
+
+
+</div>
+
+
+<!-- =====================================================
+     MENU LATERAL
+     ===================================================== -->
+
+<script>
+
+  const menuBtn =
+    document.getElementById(
+      'menu-btn'
+    );
+
+
+  const sidebar =
+    document.getElementById(
+      'sidebar'
+    );
+
+
+  const overlay =
+    document.getElementById(
+      'overlay'
+    );
+
+
+  menuBtn.addEventListener(
+    'click',
+    function() {
+
+      sidebar.classList.toggle(
+        'active'
+      );
+
+    }
+  );
+
+
+  if (overlay) {
+
+    overlay.addEventListener(
+      'click',
+      function() {
+
+        sidebar.classList.remove(
+          'active'
+        );
+
+      }
+    );
+
+  }
+
+</script>
+
+
+<!-- =====================================================
+     VERIFICAR ESTADO DAS ENCOMENDAS
+     ===================================================== -->
+
+<script>
+
+  function formatarData(data) {
+
+    if (!data) {
+      return 'Data não definida';
+    }
+
+
+    const partes =
+      data.split('-');
+
+
+    if (
+      partes.length !== 3
+    ) {
+
+      return data;
+
+    }
+
+
+    return (
+      `${partes[2]}/${partes[1]}/${partes[0]}`
+    );
+
+  }
+
+
+  async function preencherEstadoEncomendas() {
+
+    try {
+
+      const res =
+        await fetch(
+          '/api/config'
+        );
+
+
+      if (!res.ok) {
+
+        throw new Error(
+          'Falha ao ler /api/config'
+        );
+
+      }
+
+
+      const cfg =
+        await res.json();
+
+
+      // =================================================
+      // ELEMENTOS
+      // =================================================
+
+      const statusBox =
+        document.getElementById(
+          'order-status-box'
+        );
+
+
+      const statusIcon =
+        document.getElementById(
+          'order-status-icon'
+        );
+
+
+      const statusTitle =
+        document.getElementById(
+          'order-status-title'
+        );
+
+
+      const statusMessage =
+        document.getElementById(
+          'order-status-message'
+        );
+
+
+      const startDate =
+        document.getElementById(
+          'start-date'
+        );
+
+
+      const endDate =
+        document.getElementById(
+          'end-date'
+        );
+
+
+      const datesDescription =
+        document.getElementById(
+          'dates-description'
+        );
+
+
+      const branchesSection =
+        document.getElementById(
+          'branches-section'
+        );
+
+
+      const closedInfo =
+        document.getElementById(
+          'closed-info'
+        );
+
+
+      // =================================================
+      // DATAS
+      // =================================================
+
+      startDate.textContent =
+        cfg.orders_start
+          ? formatarData(
+              cfg.orders_start
+            )
+          : 'Data não definida';
+
+
+      endDate.textContent =
+        cfg.orders_end
+          ? formatarData(
+              cfg.orders_end
+            )
+          : 'Data não definida';
+
+
+      // =================================================
+      // ENCOMENDAS ABERTAS
+      // =================================================
+
+      if (cfg.orders_open) {
+
+        statusBox.className =
+          'order-status-box open';
+
+
+        statusIcon.className =
+          'fas fa-check-circle order-status-icon';
+
+
+        statusTitle.textContent =
+          '🟢 Encomendas Abertas';
+
+
+        if (cfg.orders_end) {
+
+          statusMessage.textContent =
+            `Podes realizar a tua encomenda até ${formatarData(
+              cfg.orders_end
+            )}.`;
+
+        } else {
+
+          statusMessage.textContent =
+            'Podes realizar a tua encomenda neste momento.';
+
+        }
+
+
+        datesDescription.textContent =
+          'As encomendas podem ser feitas durante este período.';
+
+
+        branchesSection.classList.remove(
+          'orders-closed'
+        );
+
+
+        closedInfo.style.display =
+          'none';
+
+      }
+
+
+      // =================================================
+      // ENCOMENDAS FECHADAS
+      // =================================================
+
+      else {
+
+        statusBox.className =
+          'order-status-box closed';
+
+
+        statusIcon.className =
+          'fas fa-lock order-status-icon';
+
+
+        statusTitle.textContent =
+          '🔒 Encomendas Encerradas';
+
+
+        // Verificar se existe uma próxima
+        // data de abertura
+
+        if (cfg.orders_start) {
+
+          const hoje =
+            new Date();
+
+
+          const inicio =
+            new Date(
+              cfg.orders_start +
+              'T00:00:00'
+            );
+
+
+          if (inicio > hoje) {
+
+            statusMessage.textContent =
+              `As encomendas abrem a ${formatarData(
+                cfg.orders_start
+              )}.`;
+
+          } else {
+
+            statusMessage.textContent =
+              'De momento não estamos a aceitar novas encomendas.';
+
+          }
+
+        } else {
+
+          statusMessage.textContent =
+            'De momento não estamos a aceitar novas encomendas.';
+
+        }
+
+
+        datesDescription.textContent =
+          'As encomendas encontram-se encerradas neste momento.';
+
+
+        branchesSection.classList.add(
+          'orders-closed'
+        );
+
+
+        closedInfo.style.display =
+          'block';
+
+      }
+
+    }
+
+
+    catch (e) {
+
+      console.error(e);
+
+
+      document.getElementById(
+        'order-status-title'
+      ).textContent =
+        'Estado indisponível';
+
+
+      document.getElementById(
+        'order-status-message'
+      ).textContent =
+        'Não foi possível verificar o período de encomendas.';
+
+
+      document.getElementById(
+        'start-date'
+      ).textContent =
+        'Erro';
+
+
+      document.getElementById(
+        'end-date'
+      ).textContent =
+        'Erro';
+
+    }
+
+  }
+
+
+  window.addEventListener(
+    'load',
+    preencherEstadoEncomendas
+  );
+
+</script>
+
+
 </body>
 </html>

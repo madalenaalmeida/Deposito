@@ -16,14 +16,129 @@
 
   <style>
     #admin-datas .controls {
-      display: flex; gap: .75rem; align-items: end; flex-wrap: wrap;
+      display: flex;
+      gap: .75rem;
+      align-items: end;
+      flex-wrap: wrap;
       margin: .5rem 0 1rem;
     }
-    #admin-datas label { display: flex; flex-direction: column; gap: .25rem; }
-    #status-datas { font-weight: 600; }
-    #admin-resumo { display:block; margin: 1rem 0; font-weight: 700; text-align:center; }
 
-    /* Botão vermelho em baixo */
+    #admin-datas label {
+      display: flex;
+      flex-direction: column;
+      gap: .25rem;
+    }
+
+    #status-datas {
+      font-weight: 600;
+    }
+
+    #admin-resumo {
+      display: block;
+      margin: 1rem 0;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    /* =====================================================
+       GESTÃO DAS ENCOMENDAS
+       ===================================================== */
+
+    #admin-datas {
+      background: #fff;
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin: 2rem 0;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    }
+
+    #admin-datas h2 {
+      margin-top: 0;
+      margin-bottom: 1rem;
+    }
+
+    #estado-encomendas {
+      padding: 1rem 1.25rem;
+      border-radius: 10px;
+      margin-bottom: 1.25rem;
+      font-weight: 700;
+      font-size: 1rem;
+    }
+
+    #estado-encomendas.aberto {
+      background: #e8f5e9;
+      color: #2e7d32;
+    }
+
+    #estado-encomendas.fechado {
+      background: #ffebee;
+      color: #c62828;
+    }
+
+    #admin-datas .controls {
+      display: flex;
+      gap: 1rem;
+      align-items: end;
+      flex-wrap: wrap;
+      margin: 0;
+    }
+
+    #admin-datas .controls label {
+      display: flex;
+      flex-direction: column;
+      gap: .35rem;
+      font-weight: 600;
+    }
+
+    #admin-datas input[type="date"] {
+      padding: .65rem .75rem;
+      border: 1px solid #ccc;
+      border-radius: 7px;
+      font-size: .95rem;
+    }
+
+    #admin-datas button {
+      padding: .65rem 1rem;
+      border: none;
+      border-radius: 7px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: opacity .2s, transform .1s;
+    }
+
+    #admin-datas button:hover {
+      opacity: .9;
+    }
+
+    #admin-datas button:active {
+      transform: scale(.98);
+    }
+
+    #guardar-datas {
+      background: #333;
+      color: #fff;
+    }
+
+    #fechar-agora {
+      background: #c62828;
+      color: #fff;
+    }
+
+    #abrir-agora {
+      background: #2e7d32;
+      color: #fff;
+    }
+
+    #status-datas {
+      display: block;
+      width: 100%;
+      margin-top: .25rem;
+    }
+
+    /* =====================================================
+       BOTÃO VERMELHO EM BAIXO
+       ===================================================== */
+
     #exportar-e-limpar {
       display: block;
       width: 100%;
@@ -39,338 +154,1880 @@
       cursor: pointer;
       transition: background-color 0.3s;
     }
-    #exportar-e-limpar:hover { background-color: #a82020; }
 
-    /* Barra de ações em cada ramo */
-    .table-actions { display:flex; gap:.5rem; margin:.5rem 0 1rem; }
-    .ramo-title { font-weight:700; font-size:1.1rem; margin-top:1rem; }
-    .btn-pdf, .btn-excel {
-      padding:.45rem .75rem; border:none; border-radius:6px; cursor:pointer;
+    #exportar-e-limpar:hover {
+      background-color: #a82020;
     }
-    .btn-pdf { background:#e53935; color:#fff; }
-    .btn-excel { background:#2e7d32; color:#fff; }
+
+    /* =====================================================
+       BARRA DE AÇÕES EM CADA RAMO
+       ===================================================== */
+
+    .table-actions {
+      display: flex;
+      gap: .5rem;
+      margin: .5rem 0 1rem;
+    }
+
+    .ramo-title {
+      font-weight: 700;
+      font-size: 1.1rem;
+      margin-top: 1rem;
+    }
+
+    .btn-pdf,
+    .btn-excel {
+      padding: .45rem .75rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .btn-pdf {
+      background: #e53935;
+      color: #fff;
+    }
+
+    .btn-excel {
+      background: #2e7d32;
+      color: #fff;
+    }
+
+    /* =====================================================
+       MOBILE
+       ===================================================== */
+
+    @media (max-width: 600px) {
+
+      #admin-datas {
+        padding: 1rem;
+      }
+
+      #admin-datas .controls {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      #admin-datas .controls label,
+      #admin-datas input[type="date"],
+      #admin-datas button {
+        width: 100%;
+        box-sizing: border-box;
+      }
+
+      #admin-datas button {
+        text-align: center;
+      }
+
+      #estado-encomendas {
+        font-size: .95rem;
+      }
+    }
   </style>
 </head>
+
 <body>
 
 <div class="navbar">
-  <a href="index.html" class="voltar-inicio" title="Voltar ao início">
+
+  <a href="index.html"
+     class="voltar-inicio"
+     title="Voltar ao início">
+
     <i class="fas fa-arrow-left"></i>
+
   </a>
-  <span class="navbar-text">Painel de Administração</span>
+
+  <span class="navbar-text">
+    Painel de Administração
+  </span>
+
 </div>
+
 
 <div class="container">
 
-  <!-- TABELA DETALHADA -->
+
+  <!-- =====================================================
+       TABELA DETALHADA
+       ===================================================== -->
+
   <section id="admin-detalhados">
-    <h2>Pedidos detalhados (todos)</h2>
+
+    <h2>
+      Pedidos detalhados (todos)
+    </h2>
+
     <div class="table-actions">
-      <button class="btn-pdf" type="button" id="exp-detalhados-pdf">Exportar PDF</button>
-      <button class="btn-excel" type="button" id="exp-detalhados-xlsx">Exportar Excel</button>
+
+      <button
+        class="btn-pdf"
+        type="button"
+        id="exp-detalhados-pdf">
+
+        Exportar PDF
+
+      </button>
+
+      <button
+        class="btn-excel"
+        type="button"
+        id="exp-detalhados-xlsx">
+
+        Exportar Excel
+
+      </button>
+
     </div>
+
 
     <table id="admin-detalhados-table">
+
       <thead>
+
         <tr>
-          <th>Nome</th><th>Email</th><th>Ramo</th>
-          <th>Produto</th><th>Tamanho</th><th>Qtd</th>
-          <th>Preço unit.</th><th>Total</th><th>Data</th>
+
+          <th>Nome</th>
+          <th>Email</th>
+          <th>Ramo</th>
+          <th>Produto</th>
+          <th>Tamanho</th>
+          <th>Qtd</th>
+          <th>Preço unit.</th>
+          <th>Total</th>
+          <th>Data</th>
+
         </tr>
+
       </thead>
+
       <tbody></tbody>
+
     </table>
+
   </section>
 
-  <!-- AGREGADO POR RAMO -->
+
+  <!-- =====================================================
+       AGREGADO POR RAMO
+       ===================================================== -->
+
   <section id="admin-por-ramo">
-    <h2>Pedidos por ramo (agregado)</h2>
+
+    <h2>
+      Pedidos por ramo (agregado)
+    </h2>
+
     <div class="table-actions">
-      <button class="btn-pdf" type="button" id="exp-porramo-pdf">Exportar PDF</button>
-      <button class="btn-excel" type="button" id="exp-porramo-xlsx">Exportar Excel</button>
+
+      <button
+        class="btn-pdf"
+        type="button"
+        id="exp-porramo-pdf">
+
+        Exportar PDF
+
+      </button>
+
+      <button
+        class="btn-excel"
+        type="button"
+        id="exp-porramo-xlsx">
+
+        Exportar Excel
+
+      </button>
+
     </div>
+
+
     <table id="admin-por-ramo-table">
+
       <thead>
+
         <tr>
-          <th>Ramo</th><th>Produto</th><th>Tamanho</th>
-          <th>Quantidade</th><th>Preço (total)</th>
+
+          <th>Ramo</th>
+          <th>Produto</th>
+          <th>Tamanho</th>
+          <th>Quantidade</th>
+          <th>Preço (total)</th>
+
         </tr>
+
       </thead>
+
       <tbody></tbody>
+
     </table>
+
   </section>
 
-  <!-- DETALHES POR RAMO -->
+
+  <!-- =====================================================
+       DETALHES POR RAMO
+       ===================================================== -->
+
   <section id="admin-por-ramo-detalhes">
-    <h2>Por ramo — detalhes</h2>
+
+    <h2>
+      Por ramo — detalhes
+    </h2>
+
   </section>
 
-  <!-- RESUMO -->
+
+  <!-- =====================================================
+       RESUMO
+       ===================================================== -->
+
   <div id="admin-resumo"></div>
 
-  <!-- PERÍODOS -->
+
+  <!-- =====================================================
+       GESTÃO DAS ENCOMENDAS
+       ===================================================== -->
+
   <section id="admin-datas">
-    <h2>Períodos de Encomenda</h2>
-    <div class="controls">
-      <label>Data de Início
-        <input type="date" id="orders-start">
-      </label>
-      <label>Data de Fim
-        <input type="date" id="orders-end">
-      </label>
-      <button id="guardar-datas" type="button">Guardar</button>
-      <span id="status-datas"></span>
+
+    <h2>
+      Gestão das Encomendas
+    </h2>
+
+
+    <!-- Estado atual -->
+
+    <div id="estado-encomendas">
+      A carregar...
     </div>
+
+
+    <div class="controls">
+
+      <!-- Data de início -->
+
+      <label>
+
+        Data de Início
+
+        <input
+          type="date"
+          id="orders-start">
+
+      </label>
+
+
+      <!-- Data de fim -->
+
+      <label>
+
+        Data de Fim
+
+        <input
+          type="date"
+          id="orders-end">
+
+      </label>
+
+
+      <!-- Guardar -->
+
+      <button
+        id="guardar-datas"
+        type="button">
+
+        Guardar Datas
+
+      </button>
+
+
+      <!-- Fechar -->
+
+      <button
+        id="fechar-agora"
+        type="button">
+
+        🔴 Fechar Encomendas Agora
+
+      </button>
+
+
+      <!-- Abrir -->
+
+      <button
+        id="abrir-agora"
+        type="button">
+
+        🟢 Abrir Encomendas
+
+      </button>
+
+
+      <!-- Mensagem -->
+
+      <span id="status-datas"></span>
+
+    </div>
+
   </section>
+
 
 </div>
 
-<!-- BOTÃO VERMELHO EM BAIXO -->
-<button id="exportar-e-limpar">Exportar Excel & Limpar Pedidos</button>
+
+<!-- =====================================================
+     BOTÃO EXPORTAR + LIMPAR
+     ===================================================== -->
+
+<button
+  id="exportar-e-limpar">
+
+  Exportar Excel & Limpar Pedidos
+
+</button>
+
 
 <script>
-  // -------- Helpers --------
-  const parseMaybeNumber = (v, fallback = 0) => {
-    if (typeof v === 'number' && !isNaN(v)) return v;
-    if (v == null || v === '') return fallback;
-    const n = Number(String(v).replace(',', '.'));
-    return isNaN(n) ? fallback : n;
+
+
+  // =====================================================
+  // HELPERS
+  // =====================================================
+
+  const parseMaybeNumber = (
+    v,
+    fallback = 0
+  ) => {
+
+    if (
+      typeof v === 'number' &&
+      !isNaN(v)
+    ) {
+      return v;
+    }
+
+    if (
+      v == null ||
+      v === ''
+    ) {
+      return fallback;
+    }
+
+    const n = Number(
+      String(v).replace(',', '.')
+    );
+
+    return isNaN(n)
+      ? fallback
+      : n;
   };
-  const money = (n) => (Math.round(n*100)/100).toFixed(2).replace('.', ',') + '€';
+
+
+  const money = (n) => {
+
+    return (
+      Math.round(n * 100) / 100
+    )
+      .toFixed(2)
+      .replace('.', ',') + '€';
+
+  };
+
 
   const norm = (p) => {
-    const qtd = parseMaybeNumber(p.quantidade ?? p.quantity, 1);
-    const unit = parseMaybeNumber(p.preco_unit ?? p.preco ?? p.price, 0);
+
+    const qtd = parseMaybeNumber(
+      p.quantidade ??
+      p.quantity,
+      1
+    );
+
+    const unit = parseMaybeNumber(
+      p.preco_unit ??
+      p.preco ??
+      p.price,
+      0
+    );
+
     return {
-      nome: p.nome || p.name || '',
-      email: p.email || '',
-      ramo: p.ramo || p.branch || '',
-      produto: p.produto || p.product || '',
-      tamanho: p.tamanho || p.size || '',
-      quantidade: qtd,
-      precoUnit: unit,
-      total: unit * qtd,
-      data: p.data || p.created_at || ''
+
+      nome:
+        p.nome ||
+        p.name ||
+        '',
+
+      email:
+        p.email ||
+        '',
+
+      ramo:
+        p.ramo ||
+        p.branch ||
+        '',
+
+      produto:
+        p.produto ||
+        p.product ||
+        '',
+
+      tamanho:
+        p.tamanho ||
+        p.size ||
+        '',
+
+      quantidade:
+        qtd,
+
+      precoUnit:
+        unit,
+
+      total:
+        unit * qtd,
+
+      data:
+        p.data ||
+        p.created_at ||
+        ''
+
     };
+
   };
 
-  // -------- Config (datas) --------
-  async function carregarDatas(){
-    try {
-      const res = await fetch('/api/config', { credentials: 'same-origin' });
-      if (!res.ok) throw new Error('Falha ao ler /api/config');
-      const cfg = await res.json();
-      document.getElementById('orders-start').value = cfg.orders_start || '';
-      document.getElementById('orders-end').value   = cfg.orders_end   || '';
-    } catch (e) {
-      console.error(e);
-      document.getElementById('status-datas').textContent = 'Erro a carregar datas';
+
+  // =====================================================
+  // GESTÃO DAS ENCOMENDAS
+  // =====================================================
+
+
+  function formatarData(data) {
+
+    if (!data) {
+      return '';
     }
+
+    const partes =
+      data.split('-');
+
+    if (
+      partes.length !== 3
+    ) {
+      return data;
+    }
+
+    return (
+      `${partes[2]}/${partes[1]}/${partes[0]}`
+    );
+
   }
 
-  async function guardarDatas(){
-    const body = {
-      orders_start: document.getElementById('orders-start').value || null,
-      orders_end:   document.getElementById('orders-end').value   || null
-    };
-    try {
-      const res = await fetch('/api/config', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'same-origin',
-        body: JSON.stringify(body)
-      });
-      document.getElementById('status-datas').textContent = res.ok ? 'Guardado ✅' : 'Erro ❌';
-      if (res.ok) setTimeout(()=>document.getElementById('status-datas').textContent='', 2000);
-    } catch (e) {
-      console.error(e);
-      document.getElementById('status-datas').textContent = 'Erro ❌';
+
+  function atualizarEstadoEncomendas(cfg) {
+
+    const estado =
+      document.getElementById(
+        'estado-encomendas'
+      );
+
+    const fechar =
+      document.getElementById(
+        'fechar-agora'
+      );
+
+    const abrir =
+      document.getElementById(
+        'abrir-agora'
+      );
+
+
+    if (!estado) {
+      return;
     }
+
+
+    // ===================================================
+    // ENCOMENDAS ABERTAS
+    // ===================================================
+
+    if (cfg.orders_open) {
+
+      estado.className =
+        'aberto';
+
+      let texto =
+        '🟢 ENCOMENDAS ABERTAS';
+
+
+      if (cfg.orders_end) {
+
+        texto +=
+          ` — até ${formatarData(
+            cfg.orders_end
+          )}`;
+
+      } else {
+
+        texto +=
+          ' — sem data de encerramento';
+
+      }
+
+
+      estado.textContent =
+        texto;
+
+
+      if (fechar) {
+        fechar.style.display =
+          'inline-block';
+      }
+
+      if (abrir) {
+        abrir.style.display =
+          'none';
+      }
+
+    }
+
+
+    // ===================================================
+    // ENCOMENDAS FECHADAS
+    // ===================================================
+
+    else {
+
+      estado.className =
+        'fechado';
+
+      let texto =
+        '🔴 ENCOMENDAS FECHADAS';
+
+
+      if (cfg.orders_start) {
+
+        const hoje =
+          new Date();
+
+        const inicio =
+          new Date(
+            cfg.orders_start +
+            'T00:00:00'
+          );
+
+
+        if (inicio > hoje) {
+
+          texto +=
+            ` — abrem em ${formatarData(
+              cfg.orders_start
+            )}`;
+
+        }
+
+      }
+
+
+      estado.textContent =
+        texto;
+
+
+      if (fechar) {
+        fechar.style.display =
+          'none';
+      }
+
+      if (abrir) {
+        abrir.style.display =
+          'inline-block';
+      }
+
+    }
+
   }
 
-  // -------- Pedidos --------
+
+  // =====================================================
+  // CARREGAR CONFIGURAÇÃO
+  // =====================================================
+
+  async function carregarDatas() {
+
+    try {
+
+      const res =
+        await fetch(
+          '/api/config',
+          {
+            credentials:
+              'same-origin'
+          }
+        );
+
+
+      if (!res.ok) {
+
+        throw new Error(
+          'Falha ao ler /api/config'
+        );
+
+      }
+
+
+      const cfg =
+        await res.json();
+
+
+      document.getElementById(
+        'orders-start'
+      ).value =
+        cfg.orders_start || '';
+
+
+      document.getElementById(
+        'orders-end'
+      ).value =
+        cfg.orders_end || '';
+
+
+      atualizarEstadoEncomendas(
+        cfg
+      );
+
+
+    } catch (e) {
+
+      console.error(e);
+
+
+      const estado =
+        document.getElementById(
+          'estado-encomendas'
+        );
+
+
+      if (estado) {
+
+        estado.textContent =
+          '❌ Erro a carregar configuração';
+
+        estado.className =
+          'fechado';
+
+      }
+
+
+      document.getElementById(
+        'status-datas'
+      ).textContent =
+        'Erro a carregar datas';
+
+    }
+
+  }
+
+
+  // =====================================================
+  // GUARDAR DATAS
+  // =====================================================
+
+  async function guardarDatas() {
+
+    const inicio =
+      document.getElementById(
+        'orders-start'
+      ).value || null;
+
+
+    const fim =
+      document.getElementById(
+        'orders-end'
+      ).value || null;
+
+
+    const status =
+      document.getElementById(
+        'status-datas'
+      );
+
+
+    // Verificar se as datas fazem sentido
+
+    if (
+      inicio &&
+      fim &&
+      inicio > fim
+    ) {
+
+      status.textContent =
+        '❌ A data de início não pode ser depois da data de fim.';
+
+      status.style.color =
+        '#c62828';
+
+      return;
+
+    }
+
+
+    try {
+
+      const res =
+        await fetch(
+          '/api/config',
+          {
+
+            method: 'POST',
+
+            headers: {
+              'Content-Type':
+                'application/json'
+            },
+
+            credentials:
+              'same-origin',
+
+            body:
+              JSON.stringify({
+
+                orders_start:
+                  inicio,
+
+                orders_end:
+                  fim
+
+              })
+
+          }
+        );
+
+
+      const data =
+        await res.json();
+
+
+      if (!res.ok) {
+
+        throw new Error(
+          data.error ||
+          'Erro ao guardar'
+        );
+
+      }
+
+
+      status.textContent =
+        '✅ Guardado com sucesso.';
+
+      status.style.color =
+        '#2e7d32';
+
+
+      atualizarEstadoEncomendas(
+        data
+      );
+
+
+      setTimeout(() => {
+
+        status.textContent =
+          '';
+
+      }, 3000);
+
+
+    } catch (e) {
+
+      console.error(e);
+
+      status.textContent =
+        '❌ Erro ao guardar.';
+
+      status.style.color =
+        '#c62828';
+
+    }
+
+  }
+
+
+  // =====================================================
+  // FECHAR ENCOMENDAS AGORA
+  // =====================================================
+
+  async function fecharEncomendasAgora() {
+
+    const confirmar =
+      confirm(
+        'Tens a certeza que queres fechar as encomendas agora?'
+      );
+
+
+    if (!confirmar) {
+      return;
+    }
+
+
+    try {
+
+      /*
+       * Para fechar imediatamente,
+       * colocamos a data de fim como ontem.
+       */
+
+      const ontem =
+        new Date(
+          Date.now() -
+          24 * 60 * 60 * 1000
+        )
+          .toISOString()
+          .split('T')[0];
+
+
+      const res =
+        await fetch(
+          '/api/config',
+          {
+
+            method: 'POST',
+
+            headers: {
+              'Content-Type':
+                'application/json'
+            },
+
+            credentials:
+              'same-origin',
+
+            body:
+              JSON.stringify({
+
+                orders_start:
+                  null,
+
+                orders_end:
+                  ontem
+
+              })
+
+          }
+        );
+
+
+      const data =
+        await res.json();
+
+
+      if (!res.ok) {
+
+        throw new Error(
+          data.error ||
+          'Erro ao fechar'
+        );
+
+      }
+
+
+      const status =
+        document.getElementById(
+          'status-datas'
+        );
+
+
+      status.textContent =
+        '🔴 Encomendas fechadas.';
+
+      status.style.color =
+        '#c62828';
+
+
+      await carregarDatas();
+
+
+    } catch (e) {
+
+      console.error(e);
+
+      document.getElementById(
+        'status-datas'
+      ).textContent =
+        '❌ Não foi possível fechar as encomendas.';
+
+    }
+
+  }
+
+
+  // =====================================================
+  // ABRIR ENCOMENDAS AGORA
+  // =====================================================
+
+  async function abrirEncomendasAgora() {
+
+    try {
+
+      const hoje =
+        new Date()
+          .toISOString()
+          .split('T')[0];
+
+
+      const res =
+        await fetch(
+          '/api/config',
+          {
+
+            method: 'POST',
+
+            headers: {
+              'Content-Type':
+                'application/json'
+            },
+
+            credentials:
+              'same-origin',
+
+            body:
+              JSON.stringify({
+
+                orders_start:
+                  hoje,
+
+                orders_end:
+                  null
+
+              })
+
+          }
+        );
+
+
+      const data =
+        await res.json();
+
+
+      if (!res.ok) {
+
+        throw new Error(
+          data.error ||
+          'Erro ao abrir'
+        );
+
+      }
+
+
+      const status =
+        document.getElementById(
+          'status-datas'
+        );
+
+
+      status.textContent =
+        '🟢 Encomendas abertas.';
+
+      status.style.color =
+        '#2e7d32';
+
+
+      await carregarDatas();
+
+
+    } catch (e) {
+
+      console.error(e);
+
+      document.getElementById(
+        'status-datas'
+      ).textContent =
+        '❌ Não foi possível abrir as encomendas.';
+
+    }
+
+  }
+
+
+  // =====================================================
+  // EVENTOS DA GESTÃO DAS ENCOMENDAS
+  // =====================================================
+
+  document
+    .getElementById(
+      'guardar-datas'
+    )
+    .addEventListener(
+      'click',
+      guardarDatas
+    );
+
+
+  document
+    .getElementById(
+      'fechar-agora'
+    )
+    .addEventListener(
+      'click',
+      fecharEncomendasAgora
+    );
+
+
+  document
+    .getElementById(
+      'abrir-agora'
+    )
+    .addEventListener(
+      'click',
+      abrirEncomendasAgora
+    );
+
+
+  // =====================================================
+  // PEDIDOS
+  // =====================================================
+
   async function fetchPedidosAPI() {
-    const res = await fetch('/api/orders', { credentials: 'same-origin' });
-    if (!res.ok) throw new Error('Falha ao carregar /api/orders');
-    const arr = await res.json();
-    return Array.isArray(arr) ? arr.map(norm) : [];
+
+    const res =
+      await fetch(
+        '/api/orders',
+        {
+          credentials:
+            'same-origin'
+        }
+      );
+
+
+    if (!res.ok) {
+
+      throw new Error(
+        'Falha ao carregar /api/orders'
+      );
+
+    }
+
+
+    const arr =
+      await res.json();
+
+
+    return Array.isArray(arr)
+      ? arr.map(norm)
+      : [];
+
   }
 
-  const agrupar = (arr, keyFn) => {
-    const map = new Map();
+
+  const agrupar = (
+    arr,
+    keyFn
+  ) => {
+
+    const map =
+      new Map();
+
+
     for (const p of arr) {
-      const k = keyFn(p);
-      const rec = map.get(k) || { quantidade: 0, total: 0, sample: p };
-      rec.quantidade += p.quantidade || 0;
-      rec.total += p.total || 0;
-      map.set(k, rec);
+
+      const k =
+        keyFn(p);
+
+
+      const rec =
+        map.get(k) ||
+        {
+          quantidade: 0,
+          total: 0,
+          sample: p
+        };
+
+
+      rec.quantidade +=
+        p.quantidade || 0;
+
+
+      rec.total +=
+        p.total || 0;
+
+
+      map.set(
+        k,
+        rec
+      );
+
     }
-    return Array.from(map.entries()).map(([key, v]) => ({ key, ...v }));
+
+
+    return Array
+      .from(
+        map.entries()
+      )
+      .map(
+        ([key, v]) => ({
+          key,
+          ...v
+        })
+      );
+
   };
 
-  function exportExcel(table, title) {
-    const wb = XLSX.utils.table_to_book(table, {sheet: title});
-    XLSX.writeFile(wb, title.replace(/\s+/g,'_') + '.xlsx');
+
+  // =====================================================
+  // EXPORTAR EXCEL
+  // =====================================================
+
+  function exportExcel(
+    table,
+    title
+  ) {
+
+    const wb =
+      XLSX.utils.table_to_book(
+        table,
+        {
+          sheet: title
+        }
+      );
+
+
+    XLSX.writeFile(
+      wb,
+      title.replace(
+        /\s+/g,
+        '_'
+      ) + '.xlsx'
+    );
+
   }
 
-  function exportPDF(table, title) {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
-    doc.text(title, 14, 10);
-    doc.autoTable({ html: table });
-    doc.save(title.replace(/\s+/g,'_') + '.pdf');
-  }
 
-  function bindExports(sectionId, tableId, titleText){
-    const tbl = document.getElementById(tableId);
-    document.getElementById('exp-'+sectionId.split('admin-')[1]+'-pdf')?.addEventListener('click', ()=> exportPDF(tbl, titleText));
-    document.getElementById('exp-'+sectionId.split('admin-')[1]+'-xlsx')?.addEventListener('click', ()=> exportExcel(tbl, titleText));
-  }
+  // =====================================================
+  // EXPORTAR PDF
+  // =====================================================
 
-  // -------- Secção "Por ramo — detalhes" --------
-  function renderDetalhesPorRamo(pedidos) {
-    const sec = document.getElementById('admin-por-ramo-detalhes');
-    if (!sec) return;
+  function exportPDF(
+    table,
+    title
+  ) {
 
-    sec.innerHTML = '<h2>Por ramo — detalhes</h2>';
+    const {
+      jsPDF
+    } = window.jspdf;
 
-    // ramos únicos
-    const ramos = Array.from(new Set(pedidos.map(p => p.ramo))).filter(Boolean);
 
-    ramos.forEach(ramo => {
-      // título do ramo
-      const h = document.createElement('div');
-      h.className = 'ramo-title';
-      h.textContent = ramo;
-      sec.appendChild(h);
+    const doc =
+      new jsPDF();
 
-      // barra de export
-      const bar = document.createElement('div');
-      bar.className = 'table-actions';
-      const bPDF = document.createElement('button'); bPDF.type='button'; bPDF.textContent='Exportar PDF'; bPDF.className='btn-pdf';
-      const bXLSX = document.createElement('button'); bXLSX.type='button'; bXLSX.textContent='Exportar Excel'; bXLSX.className='btn-excel';
-      bar.appendChild(bPDF); bar.appendChild(bXLSX);
-      sec.appendChild(bar);
 
-      // tabela do ramo
-      const tbl = document.createElement('table');
-      tbl.innerHTML = `<thead><tr>
-        <th>Nome</th><th>Email</th><th>Produto</th><th>Tamanho</th>
-        <th>Qtd</th><th>Preço unit.</th><th>Total</th><th>Data</th>
-      </tr></thead><tbody></tbody>`;
-      const tb = tbl.querySelector('tbody');
+    doc.text(
+      title,
+      14,
+      10
+    );
 
-      const lista = pedidos.filter(p=>p.ramo===ramo);
-      lista.forEach(p => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${p.nome}</td>
-          <td>${p.email}</td>
-          <td>${p.produto}</td>
-          <td>${p.tamanho}</td>
-          <td>${p.quantidade||0}</td>
-          <td>${money(p.precoUnit)}</td>
-          <td>${money(p.total)}</td>
-          <td>${p.data ? new Date(p.data).toLocaleString('pt-PT') : ''}</td>`;
-        tb.appendChild(tr);
-      });
 
-      sec.appendChild(tbl);
-
-      // binds de export para esta tabela específica
-      bPDF.addEventListener('click', ()=> exportPDF(tbl, 'Pedidos '+ramo));
-      bXLSX.addEventListener('click', ()=> exportExcel(tbl, 'Pedidos '+ramo));
+    doc.autoTable({
+      html: table
     });
+
+
+    doc.save(
+      title.replace(
+        /\s+/g,
+        '_'
+      ) + '.pdf'
+    );
+
   }
 
-  // -------- Render principal --------
-  async function render(){
+
+  // =====================================================
+  // BIND EXPORTS
+  // =====================================================
+
+  function bindExports(
+    sectionId,
+    tableId,
+    titleText
+  ) {
+
+    const tbl =
+      document.getElementById(
+        tableId
+      );
+
+
+    document
+      .getElementById(
+        'exp-' +
+        sectionId.split(
+          'admin-'
+        )[1] +
+        '-pdf'
+      )
+      ?.addEventListener(
+        'click',
+        () =>
+          exportPDF(
+            tbl,
+            titleText
+          )
+      );
+
+
+    document
+      .getElementById(
+        'exp-' +
+        sectionId.split(
+          'admin-'
+        )[1] +
+        '-xlsx'
+      )
+      ?.addEventListener(
+        'click',
+        () =>
+          exportExcel(
+            tbl,
+            titleText
+          )
+      );
+
+  }
+
+
+  // =====================================================
+  // SECÇÃO "POR RAMO — DETALHES"
+  // =====================================================
+
+  function renderDetalhesPorRamo(
+    pedidos
+  ) {
+
+    const sec =
+      document.getElementById(
+        'admin-por-ramo-detalhes'
+      );
+
+
+    if (!sec) {
+      return;
+    }
+
+
+    sec.innerHTML =
+      '<h2>Por ramo — detalhes</h2>';
+
+
+    const ramos =
+      Array.from(
+        new Set(
+          pedidos.map(
+            p => p.ramo
+          )
+        )
+      )
+      .filter(Boolean);
+
+
+    ramos.forEach(
+      ramo => {
+
+        // Título
+
+        const h =
+          document.createElement(
+            'div'
+          );
+
+
+        h.className =
+          'ramo-title';
+
+
+        h.textContent =
+          ramo;
+
+
+        sec.appendChild(h);
+
+
+        // Barra de exportação
+
+        const bar =
+          document.createElement(
+            'div'
+          );
+
+
+        bar.className =
+          'table-actions';
+
+
+        const bPDF =
+          document.createElement(
+            'button'
+          );
+
+
+        bPDF.type =
+          'button';
+
+
+        bPDF.textContent =
+          'Exportar PDF';
+
+
+        bPDF.className =
+          'btn-pdf';
+
+
+        const bXLSX =
+          document.createElement(
+            'button'
+          );
+
+
+        bXLSX.type =
+          'button';
+
+
+        bXLSX.textContent =
+          'Exportar Excel';
+
+
+        bXLSX.className =
+          'btn-excel';
+
+
+        bar.appendChild(
+          bPDF
+        );
+
+
+        bar.appendChild(
+          bXLSX
+        );
+
+
+        sec.appendChild(
+          bar
+        );
+
+
+        // Tabela
+
+        const tbl =
+          document.createElement(
+            'table'
+          );
+
+
+        tbl.innerHTML = `
+
+          <thead>
+
+            <tr>
+
+              <th>Nome</th>
+              <th>Email</th>
+              <th>Produto</th>
+              <th>Tamanho</th>
+              <th>Qtd</th>
+              <th>Preço unit.</th>
+              <th>Total</th>
+              <th>Data</th>
+
+            </tr>
+
+          </thead>
+
+          <tbody></tbody>
+
+        `;
+
+
+        const tb =
+          tbl.querySelector(
+            'tbody'
+          );
+
+
+        const lista =
+          pedidos.filter(
+            p =>
+              p.ramo === ramo
+          );
+
+
+        lista.forEach(
+          p => {
+
+            const tr =
+              document.createElement(
+                'tr'
+              );
+
+
+            tr.innerHTML = `
+
+              <td>${p.nome}</td>
+
+              <td>${p.email}</td>
+
+              <td>${p.produto}</td>
+
+              <td>${p.tamanho}</td>
+
+              <td>${p.quantidade || 0}</td>
+
+              <td>${money(
+                p.precoUnit
+              )}</td>
+
+              <td>${money(
+                p.total
+              )}</td>
+
+              <td>
+                ${
+                  p.data
+                    ? new Date(
+                        p.data
+                      ).toLocaleString(
+                        'pt-PT'
+                      )
+                    : ''
+                }
+              </td>
+
+            `;
+
+
+            tb.appendChild(
+              tr
+            );
+
+          }
+        );
+
+
+        sec.appendChild(
+          tbl
+        );
+
+
+        // Exportações
+
+        bPDF.addEventListener(
+          'click',
+          () =>
+            exportPDF(
+              tbl,
+              'Pedidos ' +
+              ramo
+            )
+        );
+
+
+        bXLSX.addEventListener(
+          'click',
+          () =>
+            exportExcel(
+              tbl,
+              'Pedidos ' +
+              ramo
+            )
+        );
+
+      }
+    );
+
+  }
+
+
+  // =====================================================
+  // RENDER PRINCIPAL
+  // =====================================================
+
+  async function render() {
+
     try {
-      const pedidos = await fetchPedidosAPI();
 
-      // Resumo
-      const totalQtd = pedidos.reduce((s,p)=>s+(p.quantidade||0),0);
-      const totalVal = pedidos.reduce((s,p)=>s+(p.total||0),0);
-      const resumo = document.getElementById('admin-resumo');
-      if (resumo) resumo.innerHTML =
-        `<b>${pedidos.length}</b> registos | Qtde: <b>${totalQtd}</b> | Valor: <b>${money(totalVal)}</b>`;
+      const pedidos =
+        await fetchPedidosAPI();
 
-      // Tabela detalhada
-      const tbDetalhe = document.querySelector('#admin-detalhados-table tbody');
-      tbDetalhe.innerHTML = '';
-      pedidos.forEach(p => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${p.nome}</td><td>${p.email}</td><td>${p.ramo}</td>
-          <td>${p.produto}</td><td>${p.tamanho}</td>
-          <td>${p.quantidade||0}</td>
-          <td>${money(p.precoUnit)}</td>
-          <td>${money(p.total)}</td>
-          <td>${p.data ? new Date(p.data).toLocaleString('pt-PT') : ''}</td>`;
-        tbDetalhe.appendChild(tr);
-      });
 
-      // Agregado por ramo
-      const grupos = agrupar(pedidos, p => [p.ramo, p.produto, p.tamanho].join(' | '));
-      const tbRamo = document.querySelector('#admin-por-ramo-table tbody');
-      tbRamo.innerHTML = '';
-      grupos.forEach(g => {
-        const [ramo, produto, tamanho] = g.key.split(' | ');
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${ramo}</td><td>${produto}</td><td>${tamanho}</td>
-          <td>${g.quantidade}</td><td>${money(g.total)}</td>`;
-        tbRamo.appendChild(tr);
-      });
+      // -------------------------------------------------
+      // RESUMO
+      // -------------------------------------------------
 
-      // Export dos dois blocos principais
-      bindExports('admin-detalhados','admin-detalhados-table','Pedidos detalhados');
-      bindExports('admin-por-ramo','admin-por-ramo-table','Pedidos por ramo (agregado)');
+      const totalQtd =
+        pedidos.reduce(
+          (s, p) =>
+            s +
+            (p.quantidade || 0),
+          0
+        );
 
-      // >>> NOVO: desenhar as tabelas por ramo
-      renderDetalhesPorRamo(pedidos);
+
+      const totalVal =
+        pedidos.reduce(
+          (s, p) =>
+            s +
+            (p.total || 0),
+          0
+        );
+
+
+      const resumo =
+        document.getElementById(
+          'admin-resumo'
+        );
+
+
+      if (resumo) {
+
+        resumo.innerHTML = `
+
+          <b>${pedidos.length}</b>
+          registos |
+
+          Qtde:
+          <b>${totalQtd}</b> |
+
+          Valor:
+          <b>${money(
+            totalVal
+          )}</b>
+
+        `;
+
+      }
+
+
+      // -------------------------------------------------
+      // TABELA DETALHADA
+      // -------------------------------------------------
+
+      const tbDetalhe =
+        document.querySelector(
+          '#admin-detalhados-table tbody'
+        );
+
+
+      tbDetalhe.innerHTML =
+        '';
+
+
+      pedidos.forEach(
+        p => {
+
+          const tr =
+            document.createElement(
+              'tr'
+            );
+
+
+          tr.innerHTML = `
+
+            <td>${p.nome}</td>
+
+            <td>${p.email}</td>
+
+            <td>${p.ramo}</td>
+
+            <td>${p.produto}</td>
+
+            <td>${p.tamanho}</td>
+
+            <td>${p.quantidade || 0}</td>
+
+            <td>${money(
+              p.precoUnit
+            )}</td>
+
+            <td>${money(
+              p.total
+            )}</td>
+
+            <td>
+              ${
+                p.data
+                  ? new Date(
+                      p.data
+                    ).toLocaleString(
+                      'pt-PT'
+                    )
+                  : ''
+              }
+            </td>
+
+          `;
+
+
+          tbDetalhe.appendChild(
+            tr
+          );
+
+        }
+      );
+
+
+      // -------------------------------------------------
+      // AGREGADO POR RAMO
+      // -------------------------------------------------
+
+      const grupos =
+        agrupar(
+          pedidos,
+          p =>
+            [
+              p.ramo,
+              p.produto,
+              p.tamanho
+            ].join(' | ')
+        );
+
+
+      const tbRamo =
+        document.querySelector(
+          '#admin-por-ramo-table tbody'
+        );
+
+
+      tbRamo.innerHTML =
+        '';
+
+
+      grupos.forEach(
+        g => {
+
+          const [
+            ramo,
+            produto,
+            tamanho
+          ] =
+            g.key.split(
+              ' | '
+            );
+
+
+          const tr =
+            document.createElement(
+              'tr'
+            );
+
+
+          tr.innerHTML = `
+
+            <td>${ramo}</td>
+
+            <td>${produto}</td>
+
+            <td>${tamanho}</td>
+
+            <td>${g.quantidade}</td>
+
+            <td>${money(
+              g.total
+            )}</td>
+
+          `;
+
+
+          tbRamo.appendChild(
+            tr
+          );
+
+        }
+      );
+
+
+      // -------------------------------------------------
+      // EXPORTAÇÕES
+      // -------------------------------------------------
+
+      bindExports(
+        'admin-detalhados',
+        'admin-detalhados-table',
+        'Pedidos detalhados'
+      );
+
+
+      bindExports(
+        'admin-por-ramo',
+        'admin-por-ramo-table',
+        'Pedidos por ramo (agregado)'
+      );
+
+
+      // -------------------------------------------------
+      // DETALHES POR RAMO
+      // -------------------------------------------------
+
+      renderDetalhesPorRamo(
+        pedidos
+      );
+
 
     } catch (e) {
+
       console.error(e);
-      const resumo = document.getElementById('admin-resumo');
-      if (resumo) resumo.textContent = 'Erro ao carregar pedidos do servidor.';
+
+
+      const resumo =
+        document.getElementById(
+          'admin-resumo'
+        );
+
+
+      if (resumo) {
+
+        resumo.textContent =
+          'Erro ao carregar pedidos do servidor.';
+
+      }
+
     }
+
   }
 
-  // -------- Exportar & Limpar --------
+
+  // =====================================================
+  // EXPORTAR TABELA DETALHADA
+  // =====================================================
+
   function exportarTabelaDetalhadaParaExcel() {
-    const tbl = document.getElementById('admin-detalhados-table');
-    const wb = XLSX.utils.table_to_book(tbl, { sheet: 'Pedidos' });
-    const hoje = new Date().toISOString().slice(0,10);
-    XLSX.writeFile(wb, `Pedidos_${hoje}.xlsx`);
+
+    const tbl =
+      document.getElementById(
+        'admin-detalhados-table'
+      );
+
+
+    const wb =
+      XLSX.utils.table_to_book(
+        tbl,
+        {
+          sheet: 'Pedidos'
+        }
+      );
+
+
+    const hoje =
+      new Date()
+        .toISOString()
+        .slice(0, 10);
+
+
+    XLSX.writeFile(
+      wb,
+      `Pedidos_${hoje}.xlsx`
+    );
+
   }
+
+
+  // =====================================================
+  // LIMPAR PEDIDOS
+  // =====================================================
 
   async function limparPedidosBD() {
-    const res = await fetch('/api/orders/clear', {
-      method: 'POST',
-      credentials: 'same-origin'
-    });
-    if (!res.ok) throw new Error('Erro ao limpar pedidos');
+
+    const res =
+      await fetch(
+        '/api/orders/clear',
+        {
+
+          method: 'POST',
+
+          credentials:
+            'same-origin'
+
+        }
+      );
+
+
+    if (!res.ok) {
+
+      throw new Error(
+        'Erro ao limpar pedidos'
+      );
+
+    }
+
   }
+
+
+  // =====================================================
+  // EXPORTAR + LIMPAR
+  // =====================================================
 
   async function exportarELimpar() {
+
     try {
+
       exportarTabelaDetalhadaParaExcel();
-      if (!confirm('Queres apagar TODOS os pedidos da base de dados? (Já foi exportado para Excel)')) return;
+
+
+      if (
+        !confirm(
+          'Queres apagar TODOS os pedidos da base de dados? (Já foi exportado para Excel)'
+        )
+      ) {
+
+        return;
+
+      }
+
+
       await limparPedidosBD();
+
+
       await render();
-      alert('Exportado e apagado com sucesso.');
+
+
+      alert(
+        'Exportado e apagado com sucesso.'
+      );
+
+
     } catch (e) {
+
       console.error(e);
-      alert('Falhou ao exportar/limpar. Vê a consola.');
+
+
+      alert(
+        'Falhou ao exportar/limpar. Vê a consola.'
+      );
+
     }
+
   }
 
-  // -------- Binds --------
-  window.addEventListener('load', carregarDatas);
-  window.addEventListener('load', render);
-  document.getElementById('guardar-datas').addEventListener('click', guardarDatas);
-  document.getElementById('exportar-e-limpar').addEventListener('click', exportarELimpar);
+
+  // =====================================================
+  // BINDS
+  // =====================================================
+
+  window.addEventListener(
+    'load',
+    carregarDatas
+  );
+
+
+  window.addEventListener(
+    'load',
+    render
+  );
+
+
+  document
+    .getElementById(
+      'exportar-e-limpar'
+    )
+    .addEventListener(
+      'click',
+      exportarELimpar
+    );
+
+
 </script>
 
 </body>
