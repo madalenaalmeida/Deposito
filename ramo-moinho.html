@@ -1,17 +1,16 @@
 <!DOCTYPE html>
-
 <html lang="pt">
 <head>
-<meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Ramo Moinho</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&amp;display=swap" rel="stylesheet"/>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
-<link href="styles.css" rel="stylesheet"/>
-<style>
-    /* Exemplo básico de estilos para o modal (ajuste conforme seu CSS) */
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ramo Moinho</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+  <link href="styles.css" rel="stylesheet"/>
+
+  <style>
     .modal {
-      display: none; /* Escondido por padrão */
+      display: none;
       position: fixed;
       z-index: 1000;
       left: 0;
@@ -21,6 +20,7 @@
       overflow: auto;
       background-color: rgba(0,0,0,0.4);
     }
+
     .modal-content {
       background-color: #fefefe;
       margin: 10% auto;
@@ -29,551 +29,827 @@
       width: 80%;
       max-width: 400px;
     }
+
     .close {
       float: right;
       font-size: 28px;
       font-weight: bold;
       cursor: pointer;
     }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
   </style>
 </head>
+
 <body class="ramo-moinho">
-<!-- Navbar -->
-<nav>
-<div class="menu-btn" id="menu-btn"><i class="fas fa-bars"></i></div>
-</nav>
-<!-- Sidebar -->
-<div class="sidebar" id="sidebar">
-<ul>
-<li><a href="index.html">Início</a></li>
-<li><a class="active" href="ramo-avezinha.html">Ramo Avezinha</a></li>
-<li><a href="ramo-aventura.html">Ramo Aventura</a></li>
-<li><a href="ramo-caravela.html">Ramo Caravela</a></li>
-<li><a href="ramo-moinho.html">Ramo Moinho</a></li>
-<li><a href="dirigentes.html">Dirigentes</a></li>
-<li><a href="faq.html">Questões Frequentes</a></li>
-<li><a href="login.html">Área Administrativa</a></li>
-</ul>
-</div>
-<!-- Header -->
-<header>
-<h1>Ramo Moinho</h1>
-</header>
-<!-- Seção de Produtos -->
-<main>
-<section class="produtos">
-  <!-- Produtos (iguais aos teus) -->
-  <!-- T-shirt Trevo Amarela -->
-  <div class="produto">
-    <img src="images/tshirtaves.png" alt="T-shirt Trevo Amarela" />
-    <h2>T-shirt Trevo Amarela</h2>
-    <p class="preco">8,50€</p>
-    <button class="adicionar" data-options="tamanho,quantidade" data-precos='{
-      "6":8.5,"8":8.5,"10":8.5,"12":8.5,"14":8.5,"S":8.5
-    }' data-produto="T-shirt Trevo Amarela">Adicionar ao Carrinho</button>
+
+  <!-- Navbar -->
+  <nav>
+    <div class="menu-btn" id="menu-btn">
+      <i class="fas fa-bars"></i>
+    </div>
+  </nav>
+
+  <!-- Sidebar -->
+  <div class="sidebar" id="sidebar">
+    <ul>
+      <li><a href="index.html">Início</a></li>
+      <li><a href="ramo-avezinha.html">Ramo Avezinha</a></li>
+      <li><a href="ramo-aventura.html">Ramo Aventura</a></li>
+      <li><a href="ramo-caravela.html">Ramo Caravela</a></li>
+      <li><a class="active" href="ramo-moinho.html">Ramo Moinho</a></li>
+      <li><a href="dirigentes.html">Dirigentes</a></li>
+      <li><a href="faq.html">Questões Frequentes</a></li>
+      <li><a href="login.html">Área Administrativa</a></li>
+    </ul>
   </div>
 
-  <!-- T-shirt Trevo Azul -->
-  <div class="produto">
-    <img src="images/tshirt trevo.png" alt="T-shirt Trevo Azul" />
-    <h2>T-shirt Trevo Azul</h2>
-    <p class="preco">8,50€</p>
-    <button class="adicionar" data-options="tamanho,quantidade" data-precos='{
-      "8":8.5,"10":8.5,"12":8.5,"14":8.5,
-      "S":8.5,"M":8.5,"L":8.5,"XL":8.5,"XXL":8.5,"XXXL":8.5
-    }' data-produto="T-shirt Trevo Azul">Adicionar ao Carrinho</button>
+  <!-- Header -->
+  <header>
+    <h1>Ramo Moinho</h1>
+  </header>
+
+  <!-- Produtos -->
+  <main>
+    <section class="produtos">
+
+      <!-- T-shirt Trevo Amarela -->
+      <div class="produto">
+        <img src="images/tshirtaves.png" alt="T-shirt Trevo Amarela"/>
+        <h2>T-shirt Trevo Amarela</h2>
+        <p class="preco">desde 8,50€</p>
+        <button class="adicionar"
+          data-options="tamanho,quantidade"
+          data-precos='{"6":8.5,"8":8.5,"10":8.5,"12":8.5,"14":8.5,"S":9.0,"M":9.0}'
+          data-produto="T-shirt Trevo Amarela">
+          Adicionar ao Carrinho
+        </button>
+      </div>
+
+      <!-- T-shirt Trevo Azul -->
+      <div class="produto">
+        <img src="images/tshirt trevo.png" alt="T-shirt Trevo Azul"/>
+        <h2>T-shirt Trevo Azul</h2>
+        <p class="preco">desde 8,50€</p>
+        <button class="adicionar"
+          data-options="tamanho,quantidade"
+          data-precos='{"8":8.5,"10":8.5,"12":8.5,"14":8.5,"S":9.0,"M":9.0,"L":9.0,"XL":9.0,"XXL":9.0,"XXXL":9.0}'
+          data-produto="T-shirt Trevo Azul">
+          Adicionar ao Carrinho
+        </button>
+      </div>
+
+      <!-- T-shirt Ser Guia É -->
+      <div class="produto">
+        <img src="images/serguia.png" alt="T-shirt Ser Guia É"/>
+        <h2>T-shirt Ser Guia É</h2>
+        <p class="preco">6,00€</p>
+        <button class="adicionar"
+          data-options="tamanho,quantidade"
+          data-precos='{"8":6.0,"10":6.0,"12":6.0,"S":6.0,"M":6.0,"L":6.0,"XL":6.0,"XXL":6.0}'
+          data-produto="T-shirt Ser Guia É">
+          Adicionar ao Carrinho
+        </button>
+      </div>
+
+      <!-- Sweat-shirt -->
+      <div class="produto">
+        <img src="images/sweat.png" alt="Sweat-shirt"/>
+        <h2>Sweat-shirt</h2>
+        <p class="preco">desde 12,00€</p>
+        <button class="adicionar"
+          data-options="tamanho,quantidade"
+          data-precos='{"6":12.0,"8":13.5,"10":13.5,"12":13.5,"14":13.5,"S":14.0,"M":14.0,"L":14.0,"XL":14.0,"XXL":14.0,"XXXL":14.9}'
+          data-produto="Sweat-shirt">
+          Adicionar ao Carrinho
+        </button>
+      </div>
+
+      <!-- Camisola de lã -->
+      <div class="produto">
+        <img src="images/CAMISOLALA.png" alt="Camisola de lã"/>
+        <h2>Camisola de lã</h2>
+        <p class="preco">23,50€</p>
+        <button class="adicionar"
+          data-options="tamanho,quantidade"
+          data-precos='{"6":23.5,"8":23.5}'
+          data-produto="Camisola de lã">
+          Adicionar ao Carrinho
+        </button>
+      </div>
+
+      <!-- Camisa -->
+      <div class="produto">
+        <img src="images/camisa.png" alt="Camisa"/>
+        <h2>Camisa</h2>
+        <p class="preco">20,00€</p>
+        <button class="adicionar"
+          data-options="tamanho,quantidade"
+          data-precos='{"8":20.0,"10":20.0,"12":20.0,"14":20.0,"36":20.0,"38":20.0,"40":20.0,"42":20.0,"44":20.0,"46":20.0,"48":20.0,"50":20.0}'
+          data-produto="Camisa">
+          Adicionar ao Carrinho
+        </button>
+      </div>
+
+      <!-- Saia -->
+      <div class="produto">
+        <img src="images/saia.png" alt="Saia"/>
+        <h2>Saia</h2>
+        <p class="preco">desde 23,00€</p>
+        <button class="adicionar"
+          data-options="tamanho,quantidade"
+          data-precos='{"6":23.0,"8":23.0,"10":23.0,"12":23.0,"14":23.0,"36":25.0,"38":25.0,"40":25.0,"42":25.0,"44":25.0,"46":25.0,"48":25.0,"50":25.0}'
+          data-produto="Saia">
+          Adicionar ao Carrinho
+        </button>
+      </div>
+
+      <!-- Cinto -->
+      <div class="produto">
+        <img src="images/cinto.png" alt="Cinto"/>
+        <h2>Cinto</h2>
+        <p class="preco">6,80€</p>
+        <button class="adicionar"
+          data-options="tamanho,quantidade"
+          data-precos='{"60":6.8,"65":6.8,"70":6.8,"75":6.8,"80":6.8,"85":6.8,"90":6.8,"95":6.8,"100":6.8,"105":6.8,"110":6.8,"115":6.8}'
+          data-produto="Cinto">
+          Adicionar ao Carrinho
+        </button>
+      </div>
+
+      <!-- Polar -->
+      <div class="produto">
+        <img src="images/polarguia.png" alt="Polar"/>
+        <h2>Polar</h2>
+        <p class="preco">desde 17,50€</p>
+        <button class="adicionar"
+          data-options="tamanho,quantidade"
+          data-precos='{"8":17.5,"10":17.5,"12":17.5,"14":17.5,"S":19.9,"M":19.9,"L":19.9,"XL":19.9,"XXL":19.9,"XXXL":19.9}'
+          data-produto="Polar">
+          Adicionar ao Carrinho
+        </button>
+      </div>
+
+      <!-- Colete refletor -->
+      <div class="produto">
+        <img src="images/colete.png" alt="Colete refletor"/>
+        <h2>Colete refletor</h2>
+        <p class="preco">6,50€</p>
+        <button class="adicionar"
+          data-options="tamanho,quantidade"
+          data-precos='{"S":6.5,"M":6.5}'
+          data-produto="Colete refletor">
+          Adicionar ao Carrinho
+        </button>
+      </div>
+
+      <!-- Casaco impermeável -->
+      <div class="produto">
+        <img src="images/imprimiavel.png" alt="Casaco impermeável"/>
+        <h2>Casaco impermeável</h2>
+        <p class="preco">Preço a confirmar</p>
+        <button type="button" class="adicionar" disabled
+          title="Preço não indicado no preçário">
+          Indisponível
+        </button>
+      </div>
+
+      <!-- T-shirt 90 Anos -->
+      <div class="produto">
+        <img src="" alt="T-shirt 90 Anos"/>
+        <h2>T-shirt 90 Anos</h2>
+        <p class="preco">7,00€</p>
+        <button class="adicionar"
+          data-options="tamanho,quantidade"
+          data-precos='{"8":7.0,"10":7.0,"12":7.0,"S":7.0,"M":7.0,"L":7.0,"XL":7.0,"XXL":7.0,"XXXL":7.0}'
+          data-produto="T-shirt 90 Anos">
+          Adicionar ao Carrinho
+        </button>
+      </div>
+
+      <!-- T-shirt Trevo colorido -->
+      <div class="produto">
+        <img src="images/tshirttrevocolo.png" alt="T-shirt Trevo colorido"/>
+        <h2>T-shirt Trevo colorido</h2>
+        <p class="preco">desde 8,50€</p>
+        <button class="adicionar"
+          data-options="tamanho,quantidade"
+          data-precos='{"8":8.5,"10":8.5,"12":8.5,"14":8.5,"S":9.35,"M":9.35,"L":9.35,"XL":9.5,"XXL":9.35,"XXXL":9.35}'
+          data-produto="T-shirt Trevo colorido">
+          Adicionar ao Carrinho
+        </button>
+      </div>
+
+      <!-- Panamá -->
+      <div class="produto">
+        <img src="images/panama.png" alt="Panamá"/>
+        <h2>Panamá</h2>
+        <p class="preco">9,00€</p>
+        <button class="adicionar"
+          data-options="tamanho,quantidade"
+          data-precos='{"54":9.0,"56":9.0,"58":9.0,"60":9.0}'
+          data-produto="Panamá">
+          Adicionar ao Carrinho
+        </button>
+      </div>
+
+      <!-- Acessórios -->
+      <div class="produto">
+        <img src="images/anilhaint.png" alt="Anilha entrançada"/>
+        <h2>Anilha entrançada</h2>
+        <p class="preco">1,00€</p>
+        <button class="adicionar" data-options="quantidade"
+          data-precos='{"Único":1.0}' data-produto="Anilha entrançada">
+          Adicionar ao Carrinho
+        </button>
+      </div>
+
+      <div class="produto">
+        <img src="images/trevopromessa.png" alt="Trevo da Promessa"/>
+        <h2>Trevo da Promessa</h2>
+        <p class="preco">2,70€</p>
+        <button class="adicionar" data-options="quantidade"
+          data-precos='{"Único":2.7}' data-produto="Trevo da Promessa">
+          Adicionar ao Carrinho
+        </button>
+      </div>
+
+      <div class="produto">
+        <img src="images/pena.png" alt="Pena"/>
+        <h2>Pena</h2>
+        <p class="preco">2,30€</p>
+        <button class="adicionar" data-options="quantidade"
+          data-precos='{"Único":2.3}' data-produto="Pena">
+          Adicionar ao Carrinho
+        </button>
+      </div>
+
+      <div class="produto">
+        <img src="images/fitaagp.png" alt="Fita AGP Nacional"/>
+        <h2>Fita AGP Nacional</h2>
+        <p class="preco">1,25€</p>
+        <button class="adicionar" data-options="quantidade"
+          data-precos='{"Único":1.25}' data-produto="Fita AGP Nacional">
+          Adicionar ao Carrinho
+        </button>
+      </div>
+
+      <div class="produto">
+        <img src="images/emblemaregiao.png" alt="Emblemas de Região"/>
+        <h2>Emblemas de Região</h2>
+        <p class="preco">1,50€</p>
+        <button class="adicionar" data-options="quantidade"
+          data-precos='{"Único":1.5}' data-produto="Emblemas de Região">
+          Adicionar ao Carrinho
+        </button>
+      </div>
+
+      <div class="produto">
+        <img src="images/fitacom.png" alt="Fitas de Companhia"/>
+        <h2>Fitas de Companhia</h2>
+        <p class="preco">1,10€</p>
+        <button class="adicionar" data-options="quantidade"
+          data-precos='{"Único":1.1}' data-produto="Fitas de Companhia">
+          Adicionar ao Carrinho
+        </button>
+      </div>
+
+      <div class="produto">
+        <img src="images/estrelas.png" alt="Estrela de serviço"/>
+        <h2>Estrela de serviço</h2>
+        <p class="preco">1,60€</p>
+        <button class="adicionar"
+          data-options="tamanho,quantidade"
+          data-precos='{"1":1.6,"2":1.6,"3":1.6,"4":1.6,"5":1.6}'
+          data-produto="Estrela de serviço">
+          Adicionar ao Carrinho
+        </button>
+      </div>
+
+      <div class="produto">
+        <img src="images/anilhalinho.png" alt="Anilha de linho"/>
+        <h2>Anilha de linho</h2>
+        <p class="preco">3,00€</p>
+        <button class="adicionar"
+          data-options="quantidade,especialidade"
+          data-precos='{"Único":3.0}' data-produto="Anilha de linho">
+          Adicionar ao Carrinho
+        </button>
+      </div>
+
+      <div class="produto">
+        <img src="images/apito.png" alt="Apito"/>
+        <h2>Apito</h2>
+        <p class="preco">4,40€</p>
+        <button class="adicionar" data-options="quantidade"
+          data-precos='{"Único":4.4}' data-produto="Apito">
+          Adicionar ao Carrinho
+        </button>
+      </div>
+
+      <div class="produto">
+        <img src="images/bolsa.png" alt="Bolsa"/>
+        <h2>Bolsa</h2>
+        <p class="preco">5,00€</p>
+        <button class="adicionar" data-options="quantidade"
+          data-precos='{"Único":5.0}' data-produto="Bolsa">
+          Adicionar ao Carrinho
+        </button>
+      </div>
+
+      <div class="produto">
+        <img src="images/cadernoagp.png" alt="Caderno AGP azul"/>
+        <h2>Caderno AGP azul</h2>
+        <p class="preco">3,50€</p>
+        <button class="adicionar" data-options="quantidade"
+          data-precos='{"Único":3.5}' data-produto="Caderno AGP azul">
+          Adicionar ao Carrinho
+        </button>
+      </div>
+
+      <div class="produto">
+        <img src="images/cordoes.png" alt="Cordão de apito azul/branco"/>
+        <h2>Cordão de apito azul/branco</h2>
+        <p class="preco">2,50€</p>
+        <button class="adicionar"
+          data-options="quantidade,especialidade"
+          data-precos='{"Único":2.5}'
+          data-produto="Cordão de apito azul/branco">
+          Adicionar ao Carrinho
+        </button>
+      </div>
+
+      <div class="produto">
+        <img src="images/dirigenteslen.png" alt="Lenço de Guia Moinho/Dirigentes"/>
+        <h2>Lenço de Guia Moinho/Dirigentes/Comissárias/Delegadas/Efectivas</h2>
+        <p class="preco">3,50€</p>
+        <button class="adicionar"
+          data-options="quantidade,especialidade"
+          data-precos='{"Único":3.5}'
+          data-produto="Lenço de Guia Moinho/Dirigentes/Comissárias/Delegadas/Efectivas">
+          Adicionar ao Carrinho
+        </button>
+      </div>
+
+      <div class="produto">
+        <img src="images/noites.png" alt="Noites de Campo"/>
+        <h2>Noites de Campo</h2>
+        <p class="preco">1,50€</p>
+        <button class="adicionar"
+          data-options="quantidade,especialidade"
+          data-precos='{"30":1.5,"50":1.5,"75":1.5,"100":1.5}'
+          data-produto="Noites de Campo">
+          Adicionar ao Carrinho
+        </button>
+      </div>
+
+      <div class="produto">
+        <img src="images/chefepat1.png" alt="Para Ti Chefe Patrulha I"/>
+        <h2>Para Ti Chefe Patrulha I</h2>
+        <p class="preco">3,00€</p>
+        <button class="adicionar" data-options="quantidade"
+          data-precos='{"Único":3.0}' data-produto="Para Ti Chefe Patrulha I">
+          Adicionar ao Carrinho
+        </button>
+      </div>
+
+      <div class="produto">
+        <img src="images/chefepatrulha2.png" alt="Para Ti Chefe Patrulha II"/>
+        <h2>Para Ti Chefe Patrulha II</h2>
+        <p class="preco">3,00€</p>
+        <button class="adicionar" data-options="quantidade"
+          data-precos='{"Único":3.0}' data-produto="Para Ti Chefe Patrulha II">
+          Adicionar ao Carrinho
+        </button>
+      </div>
+
+      <div class="produto">
+        <img src="images/sermoinho.png" alt="Ser Moinho"/>
+        <h2>Ser Moinho</h2>
+        <p class="preco">4,50€</p>
+        <button class="adicionar" data-options="quantidade"
+          data-precos='{"Único":4.5}' data-produto="Ser Moinho">
+          Adicionar ao Carrinho
+        </button>
+      </div>
+
+    </section>
+  </main>
+
+  <!-- Botão do carrinho -->
+  <button class="cart-btn" id="cart-btn">
+    <i class="fas fa-shopping-cart"></i>
+    <span id="cart-count">0</span>
+  </button>
+
+  <!-- Modal de opções -->
+  <div class="modal" id="modal">
+    <div class="modal-content">
+      <span class="close" id="modal-close">&times;</span>
+      <h2>Selecione as opções</h2>
+
+      <form id="modal-form">
+        <label for="tamanho" id="tamanho-label" style="display:none;">Tamanho:</label>
+        <select id="tamanho" name="tamanho" style="display:none;"></select>
+
+        <label for="quantidade" id="quantidade-label" style="display:none;">Quantidade:</label>
+        <input id="quantidade" type="number" min="1" value="1" style="display:none;"/>
+
+        <label for="especialidade" id="especialidade-label" style="display:none;">Especifique:</label>
+        <input id="especialidade" type="text" placeholder="Especifique o produto!" style="display:none;"/>
+
+        <button type="submit">Adicionar ao Carrinho</button>
+      </form>
+    </div>
   </div>
 
-  <!-- T-shirt Ser Guia É -->
-  <div class="produto">
-    <img src="images/serguia.png" alt="T-shirt Ser Guia É" />
-    <h2>T-shirt Ser Guia É</h2>
-    <p class="preco">6,00€</p>
-    <button class="adicionar" data-options="tamanho,quantidade" data-precos='{
-      "8":6.0,"10":6.0,"12":6.0,
-      "S":6.0,"M":6.0,"L":6.0,"XL":6.0,"XXL":6.0
-    }' data-produto="T-shirt Ser Guia É">Adicionar ao Carrinho</button>
+  <!-- Modal do carrinho -->
+  <div class="modal" id="cart-modal">
+    <div class="modal-content">
+      <span class="close" id="cart-modal-close">&times;</span>
+      <h2>Carrinho</h2>
+      <div id="cart-items"></div>
+      <button id="confirm-cart">Confirmar</button>
+    </div>
   </div>
 
-  <!-- Sweat-shirt (criança+adulto+XXXL) -->
-  <div class="produto">
-    <img src="images/sweat.png" alt="Sweat-shirt" />
-    <h2>Sweat-shirt</h2>
-    <p class="preco">desde 12,00€</p>
-    <button class="adicionar" data-options="tamanho,quantidade" data-precos='{
-      "6":12.0,
-      "8":12.5,"10":12.5,"12":12.5,"14":12.5,
-      "S":13.5,"M":13.5,"L":13.5,"XL":13.5,"XXL":13.5,
-      "XXXL":14.9
-    }' data-produto="Sweat-shirt">Adicionar ao Carrinho</button>
+  <!-- Modal de checkout -->
+  <div class="modal" id="checkout-modal">
+    <div class="modal-content">
+      <span class="close" id="checkout-close">&times;</span>
+      <h2>Finalize o seu pedido</h2>
+      <div id="checkout-summary"></div>
+
+      <form id="checkout-form">
+        <label for="nome-cliente">Nome:</label>
+        <input id="nome-cliente" name="nome-cliente" type="text" required/>
+
+        <label for="email-cliente">Email:</label>
+        <input id="email-cliente" name="email-cliente" type="email" required/>
+
+        <button type="submit">Confirmar Pedido</button>
+      </form>
+    </div>
   </div>
-  <div class="produto">
-    <img src="images/CAMISOLALA.png" alt="Camisola de lã" />
-    <h2>Camisola de lã</h2>
-    <p class="preco">23,50€</p>
-    <button class="adicionar" data-options="tamanho,quantidade" data-precos='{
-      "6":23.5,"8":23.5,"10":23.5,"12":23.5,"14":23.5,
-      "S":23.5,"M":23.5,"L":23.5,"XL":23.5,"XXL":23.5,"XXXL":23.5
-    }' data-produto="Camisola de lã">Adicionar ao Carrinho</button>
-  </div>
-  <div class="produto">
-    <img src="images/camisa.png" alt="Camisa" />
-    <h2>Camisa</h2>
-    <p class="preco">20,00€</p>
-    <button class="adicionar" data-options="tamanho,quantidade" data-precos='{
-      "8":20.0,"10":20.0,"12":20.0,"14":20.0,
-      "36":20.0,"38":20.0,"40":20.0,"42":20.0,"44":20.0,
-      "46":20.0,"48":20.0,"50":20.0
-    }' data-produto="Camisa">Adicionar ao Carrinho</button>
-  </div>
-  <div class="produto">
-    <img src="images/saia.png" alt="Saia" />
-    <h2>Saia</h2>
-    <p class="preco">20,00€</p>
-    <button class="adicionar" data-options="tamanho,quantidade" data-precos='{
-      "6":20.0,"8":20.0,"10":20.0,"12":20.0,"14":20.0,
-      "36":20.0,"38":20.0,"40":20.0,"42":20.0,"44":20.0,
-      "46":20.0,"48":20.0,"50":20.0
-    }' data-produto="Saia">Adicionar ao Carrinho</button>
-  </div>
-  <div class="produto">
-    <img src="images/cinto.png" alt="Cinto" />
-    <h2>Cinto</h2>
-    <p class="preco">6,50€</p>
-    <button class="adicionar" data-options="tamanho,quantidade" data-precos='{
-      "60":6.5,"65":6.5,"70":6.5,"75":6.5,"80":6.5,"85":6.5,
-      "90":6.5,"95":6.5,"100":6.5,"105":6.5,"110":6.5,"115":6.5
-    }' data-produto="Cinto">Adicionar ao Carrinho</button>
-  </div>
-  <div class="produto">
-    <img src="images/polarguia.png" alt="Polar" />
-    <h2>Polar</h2>
-    <p class="preco">desde 17,50€</p>
-    <button class="adicionar" data-options="tamanho,quantidade" data-precos='{
-      "8":17.5,"10":17.5,"12":17.5,"14":17.5,
-      "S":19.9,"M":19.9,"L":19.9,"XL":19.9,"XXL":19.9
-    }' data-produto="Polar">Adicionar ao Carrinho</button>
-  </div>
-  <div class="produto">
-    <img src="images/colete.png" alt="Colete refletor" />
-    <h2>Colete refletor</h2>
-    <p class="preco">desde 6,50€</p>
-    <button class="adicionar" data-options="tamanho,quantidade" data-precos='{
-      "S":6.5,"M":6.5,"L":7.5
-    }' data-produto="Colete refletor">Adicionar ao Carrinho</button>
-  </div>
-  <div class="produto">
-    <img src="images/imprimiavel.png" alt="Casaco impermeável" />
-    <h2>Casaco impermeável</h2>
-    <p class="preco">19,50€</p>
-    <button class="adicionar" data-options="tamanho,quantidade" data-precos='{
-      "L":19.5
-    }' data-produto="Casaco impermeável">Adicionar ao Carrinho</button>
-  </div>
-  <div class="produto">
-    <img src="" alt="T-shirt 90 Anos" />
-    <h2>T-shirt 90 Anos</h2>
-    <p class="preco">7,00€</p>
-    <button class="adicionar" data-options="tamanho,quantidade" data-precos='{
-      "8":7.0,"10":7.0,"12":7.0,
-      "S":7.0,"M":7.0,"L":7.0,"XL":7.0,"XXL":7.0,"XXXL":7.0
-    }' data-produto="T-shirt 90 Anos">Adicionar ao Carrinho</button>
-  </div>
-  <div class="produto">
-    <img src="images/tshirttrevocolo.png" alt="T-shirt Trevo colorido" />
-    <h2>T-shirt Trevo colorido</h2>
-    <p class="preco">desde 8,50€</p>
-    <button class="adicionar" data-options="tamanho,quantidade" data-precos='{
-      "8":8.5,"10":8.5,"12":8.5,"14":8.5,
-      "S":9.35,"M":9.35,"L":9.35,"XL":9.35,"XXL":9.35,"XXXL":9.35
-    }' data-produto="T-shirt Trevo colorido">Adicionar ao Carrinho</button>
-  </div>
-  <!-- Panamá -->
-  <div class="produto">
-    <img src="images/panama.png" alt="Panamá" />
-    <h2>Panamá</h2>
-    <p class="preco">9,00€</p>
-    <button class="adicionar" data-options="tamanho,quantidade" data-precos='{"54":9.0,"56":9.0,"58":9.0,"60":9.0}' data-produto="Panamá">Adicionar ao Carrinho</button>
-  </div>
-  <div class="produto"><img src="images/anilhaint.png" alt="Anilha entrançada" /><h2>Anilha entrançada</h2><p class="preco">1,00€</p><button class="adicionar" data-options="quantidade" data-precos='{"Único":1.0}' data-produto="Anilha entrançada">Adicionar ao Carrinho</button></div>
-<div class="produto"><img src="images/trevopromessa.png" alt="Trevo da Promessa" /><h2>Trevo da Promessa</h2><p class="preco">2,70€</p><button class="adicionar" data-options="quantidade" data-precos='{"Único":2.7}' data-produto="Trevo da Promessa">Adicionar ao Carrinho</button></div>
-<div class="produto"><img src="images/pena.png" alt="Pena" /><h2>Pena</h2><p class="preco">2,30€</p><button class="adicionar" data-options="quantidade" data-precos='{"Único":2.3}' data-produto="Pena">Adicionar ao Carrinho</button></div>
-<div class="produto"><img src="images/fitaagp.png" alt="Fita AGP" /><h2>Fita AGP</h2><p class="preco">1,10€</p><button class="adicionar" data-options="quantidade" data-precos='{"Único":1.1}' data-produto="Fita AGP">Adicionar ao Carrinho</button></div>
-<div class="produto"><img src="images/emblemaregiao.png" alt="Emblemas de Região" /><h2>Emblemas de Região</h2><p class="preco">1,50€</p><button class="adicionar" data-options="quantidade" data-precos='{"Único":1.5}' data-produto="Emblemas de Região">Adicionar ao Carrinho</button></div>
-<div class="produto"><img src="images/fitacom.png" alt="Fitas de Companhia" /><h2>Fitas de Companhia</h2><p class="preco">1,10€</p><button class="adicionar" data-options="quantidade" data-precos='{"Único":1.1}' data-produto="Fitas de Companhia">Adicionar ao Carrinho</button></div>
-<div class="produto"><img src="images/estrelas.png" alt="Estrela de serviço" /><h2>Estrela de serviço</h2><p class="preco">1,50€</p><button class="adicionar" data-options="tamanho,quantidade" data-precos='{"1":1.5,"2":1.5,"3":1.5,"4":1.5,"5":1.5}' data-produto="Estrela de serviço">Adicionar ao Carrinho</button></div>
-<div class="produto"><img src="images/anilhalinho.png" alt="Anilha de linho" /><h2>Anilha de linho</h2><p class="preco">2,00€</p><button class="adicionar" data-options="quantidade,especialidade" data-precos='{"Único":2.0}' data-produto="Anilha de linho">Adicionar ao Carrinho</button></div>
-<div class="produto"><img src="images/apito.png" alt="Apito" /><h2>Apito</h2><p class="preco">4,40€</p><button class="adicionar" data-options="quantidade" data-precos='{"Único":4.4}' data-produto="Apito">Adicionar ao Carrinho</button></div>
-<div class="produto"><img src="images/bolsa.png" alt="Bolsa" /><h2>Bolsa</h2><p class="preco">5,00€</p><button class="adicionar" data-options="quantidade" data-precos='{"Único":5.0}' data-produto="Bolsa">Adicionar ao Carrinho</button></div>
-<div class="produto"><img src="images/cadernoagp.png" alt="Caderno AGP azul" /><h2>Caderno AGP azul</h2><p class="preco">3,50€</p><button class="adicionar" data-options="quantidade" data-precos='{"Único":3.5}' data-produto="Caderno AGP azul">Adicionar ao Carrinho</button></div>
-<div class="produto"><img src="images/cordoes.png" alt="Cordão de apito azul/branco" /><h2>Cordão de apito azul/branco</h2><p class="preco">2,50€</p><button class="adicionar" data-options="quantidade,especialidade" data-precos='{"Único":2.5}' data-produto="Cordão de apito azul/branco">Adicionar ao Carrinho</button></div>
-<div class="produto"><img src="images/dirigenteslen.png" alt="Lenço Guia/Dirigentes" /><h2>Lenço de Guia Moinho/Dirigentes/Comissárias/Delegadas/Efectivas</h2><p class="preco">3,50€</p><button class="adicionar" data-options="quantidade,especialidade" data-precos='{"Único":3.5}' data-produto="Lenço de Guia Moinho/Dirigentes/Comissárias/Delegadas/Efectivas">Adicionar ao Carrinho</button></div>
 
-<div class="produto"><img src="images/noites.png" alt="Noites de Campo" /><h2>Noites de Campo</h2><p class="preco">1,50€</p><button class="adicionar" data-options="quantidade,especialidade" data-precos='{"30":1.5,"50":1.5,"75":1.5,"100":1.5}' data-produto="Noites de Campo">Adicionar ao Carrinho</button></div>
-<div class="produto"><img src="images/chefepat1.png" alt="Para Ti Chefe Patrulha I" /><h2>Para Ti Chefe Patrulha I</h2><p class="preco">3,00€</p><button class="adicionar" data-options="quantidade" data-precos='{"Único":3.0}' data-produto="Para Ti Chefe Patrulha I">Adicionar ao Carrinho</button></div>
-<div class="produto"><img src="images/chefepatrulha2.png" alt="Para Ti Chefe Patrulha II" /><h2>Para Ti Chefe Patrulha II</h2><p class="preco">3,00€</p><button class="adicionar" data-options="quantidade" data-precos='{"Único":3.0}' data-produto="Para Ti Chefe Patrulha II">Adicionar ao Carrinho</button></div>
-<div class="produto"><img src="images/sermoinho.png" alt="Ser Moinho" /><h2>Ser Moinho</h2><p class="preco">4,50€</p><button class="adicionar" data-options="quantidade" data-precos='{"Único":4.5}' data-produto="Ser Moinho">Adicionar ao Carrinho</button></div>
-</section>
-</main>
+  <script>
+    let currentProduct = null;
+    let currentPrice = null;
+    let currentPriceMap = null;
+    let cart = [];
 
-<button class="cart-btn" id="cart-btn">
-  <i class="fas fa-shopping-cart"></i><span id="cart-count">0</span>
-</button>
+    const parsePrice = (value) => {
+      if (value == null) return 0;
+      const number = Number(String(value).replace(',', '.'));
+      return Number.isNaN(number) ? 0 : number;
+    };
 
-<!-- Modal de opções -->
-<div class="modal" id="modal">
-  <div class="modal-content">
-    <span class="close" id="modal-close">×</span>
-    <h2>Selecione as opções</h2>
-    <form id="modal-form">
-      <label for="tamanho" id="tamanho-label" style="display:none;">Tamanho:</label>
-      <select id="tamanho" name="tamanho" style="display:none;"></select>
+    const money = (number) =>
+      (Math.round(number * 100) / 100).toFixed(2).replace('.', ',') + '€';
 
-      <label for="quantidade" id="quantidade-label" style="display:none;">Quantidade:</label>
-      <input id="quantidade" type="number" min="1" value="1" style="display:none;"/>
+    function resolveUnitPrice(size) {
+      if (currentPriceMap) {
+        if (size && currentPriceMap[size] != null) {
+          return parsePrice(currentPriceMap[size]);
+        }
 
-      <label for="especialidade" id="especialidade-label" style="display:none;">Especifique:</label>
-      <input id="especialidade" type="text" placeholder="Especifique o produto!" style="display:none;"/>
-
-      <button type="submit">Adicionar ao Carrinho</button>
-    </form>
-  </div>
-</div>
-
-<!-- Modal Carrinho -->
-<div class="modal" id="cart-modal">
-  <div class="modal-content">
-    <span class="close" id="cart-modal-close">×</span>
-    <h2>Carrinho</h2>
-    <div id="cart-items"></div>
-    <button id="confirm-cart">Confirmar</button>
-  </div>
-</div>
-
-<!-- Modal Checkout -->
-<div class="modal" id="checkout-modal">
-  <div class="modal-content">
-    <span class="close" id="checkout-close">×</span>
-    <h2>Finalize seu Pedido</h2>
-    <div id="checkout-summary"></div>
-    <form id="checkout-form">
-      <label for="nome-cliente">Nome:</label>
-      <input id="nome-cliente" name="nome-cliente" type="text" required/>
-      <label for="email-cliente">Email:</label>
-      <input id="email-cliente" name="email-cliente" type="email" required/>
-      <button type="submit">Confirmar Pedido</button>
-    </form>
-  </div>
-</div>
-
-<script>
-  // =========================
-  // Estado
-  // =========================
-  let currentProduct = null;
-  let currentPrice = null;      // fallback
-  let currentPriceMap = null;   // mapa de data-precos
-  let cart = [];
-
-  // =========================
-  // Helpers
-  // =========================
-  const parsePrice = (v) => {
-    if (v == null) return 0;
-    const n = Number(String(v).replace(',', '.'));
-    return isNaN(n) ? 0 : n;
-  };
-  const money = (n) => (Math.round(n*100)/100).toFixed(2).replace('.', ',') + '€';
-
-  function resolveUnitPrice(size) {
-    if (currentPriceMap) {
-      if (size && currentPriceMap[size] != null) return parsePrice(currentPriceMap[size]);
-      if (currentPriceMap['Único'] != null) return parsePrice(currentPriceMap['Único']);
-    }
-    return parsePrice(currentPrice);
-  }
-
-  function populateSizeOptionsFromMap(map) {
-    tamanhoField.innerHTML = '';
-    if (!map) return false;
-    const keys = Object.keys(map);
-    const sizeKeys = keys.filter(k => k !== 'Único');
-    if (sizeKeys.length === 0) return false;
-    sizeKeys.forEach(k => {
-      const opt = document.createElement('option');
-      opt.value = k;
-      opt.textContent = k;
-      tamanhoField.appendChild(opt);
-    });
-    tamanhoField.value = sizeKeys[0];
-    return true;
-  }
-
-  // =========================
-  // DOM
-  // =========================
-  const modal = document.getElementById('modal');
-  const modalClose = document.getElementById('modal-close');
-  const modalForm = document.getElementById('modal-form');
-
-  const cartCountSpan = document.getElementById('cart-count');
-  const cartBtn = document.getElementById('cart-btn');
-  const cartModal = document.getElementById('cart-modal');
-  const cartModalClose = document.getElementById('cart-modal-close');
-  const cartItemsDiv = document.getElementById('cart-items');
-  const confirmCartBtn = document.getElementById('confirm-cart');
-  const checkoutModal = document.getElementById('checkout-modal');
-  const checkoutClose = document.getElementById('checkout-close');
-  const checkoutForm = document.getElementById('checkout-form');
-  const checkoutSummaryDiv = document.getElementById('checkout-summary');
-
-  const tamanhoField = document.getElementById('tamanho');
-  const tamanhoLabel = document.getElementById('tamanho-label');
-  const quantidadeField = document.getElementById('quantidade');
-  const quantidadeLabel = document.getElementById('quantidade-label');
-  const especialidadeField = document.getElementById('especialidade');
-  const especialidadeLabel = document.getElementById('especialidade-label');
-
-  const menuBtn = document.getElementById('menu-btn');
-  const sidebar = document.getElementById('sidebar');
-  menuBtn.addEventListener('click', () => sidebar.classList.toggle('active'));
-
-  // =========================
-  // Abrir modal de opções
-  // =========================
-  document.querySelectorAll('.adicionar').forEach(button => {
-    button.addEventListener('click', function () {
-      currentProduct = this.dataset.produto || '';
-      currentPrice = this.dataset.preco ?? null;
-
-      try {
-        currentPriceMap = this.dataset.precos ? JSON.parse(this.dataset.precos) : null;
-      } catch {
-        currentPriceMap = null;
+        if (currentPriceMap['Único'] != null) {
+          return parsePrice(currentPriceMap['Único']);
+        }
       }
 
-      const options = this.dataset.options
-        ? this.dataset.options.split(',').map(o => o.trim().toLowerCase())
-        : [];
+      return parsePrice(currentPrice);
+    }
 
-      if (options.includes('tamanho')) {
-        const hasSizes = populateSizeOptionsFromMap(currentPriceMap);
-        if (hasSizes) {
-          tamanhoField.style.display = 'inline-block';
-          tamanhoLabel.style.display = 'block';
+    function populateSizeOptionsFromMap(map) {
+      tamanhoField.innerHTML = '';
+
+      if (!map) return false;
+
+      const keys = Object.keys(map);
+      const sizeKeys = keys.filter(key => key !== 'Único');
+
+      if (sizeKeys.length === 0) return false;
+
+      sizeKeys.forEach(key => {
+        const option = document.createElement('option');
+        option.value = key;
+        option.textContent = key;
+        tamanhoField.appendChild(option);
+      });
+
+      tamanhoField.value = sizeKeys[0];
+      return true;
+    }
+
+    // Elementos do DOM
+    const modal = document.getElementById('modal');
+    const modalClose = document.getElementById('modal-close');
+    const modalForm = document.getElementById('modal-form');
+
+    const cartCountSpan = document.getElementById('cart-count');
+    const cartBtn = document.getElementById('cart-btn');
+    const cartModal = document.getElementById('cart-modal');
+    const cartModalClose = document.getElementById('cart-modal-close');
+    const cartItemsDiv = document.getElementById('cart-items');
+    const confirmCartBtn = document.getElementById('confirm-cart');
+
+    const checkoutModal = document.getElementById('checkout-modal');
+    const checkoutClose = document.getElementById('checkout-close');
+    const checkoutForm = document.getElementById('checkout-form');
+    const checkoutSummaryDiv = document.getElementById('checkout-summary');
+
+    const tamanhoField = document.getElementById('tamanho');
+    const tamanhoLabel = document.getElementById('tamanho-label');
+    const quantidadeField = document.getElementById('quantidade');
+    const quantidadeLabel = document.getElementById('quantidade-label');
+    const especialidadeField = document.getElementById('especialidade');
+    const especialidadeLabel = document.getElementById('especialidade-label');
+
+    const menuBtn = document.getElementById('menu-btn');
+    const sidebar = document.getElementById('sidebar');
+
+    menuBtn.addEventListener('click', () => {
+      sidebar.classList.toggle('active');
+    });
+
+    // Abrir modal de opções
+    document.querySelectorAll('.adicionar:not(:disabled)').forEach(button => {
+      button.addEventListener('click', function () {
+        currentProduct = this.dataset.produto || '';
+        currentPrice = this.dataset.preco ?? null;
+
+        try {
+          currentPriceMap = this.dataset.precos
+            ? JSON.parse(this.dataset.precos)
+            : null;
+        } catch {
+          currentPriceMap = null;
+        }
+
+        const options = this.dataset.options
+          ? this.dataset.options.split(',').map(option => option.trim().toLowerCase())
+          : [];
+
+        if (options.includes('tamanho')) {
+          const hasSizes = populateSizeOptionsFromMap(currentPriceMap);
+
+          if (hasSizes) {
+            tamanhoField.style.display = 'inline-block';
+            tamanhoLabel.style.display = 'block';
+          } else {
+            tamanhoField.style.display = 'none';
+            tamanhoLabel.style.display = 'none';
+            tamanhoField.value = '';
+          }
         } else {
           tamanhoField.style.display = 'none';
           tamanhoLabel.style.display = 'none';
           tamanhoField.value = '';
         }
-      } else {
-        tamanhoField.style.display = 'none';
-        tamanhoLabel.style.display = 'none';
-        tamanhoField.value = '';
-      }
 
-      if (options.includes('quantidade')) {
-        quantidadeField.style.display = 'inline-block';
-        quantidadeLabel.style.display = 'block';
-        quantidadeField.value = 1;
-      } else {
-        quantidadeField.style.display = 'none';
-        quantidadeLabel.style.display = 'none';
-        quantidadeField.value = '';
-      }
+        if (options.includes('quantidade')) {
+          quantidadeField.style.display = 'inline-block';
+          quantidadeLabel.style.display = 'block';
+          quantidadeField.value = 1;
+        } else {
+          quantidadeField.style.display = 'none';
+          quantidadeLabel.style.display = 'none';
+          quantidadeField.value = '';
+        }
 
-      if (options.includes('especialidade')) {
-        especialidadeField.style.display = 'inline-block';
-        especialidadeLabel.style.display = 'block';
-        especialidadeField.value = '';
-      } else {
-        especialidadeField.style.display = 'none';
-        especialidadeLabel.style.display = 'none';
-        especialidadeField.value = '';
-      }
+        if (options.includes('especialidade')) {
+          especialidadeField.style.display = 'inline-block';
+          especialidadeLabel.style.display = 'block';
+          especialidadeField.value = '';
+        } else {
+          especialidadeField.style.display = 'none';
+          especialidadeLabel.style.display = 'none';
+          especialidadeField.value = '';
+        }
 
-      modal.style.display = 'block';
-    });
-  });
-
-  // =========================
-  // Fechar modais
-  // =========================
-  modalClose.addEventListener('click', () => modal.style.display = 'none');
-  cartModalClose.addEventListener('click', () => cartModal.style.display = 'none');
-  checkoutClose.addEventListener('click', () => checkoutModal.style.display = 'none');
-
-  window.addEventListener('click', (e) => {
-    if (e.target === modal) modal.style.display = 'none';
-    if (e.target === cartModal) cartModal.style.display = 'none';
-    if (e.target === checkoutModal) checkoutModal.style.display = 'none';
-  });
-
-  // =========================
-  // Submit do modal -> carrinho
-  // =========================
-  modalForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-
-    const size =
-      tamanhoField.style.display !== 'none' && tamanhoField.value
-        ? tamanhoField.value
-        : '';
-
-    const qty =
-      quantidadeField.style.display !== 'none'
-        ? Number(quantidadeField.value) || 1
-        : 1;
-
-    const espec =
-      especialidadeField.style.display !== 'none'
-        ? especialidadeField.value
-        : '';
-
-    const unit = resolveUnitPrice(size || 'Único');
-
-    cart.push({
-      branch: 'Avezinhas',
-      product: currentProduct,
-      price: unit,       // número (unitário)
-      size: size,
-      quantity: qty,
-      especialidade: espec
+        modal.style.display = 'block';
+      });
     });
 
-    updateCartCount();
-    modal.style.display = 'none';
-  });
+    // Fechar modais
+    modalClose.addEventListener('click', () => {
+      modal.style.display = 'none';
+    });
 
-  // =========================
-  // Carrinho
-  // =========================
-  function updateCartCount(){ cartCountSpan.textContent = cart.length; }
+    cartModalClose.addEventListener('click', () => {
+      cartModal.style.display = 'none';
+    });
 
-  cartBtn.addEventListener('click', () => {
-    displayCartItems();
-    cartModal.style.display = 'block';
-  });
+    checkoutClose.addEventListener('click', () => {
+      checkoutModal.style.display = 'none';
+    });
 
-  function displayCartItems() {
-    cartItemsDiv.innerHTML = '';
-    if (cart.length === 0) {
-      cartItemsDiv.innerHTML = '<p>Carrinho vazio.</p>';
-      return;
-    }
+    window.addEventListener('click', event => {
+      if (event.target === modal) modal.style.display = 'none';
+      if (event.target === cartModal) cartModal.style.display = 'none';
+      if (event.target === checkoutModal) checkoutModal.style.display = 'none';
+    });
 
-    cart.forEach((item, index) => {
-      const lineTotal = item.price * (item.quantity || 1);
-      const div = document.createElement('div');
-      div.classList.add('cart-item');
-      div.innerHTML = `<p>${item.product}
-        ${item.quantity ? ` - Quantidade: ${item.quantity}` : ''}
-        ${item.size ? ` - Tamanho: ${item.size}` : ''}
-        ${item.especialidade ? ` - Especialidade: ${item.especialidade}` : ''}
-        - Unit: ${money(item.price)} (Total: ${money(lineTotal)})</p>`;
+    // Adicionar produto ao carrinho
+    modalForm.addEventListener('submit', event => {
+      event.preventDefault();
 
-      const removeBtn = document.createElement('button');
-      removeBtn.textContent = 'Remover';
-      removeBtn.addEventListener('click', () => {
-        cart.splice(index, 1);
-        updateCartCount();
-        displayCartItems();
+      const size =
+        tamanhoField.style.display !== 'none' && tamanhoField.value
+          ? tamanhoField.value
+          : '';
+
+      const quantity =
+        quantidadeField.style.display !== 'none'
+          ? Math.max(1, Number(quantidadeField.value) || 1)
+          : 1;
+
+      const specialty =
+        especialidadeField.style.display !== 'none'
+          ? especialidadeField.value.trim()
+          : '';
+
+      const unitPrice = resolveUnitPrice(size || 'Único');
+
+      cart.push({
+        branch: 'Moinhos',
+        product: currentProduct,
+        price: unitPrice,
+        size: size,
+        quantity: quantity,
+        especialidade: specialty
       });
 
-      div.appendChild(removeBtn);
-      cartItemsDiv.appendChild(div);
+      updateCartCount();
+      modal.style.display = 'none';
     });
-  }
 
-  // =========================
-  // Checkout
-  // =========================
-  confirmCartBtn.addEventListener('click', () => {
-    if (cart.length === 0) { alert('Carrinho vazio!'); return; }
-    displayCheckoutSummary();
-    cartModal.style.display = 'none';
-    checkoutModal.style.display = 'block';
-  });
-
-  function displayCheckoutSummary() {
-    checkoutSummaryDiv.innerHTML = '';
-    if (cart.length === 0) {
-      checkoutSummaryDiv.innerHTML = '<p>Carrinho vazio.</p>';
-      return;
-    }
-    let total = 0;
-    cart.forEach(item => {
-      const line = item.price * (item.quantity || 1);
-      total += line;
-      checkoutSummaryDiv.innerHTML += `<p>${item.product}
-        ${item.quantity ? ` - Quantidade: ${item.quantity}` : ''}
-        ${item.size ? ` - Tamanho: ${item.size}` : ''}
-        ${item.especialidade ? ` - Especialidade: ${item.especialidade}` : ''}
-        - Unit: ${money(item.price)} - Total: ${money(line)}</p>`;
-    });
-    checkoutSummaryDiv.innerHTML += `<hr><p><strong>Total: ${money(total)}</strong></p>`;
-  }
-  checkoutForm.addEventListener('submit', async (e) => {
-  e.preventDefault();
-
-  if (cart.length === 0) {
-    alert('Carrinho vazio!');
-    return;
-  }
-
-  const nome  = document.getElementById('nome-cliente').value.trim();
-  const email = document.getElementById('email-cliente').value.trim();
-
-  if (!nome || !email) {
-    alert('Preenche o nome e o email.');
-    return;
-  }
-
-  try {
-    // Envia cada item do carrinho como um pedido
-    const respostas = await Promise.all(cart.map(item => {
-      const payload = {
-        nome,
-        email,
-        ramo: 'Moinhos', // esta página é do ramo Avezinhas
-        produto: item.product + (item.especialidade ? ' - ' + item.especialidade : ''),
-        tamanho: item.size || '',
-        quantidade: Number(item.quantity || 1),
-        preco_unit: Number(item.price || 0)
-      };
-
-      return fetch('/api/orders', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      }).then(r => r.json());
-    }));
-
-    // Verifica se algum falhou
-    const falhas = respostas.filter(r => !r || r.ok !== true);
-    if (falhas.length > 0) {
-      console.error('Falhas ao enviar:', falhas);
-      alert('Alguns items não foram enviados. Tenta novamente, por favor.');
-      return;
+    // Carrinho
+    function updateCartCount() {
+      cartCountSpan.textContent = cart.length;
     }
 
-    // Sucesso: limpa UI
-    cart = [];
-    updateCartCount();
-    checkoutModal.style.display = 'none';
-    alert('Pedido confirmado! Recebemos a tua encomenda.');
+    cartBtn.addEventListener('click', () => {
+      displayCartItems();
+      cartModal.style.display = 'block';
+    });
 
-  } catch (err) {
-    console.error(err);
-    alert('Erro a enviar o pedido. Verifica a ligação e tenta novamente.');
-  }
-});
+    function displayCartItems() {
+      cartItemsDiv.innerHTML = '';
 
+      if (cart.length === 0) {
+        cartItemsDiv.innerHTML = '<p>Carrinho vazio.</p>';
+        return;
+      }
+
+      cart.forEach((item, index) => {
+        const lineTotal = item.price * (item.quantity || 1);
+        const div = document.createElement('div');
+        div.classList.add('cart-item');
+
+        const description = document.createElement('p');
+        description.textContent =
+          `${item.product}` +
+          (item.quantity ? ` - Quantidade: ${item.quantity}` : '') +
+          (item.size ? ` - Tamanho: ${item.size}` : '') +
+          (item.especialidade ? ` - Especialidade: ${item.especialidade}` : '') +
+          ` - Unitário: ${money(item.price)} (Total: ${money(lineTotal)})`;
+
+        const removeBtn = document.createElement('button');
+        removeBtn.textContent = 'Remover';
+
+        removeBtn.addEventListener('click', () => {
+          cart.splice(index, 1);
+          updateCartCount();
+          displayCartItems();
+        });
+
+        div.appendChild(description);
+        div.appendChild(removeBtn);
+        cartItemsDiv.appendChild(div);
+      });
+    }
+
+    // Checkout
+    confirmCartBtn.addEventListener('click', () => {
+      if (cart.length === 0) {
+        alert('Carrinho vazio!');
+        return;
+      }
+
+      displayCheckoutSummary();
+      cartModal.style.display = 'none';
+      checkoutModal.style.display = 'block';
+    });
+
+    function displayCheckoutSummary() {
+      checkoutSummaryDiv.innerHTML = '';
+
+      if (cart.length === 0) {
+        checkoutSummaryDiv.innerHTML = '<p>Carrinho vazio.</p>';
+        return;
+      }
+
+      let total = 0;
+
+      cart.forEach(item => {
+        const lineTotal = item.price * (item.quantity || 1);
+        total += lineTotal;
+
+        const paragraph = document.createElement('p');
+        paragraph.textContent =
+          `${item.product}` +
+          (item.quantity ? ` - Quantidade: ${item.quantity}` : '') +
+          (item.size ? ` - Tamanho: ${item.size}` : '') +
+          (item.especialidade ? ` - Especialidade: ${item.especialidade}` : '') +
+          ` - Unitário: ${money(item.price)} - Total: ${money(lineTotal)}`;
+
+        checkoutSummaryDiv.appendChild(paragraph);
+      });
+
+      const separator = document.createElement('hr');
+      checkoutSummaryDiv.appendChild(separator);
+
+      const totalParagraph = document.createElement('p');
+      const strong = document.createElement('strong');
+      strong.textContent = `Total: ${money(total)}`;
+      totalParagraph.appendChild(strong);
+      checkoutSummaryDiv.appendChild(totalParagraph);
+    }
+
+    // Enviar pedido
+    checkoutForm.addEventListener('submit', async event => {
+      event.preventDefault();
+
+      if (cart.length === 0) {
+        alert('Carrinho vazio!');
+        return;
+      }
+
+      const nome = document.getElementById('nome-cliente').value.trim();
+      const email = document.getElementById('email-cliente').value.trim();
+
+      if (!nome || !email) {
+        alert('Preenche o nome e o email.');
+        return;
+      }
+
+      try {
+        const respostas = await Promise.all(
+          cart.map(item => {
+            const payload = {
+              nome,
+              email,
+              ramo: 'Moinhos',
+              produto: item.product + (
+                item.especialidade ? ' - ' + item.especialidade : ''
+              ),
+              tamanho: item.size || '',
+              quantidade: Number(item.quantity || 1),
+              preco_unit: Number(item.price || 0)
+            };
+
+            return fetch('/api/orders', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(payload)
+            }).then(response => response.json());
+          })
+        );
+
+        const falhas = respostas.filter(response => !response || response.ok !== true);
+
+        if (falhas.length > 0) {
+          console.error('Falhas ao enviar:', falhas);
+          alert('Alguns artigos não foram enviados. Tenta novamente, por favor.');
+          return;
+        }
+
+        cart = [];
+        updateCartCount();
+        checkoutModal.style.display = 'none';
+        checkoutForm.reset();
+
+        alert('Pedido confirmado! Recebemos a tua encomenda.');
+
+      } catch (error) {
+        console.error(error);
+        alert('Erro ao enviar o pedido. Verifica a ligação e tenta novamente.');
+      }
+    });
   </script>
-<footer class="footer">
-<div class="footer-content">
-<p>© 2025 Guias de Viseu - Depósito. Todos os direitos reservados.</p>
-</div>
-</footer>
+
+  <footer class="footer">
+    <div class="footer-content">
+      <p>© 2025 Guias de Viseu - Depósito. Todos os direitos reservados.</p>
+    </div>
+  </footer>
+
 </body>
 </html>
