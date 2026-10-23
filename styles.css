@@ -95,7 +95,7 @@ nav {
   /* Header com imagem de fundo, overlay e título */
   header {
     position: relative;
-    background: url('images/companhia.png') center/cover no-repeat; /* Altere para a imagem desejada */
+    background: url('images/novafoto.jpeg') center/cover no-repeat; /* Altere para a imagem desejada */
     height: 600px;
     display: flex;
     align-items: center;
