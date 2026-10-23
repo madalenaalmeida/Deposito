@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt">
 <head>
@@ -676,7 +677,7 @@
       const unitPrice = resolveUnitPrice(size || 'Único');
 
       cart.push({
-        branch: 'Moinhos',
+        branch: 'Moinho',
         product: currentProduct,
         price: unitPrice,
         size: size,
@@ -804,7 +805,7 @@
             const payload = {
               nome,
               email,
-              ramo: 'Moinhos',
+              ramo: 'Moinho',
               produto: item.product + (
                 item.especialidade ? ' - ' + item.especialidade : ''
               ),
